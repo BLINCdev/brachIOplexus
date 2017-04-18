@@ -1,0 +1,55 @@
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\dxl_x86_c.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\xpcOscillator.exe
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\xpcOscillator.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\XInputDotNetPure.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\xPCFramework.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\xpcOscillator.mainForm.resources
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\xpcOscillator.Properties.Resources.resources
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\MTT GUI.csproj.GenerateResource.Cache
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\xpcOscillator.exe
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\xpcOscillator.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\xpcapi.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\obj\x86\Release\MTT GUI.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6\Example1\bin\x86\Release\XInputInterface.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6b\Example1\obj\x86\Release\xpcOscillator.exe
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev6b\Example1\obj\x86\Release\xpcOscillator.pdb
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\dxl_x86_c.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\XInputInterface.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\brachIOplexus.exe
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\brachIOplexus.pdb
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\XInputDotNetPure.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\MTT GUI.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.AboutBox1.resources
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.mainForm.resources
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.Properties.Resources.resources
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\MTT GUI.csproj.GenerateResource.Cache
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.exe
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.pdb
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\brachIOplexus.exe.manifest
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\brachIOplexus.application
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.exe.manifest
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\obj\x86\Release\brachIOplexus.application
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\Resources\xbox_controller_mapping_170417.png
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\Resources\brachIOplexus_User_Guide_rev1.pdf
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\Resources\blinc_icon_32b.ico
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev6e\Example1\bin\x86\Release\Resources\blinc_symbol_about2.png
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.exe
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.pdb
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\Resources\brachIOplexus_User_Guide_rev1.pdf
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\dxl_x86_c.dll
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\Resources\xbox_controller_mapping_170417.png
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\XInputInterface.dll
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\Resources\blinc_icon_32b.ico
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\Resources\blinc_symbol_about2.png
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\brachIOplexus.exe.manifest
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\brachIOplexus.application
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\brachIOplexus.exe
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\brachIOplexus.pdb
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\bin\x86\Release\XInputDotNetPure.dll
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\MTT GUI.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.AboutBox1.resources
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.mainForm.resources
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.Properties.Resources.resources
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\MTT GUI.csproj.GenerateResource.Cache
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.exe.manifest
+C:\Users\SlashC\Dropbox\BLINC\Projects\BLINCdev\Repositories\brachIOplexus\Example1\obj\x86\Release\brachIOplexus.application

@@ -1,0 +1,10 @@
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\bin\x86\Debug\xpcOscillator.exe
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\bin\x86\Debug\xpcOscillator.pdb
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\bin\x86\Debug\xPCFramework.dll
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\obj\x86\Debug\xpcOscillator.mainForm.resources
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\obj\x86\Debug\xpcOscillator.Properties.Resources.resources
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\obj\x86\Debug\Example1.csproj.GenerateResource.Cache
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\obj\x86\Debug\xpcOscillator.exe
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\xPCFrameworkSamples\Oscillator\Example1\obj\x86\Debug\xpcOscillator.pdb
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\Voice Coil GUI_rev7\Example1\obj\x86\Debug\xpcOscillator.exe
+C:\Users\Rory\Documents\TEMP H_backup070114\Voice Coil\Software\Voice Coil GUI_rev7\Example1\obj\x86\Debug\xpcOscillator.pdb
