@@ -4,7 +4,7 @@ The brachI/Oplexus software is a digital nerve center for connecting human inter
 NOTE: brachI/Oplexus is pronounced 'brack-I-O-plexus' and is inspired by the anatomical term 'brachial plexus' which is the main network of nerves that connects the brain and spinal cord to your arm.
 
 ## Getting Started
-Instructions for installing, running, and modifying the software can be found in [brachIOplexus_User_Guide_rev1.pdf](https://github.com/blincdev/brachIOplexus/brachIOplexus_User_Guide_rev1.pdf). The user guide will be your main goto document while setting up the software for the first time and includes references to the other files in the repository:
+Instructions for installing, running, and modifying the software can be found in [brachIOplexus_User_Guide_rev1.pdf](https://github.com/blincdev/brachIOplexus/blob/master/brachIOplexus_User_Guide_rev1.pdf) The user guide will be your main goto document while setting up the software for the first time and includes references to the other files in the repository:
 
 * __brachIOplexus_installer_V0_6.zip:__ A standalone installer file that can be used to install the software without having to dig into the source code or install visual studio. Also available from the [releases tab](https://github.com/blincdev/brachIOplexus/releases)
 * __MTT GUI.sln:__ The main visual studio project file for opening the source code. The project was built in Visual Studio Express 2015.
@@ -16,7 +16,7 @@ You can share your experience, new design, ideas, feature requests, or questions
 If you would like to contribute to future official releases of the brachI/Oplexus we recommend contacting us on the forums to coordinate with our development team. To get started you will need to [fork this repo](https://help.github.com/articles/fork-a-repo/) and once your modification or enhancement is complete submit a [pull request](https://help.github.com/articles/using-pull-requests/).
 
 ## License
-The brachI/Oplexus software is released under the [GNU General Public License v3]https://www.gnu.org/licenses/gpl.html). A local copy is available in the repository.
+The brachI/Oplexus software is released under the [GNU General Public License v3](https://www.gnu.org/licenses/gpl.html). A local copy is available in the repository.
 
 ## Libraries
 The following open source libraries and interfaces were used in this project. Their respective licenses are included for reference in the libraries folder. 
