@@ -32,7 +32,7 @@
     <ErrorReportUrl>https://blincdev.ca/</ErrorReportUrl>
     <ProductName>brachIOplexus</ProductName>
     <PublisherName>BLINCdev</PublisherName>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

@@ -570,6 +570,87 @@ namespace brachIOplexus
                 dynaError.Text = Convert.ToString(dxl_error);
             }
 
+            // Initialize syncwrite parameters
+            // Add Dynamixel#1 goal position value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL1_ID, ID1_goal_position, LEN_MX_GOAL_POSITION);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#1 moving speed value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL1_ID, ID1_moving_speed, LEN_MX_MOVING_SPEED);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#2 goal position value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL2_ID, ID2_goal_position, LEN_MX_GOAL_POSITION);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#2 moving speed value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL2_ID, ID2_moving_speed, LEN_MX_MOVING_SPEED);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#3 goal position value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL3_ID, ID3_goal_position, LEN_MX_GOAL_POSITION);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#3 moving speed value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL3_ID, ID3_moving_speed, LEN_MX_MOVING_SPEED);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#4 goal position value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL4_ID, ID4_goal_position, LEN_MX_GOAL_POSITION);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#4 moving speed value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL4_ID, ID4_moving_speed, LEN_MX_MOVING_SPEED);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#5 goal position value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL5_ID, ID5_goal_position, LEN_MX_GOAL_POSITION);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
+            // Add Dynamixel#5 moving speed value to the Syncwrite storage
+            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL5_ID, ID5_moving_speed, LEN_MX_MOVING_SPEED);
+            if (dxl_addparam_result != true)
+            {
+                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                return;
+            }
+
             // Enable/disable relevant controls
             TorqueOn.Enabled = false;
             TorqueOff.Enabled = true;
@@ -690,99 +771,93 @@ namespace brachIOplexus
                 vel5 = 1;
             }
 
-            // Clear syncwrite parameter storage
-            dynamixel.groupSyncWriteClearParam(write_group_num);
-
-            //// need to only run this if syncwrite has been added in the past -- check with syncwrite_flag
-            //if (syncwrite_flag == true)
-            //{
-            //    dynamixel.groupSyncWriteClearParam(write_group_num);
-            //}
-
             // Add Dynamixel#1 goal position value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL1_ID, pos1, LEN_MX_GOAL_POSITION);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL1_ID, pos1, LEN_MX_GOAL_POSITION,0);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#1 moving speed value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL1_ID, vel1, LEN_MX_MOVING_SPEED);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL1_ID, vel1, LEN_MX_MOVING_SPEED,2);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#2 goal position value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL2_ID, pos2, LEN_MX_GOAL_POSITION);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL2_ID, pos2, LEN_MX_GOAL_POSITION,0);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#2 moving speed value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL2_ID, vel2, LEN_MX_MOVING_SPEED);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL2_ID, vel2, LEN_MX_MOVING_SPEED,2);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#3 goal position value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL3_ID, pos3, LEN_MX_GOAL_POSITION);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL3_ID, pos3, LEN_MX_GOAL_POSITION,0);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#3 moving speed value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL3_ID, vel3, LEN_MX_MOVING_SPEED);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL3_ID, vel3, LEN_MX_MOVING_SPEED,2);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#4 goal position value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL4_ID, pos4, LEN_MX_GOAL_POSITION);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL4_ID, pos4, LEN_MX_GOAL_POSITION,0);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#4 moving speed value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL4_ID, vel4, LEN_MX_MOVING_SPEED);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL4_ID, vel4, LEN_MX_MOVING_SPEED,2);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#5 goal position value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL5_ID, pos5, LEN_MX_GOAL_POSITION);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL5_ID, pos5, LEN_MX_GOAL_POSITION,0);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Add Dynamixel#5 moving speed value to the Syncwrite storage
-            dxl_addparam_result = dynamixel.groupSyncWriteAddParam(write_group_num, DXL5_ID, vel5, LEN_MX_MOVING_SPEED);
+            dxl_addparam_result = dynamixel.groupSyncWriteChangeParam(write_group_num, DXL5_ID, vel5, LEN_MX_MOVING_SPEED,2);
             if (dxl_addparam_result != true)
             {
-                MessageBox.Show("[ID: {0}] groupSyncWrite addparam failed");
+                MessageBox.Show("[ID: {0}] groupSyncWrite changeparam failed");
                 return;
             }
 
             // Syncwrite goal position
             dynamixel.groupSyncWriteTxPacket(write_group_num);
-            if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
-                dynamixel.printTxRxResult(PROTOCOL_VERSION, dxl_comm_result);
+            //if ((dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)) != COMM_SUCCESS)
+            //    dynamixel.printTxRxResult(PROTOCOL_VERSION, dxl_comm_result);
+
+            //// Clear syncwrite parameter storage
+            //dynamixel.groupSyncWriteClearParam(write_group_num);
 
         }
 
