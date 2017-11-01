@@ -1,0 +1,35 @@
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\MyoSharp.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\bin\Debug\x64\myo.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\bin\Debug\x86\myo.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\bin\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\bin\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\bin\Debug\Microsoft.Contracts.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\MyoSharp.rewritten
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\Decl\MyoSharp.dll
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\Decl\MyoSharp.pdb
+C:\Users\SlashC\Desktop\MYO\MyoSharp-SDK-0.8.1\MyoSharp\obj\Debug\CodeContractAnalysisRun.log
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\bin\Debug\x64\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\bin\Debug\x86\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\bin\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\bin\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\bin\Debug\Microsoft.Contracts.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\MyoSharp.rewritten
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\Decl\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\Decl\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev13\MyoSharp\obj\Debug\CodeContractAnalysisRun.log
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\bin\Debug\x64\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\bin\Debug\x86\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\bin\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\bin\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\bin\Debug\Microsoft.Contracts.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\MyoSharp.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\MyoSharp.rewritten
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\Decl\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\Decl\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev23\MyoSharp\obj\Debug\CodeContractAnalysisRun.log

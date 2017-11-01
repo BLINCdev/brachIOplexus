@@ -1,0 +1,9 @@
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\bin\Release\x64\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\bin\Release\x86\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\bin\Release\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\bin\Release\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\bin\Release\Microsoft.Contracts.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\obj\Release\MyoSharp.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\obj\Release\MyoSharp.rewritten
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\obj\Release\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev26c\MyoSharp\obj\Release\MyoSharp.pdb
