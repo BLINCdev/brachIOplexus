@@ -22,7 +22,7 @@ The following libraries and interfaces were used in this project. Their respecti
 
 * [XInputDotNet](https://github.com/speps/XInputDotNet): used to communicate with Xbox controllers
 * [DynamixelSDK](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with Dynamixel Actuators in The Bento Arm
-* [MyoSharp](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with the Myo Armband
+* [MyoSharp](https://github.com/tayfuzun/MyoSharp): used to communicate with the Myo Armband
 * [Simple Moving Average Algorithm](https://www.codeproject.com/Articles/17860/A-Simple-Moving-Average-Algorithm): used to smooth the muscle signals from the Myo Armband
 * [Simulink Real-Time API For Microsoft .NET Framework](https://www.mathworks.com/help/xpc/api/using-api-for-net-framework.html): will be used in a future release to communicate with commercial electromyography (EMG) systems
 
