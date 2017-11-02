@@ -310,9 +310,9 @@
     <Content Include="x86\myo.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="xpcapi.dll">
+    <Content Include="xpcapi.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\myo_edit.png">

@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="brachIOplexus.exe" size="4314528">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="brachIOplexus.exe" size="4185504">
       <assemblyIdentity name="brachIOplexus" version="1.0.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>CQoYjRBgeCfx9vUIUx/XoFbqYPE=</dsig:DigestValue>
+        <dsig:DigestValue>D7vUBy/6W9Qtln20F2B/+ulJPfs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -343,6 +343,15 @@
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
       <dsig:DigestValue>l3yfURpiD/hFTnhLNrtdARsmRF8=</dsig:DigestValue>
+    </hash>
+  </file>
+  <file name="xpcapi.dll" size="129024">
+    <hash>
+      <dsig:Transforms>
+        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
+      </dsig:Transforms>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
+      <dsig:DigestValue>fFK8ckCXaIGK67/T23hbGCOlx9A=</dsig:DigestValue>
     </hash>
   </file>
 </asmv1:assembly>
