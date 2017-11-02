@@ -9,6 +9,8 @@ Instructions for installing, running, and modifying the software can be found in
 * __brachIOplexus_installer_V1.zip:__ A standalone installer file that can be used to install the software without having to dig into the source code or install visual studio. Also available from the [releases tab](https://github.com/blincdev/brachIOplexus/releases)
 * __MTT GUI.sln:__ The main visual studio project file for opening the source code. The project was built in Visual Studio Express 2015.
 
+NOTE: If you want to modify the project files in Visual Studio Express 2015 you will need to unblock  brachIOplexus-master.zip before extracting as described in the [following guide](https://blogs.msdn.microsoft.com/delay/p/unblockingdownloadedfile/).
+
 ## Contributing
 You can share your experience, new design, ideas, feature requests, or questions by contacting us through the [BLINCdev website](https://blincdev.ca/).
 
@@ -22,7 +24,7 @@ The following libraries and interfaces were used in this project. Their respecti
 
 * [XInputDotNet](https://github.com/speps/XInputDotNet): used to communicate with Xbox controllers
 * [DynamixelSDK](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with Dynamixel Actuators in The Bento Arm
-* [MyoSharp](https://github.com/tayfuzun/MyoSharp): used to communicate with the Myo Armband
+* [MyoSharp](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with the Myo Armband
 * [Simple Moving Average Algorithm](https://www.codeproject.com/Articles/17860/A-Simple-Moving-Average-Algorithm): used to smooth the muscle signals from the Myo Armband
 * [Simulink Real-Time API For Microsoft .NET Framework](https://www.mathworks.com/help/xpc/api/using-api-for-net-framework.html): will be used in a future release to communicate with commercial electromyography (EMG) systems
 
