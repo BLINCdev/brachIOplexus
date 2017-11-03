@@ -32,7 +32,7 @@
     <ErrorReportUrl>https://blincdev.ca/</ErrorReportUrl>
     <ProductName>brachIOplexus</ProductName>
     <PublisherName>BLINCdev</PublisherName>
-    <ApplicationRevision>24</ApplicationRevision>
+    <ApplicationRevision>25</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -121,11 +121,6 @@
     <Reference Include="XInputDotNetPure, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\x86\Debug\XInputDotNetPure.dll</HintPath>
-    </Reference>
-    <Reference Include="xPCFramework, Version=1.1.1.1, Culture=neutral, PublicKeyToken=83928d280c6397e6, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\xPCFramework.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -221,9 +216,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="xPCFramework.dll">
+    <Content Include="XInputInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    </Content>
     <EmbeddedResource Include="Resources\blinc_icon_256b.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </EmbeddedResource>
@@ -310,18 +305,12 @@
     <Content Include="x86\myo.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="xpcapi.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\myo_edit.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\keyboard_editb.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="XInputInterface.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
