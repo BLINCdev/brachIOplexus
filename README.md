@@ -6,7 +6,7 @@ NOTE: brachI/Oplexus is pronounced 'brack-I-O-plexus' and is inspired by the ana
 ## Getting Started
 Instructions for installing, running, and modifying the software can be found in [brachIOplexus_User_Guide.pdf](https://github.com/blincdev/brachIOplexus/blob/master/brachIOplexus_User_Guide.pdf) The user guide will be your main goto document while setting up the software for the first time and includes references to the other files in the repository:
 
-* __brachIOplexus_installer_V1.zip:__ A standalone installer file that can be used to install the software without having to dig into the source code or install visual studio. Also available from the [releases tab](https://github.com/blincdev/brachIOplexus/releases)
+* __brachIOplexus_installer_V1c.zip:__ A standalone installer file that can be used to install the software without having to dig into the source code or install visual studio. Also available from the [releases tab](https://github.com/blincdev/brachIOplexus/releases)
 * __MTT GUI.sln:__ The main visual studio project file for opening the source code. The project was built in Visual Studio Express 2015.
 
 ## Contributing
