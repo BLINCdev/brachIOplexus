@@ -124,11 +124,14 @@
   <data name="myo_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\myo_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bottom_arrow_rev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bottom_arrow_rev2.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="img_4816_brachIOplexusE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\img_4816_brachIOplexusE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="top_arrow_rev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\top_arrow_rev2.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="bottom_arrow_rev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\bottom_arrow_rev2.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="top_arrow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\top_arrow.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -139,7 +142,7 @@
   <data name="keyboard_editb" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\keyboard_editb.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="img_4816_brachIOplexusE" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\img_4816_brachIOplexusE.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="Handi_Hand_graphic" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Handi_Hand_graphic.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

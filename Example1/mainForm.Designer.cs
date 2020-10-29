@@ -110,11 +110,6 @@
             this.label6 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
-            this.SimBox = new System.Windows.Forms.GroupBox();
-            this.SIMdcBTN = new System.Windows.Forms.Button();
-            this.SIMconnectBTN = new System.Windows.Forms.Button();
-            this.openSim = new System.Windows.Forms.Button();
-            this.sim_flag = new System.Windows.Forms.CheckBox();
             this.cmbSerialPorts = new System.Windows.Forms.ComboBox();
             this.Timer1 = new System.Windows.Forms.Timer(this.components);
             this.Timer3 = new System.Windows.Forms.Timer(this.components);
@@ -194,6 +189,44 @@
             this.XboxDisconnect = new System.Windows.Forms.Button();
             this.XboxConnect = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBox20 = new System.Windows.Forms.GroupBox();
+            this.udpMode = new System.Windows.Forms.ComboBox();
+            this.label206 = new System.Windows.Forms.Label();
+            this.udpIPport = new System.Windows.Forms.TextBox();
+            this.label210 = new System.Windows.Forms.Label();
+            this.label212 = new System.Windows.Forms.Label();
+            this.udpClearAll = new System.Windows.Forms.Button();
+            this.udpConnect = new System.Windows.Forms.Button();
+            this.udpIPaddr = new System.Windows.Forms.TextBox();
+            this.udpSelectAll = new System.Windows.Forms.Button();
+            this.udpDisconnect = new System.Windows.Forms.Button();
+            this.udpList = new System.Windows.Forms.CheckedListBox();
+            this.groupBox18 = new System.Windows.Forms.GroupBox();
+            this.ArduinoInputCOM = new System.Windows.Forms.ComboBox();
+            this.label204 = new System.Windows.Forms.Label();
+            this.ArduinoInputClearAll = new System.Windows.Forms.Button();
+            this.ArduinoInputConnect = new System.Windows.Forms.Button();
+            this.ArduinoInputSelectAll = new System.Windows.Forms.Button();
+            this.ArduinoInputDisconnect = new System.Windows.Forms.Button();
+            this.ArduinoInputList = new System.Windows.Forms.CheckedListBox();
+            this.groupBox17 = new System.Windows.Forms.GroupBox();
+            this.SLRTclearAll = new System.Windows.Forms.Button();
+            this.SLRTconnect = new System.Windows.Forms.Button();
+            this.SLRTselectAll = new System.Windows.Forms.Button();
+            this.SLRTdisconnect = new System.Windows.Forms.Button();
+            this.SLRTlist = new System.Windows.Forms.CheckedListBox();
+            this.groupBox15 = new System.Windows.Forms.GroupBox();
+            this.biopatrecMode = new System.Windows.Forms.ComboBox();
+            this.label202 = new System.Windows.Forms.Label();
+            this.biopatrecIPport = new System.Windows.Forms.TextBox();
+            this.label186 = new System.Windows.Forms.Label();
+            this.label188 = new System.Windows.Forms.Label();
+            this.biopatrecClearAll = new System.Windows.Forms.Button();
+            this.biopatrecConnect = new System.Windows.Forms.Button();
+            this.biopatrecIPaddr = new System.Windows.Forms.TextBox();
+            this.biopatrecSelectAll = new System.Windows.Forms.Button();
+            this.biopatrecDisconnect = new System.Windows.Forms.Button();
+            this.biopatrecList = new System.Windows.Forms.CheckedListBox();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.pictureBox10 = new System.Windows.Forms.PictureBox();
             this.MYOclearAll = new System.Windows.Forms.Button();
@@ -277,6 +310,13 @@
             this.label125 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabIO = new System.Windows.Forms.TabPage();
+            this.demoDelsysButton = new System.Windows.Forms.Button();
+            this.label236 = new System.Windows.Forms.Label();
+            this.label203 = new System.Windows.Forms.Label();
+            this.biopatrecDelay = new System.Windows.Forms.Label();
+            this.demoShutdownButton = new System.Windows.Forms.Button();
+            this.demoMYObutton = new System.Windows.Forms.Button();
+            this.demoXBoxButton = new System.Windows.Forms.Button();
             this.InputComboBox = new System.Windows.Forms.ComboBox();
             this.OutputComboBox = new System.Windows.Forms.ComboBox();
             this.label166 = new System.Windows.Forms.Label();
@@ -286,10 +326,46 @@
             this.labelID = new System.Windows.Forms.Label();
             this.labelText = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBox21 = new System.Windows.Forms.GroupBox();
+            this.pictureBox13 = new System.Windows.Forms.PictureBox();
+            this.HANDiClearAll = new System.Windows.Forms.Button();
+            this.HANDiDisconnect = new System.Windows.Forms.Button();
+            this.HANDiSelectAll = new System.Windows.Forms.Button();
+            this.HANDiCOM = new System.Windows.Forms.ComboBox();
+            this.HANDiList = new System.Windows.Forms.CheckedListBox();
+            this.HANDiConnect = new System.Windows.Forms.Button();
+            this.HANDiRefresh = new System.Windows.Forms.Button();
+            this.label215 = new System.Windows.Forms.Label();
             this.tabMapping = new System.Windows.Forms.TabPage();
+            this.TaskTimerStateLabel = new System.Windows.Forms.Label();
+            this.label249 = new System.Windows.Forms.Label();
+            this.TaskTimerGroupBox = new System.Windows.Forms.GroupBox();
+            this.TaskTimerClose = new System.Windows.Forms.Button();
+            this.TaskTimerValue = new System.Windows.Forms.Label();
+            this.TaskTimerOpen = new System.Windows.Forms.Button();
+            this.TaskTimerLabel = new System.Windows.Forms.Label();
+            this.TaskTimerReset = new System.Windows.Forms.Button();
+            this.TaskTimerEnable = new System.Windows.Forms.Button();
             this.ID2_state = new System.Windows.Forms.Label();
             this.label148 = new System.Windows.Forms.Label();
             this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.switchState_label = new System.Windows.Forms.Label();
+            this.switchSmaxLabel2 = new System.Windows.Forms.Label();
+            this.label213 = new System.Windows.Forms.Label();
+            this.switchSminLabel2 = new System.Windows.Forms.Label();
+            this.flag2_label = new System.Windows.Forms.Label();
+            this.switchSminTick2 = new System.Windows.Forms.Label();
+            this.label211 = new System.Windows.Forms.Label();
+            this.switchSmaxTick2 = new System.Windows.Forms.Label();
+            this.flag1_label = new System.Windows.Forms.Label();
+            this.switchSmaxCtrl2 = new System.Windows.Forms.NumericUpDown();
+            this.label209 = new System.Windows.Forms.Label();
+            this.switchSminCtrl2 = new System.Windows.Forms.NumericUpDown();
+            this.timer1_label = new System.Windows.Forms.Label();
+            this.label205 = new System.Windows.Forms.Label();
+            this.switchSignalBar2 = new System.Windows.Forms.ProgressBar();
+            this.switchGainCtrl2 = new System.Windows.Forms.NumericUpDown();
+            this.switchTimeCtrl2 = new System.Windows.Forms.NumericUpDown();
             this.groupBox11 = new System.Windows.Forms.GroupBox();
             this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.textBox = new System.Windows.Forms.CheckBox();
@@ -327,18 +403,18 @@
             this.label104 = new System.Windows.Forms.Label();
             this.label145 = new System.Windows.Forms.Label();
             this.label147 = new System.Windows.Forms.Label();
-            this.switchSmaxLabel = new System.Windows.Forms.Label();
-            this.switchSminLabel = new System.Windows.Forms.Label();
-            this.switchSminTick = new System.Windows.Forms.Label();
-            this.switchSmaxTick = new System.Windows.Forms.Label();
-            this.switchSmaxCtrl = new System.Windows.Forms.NumericUpDown();
-            this.switchSminCtrl = new System.Windows.Forms.NumericUpDown();
-            this.switchSignalBar = new System.Windows.Forms.ProgressBar();
-            this.switchGainCtrl = new System.Windows.Forms.NumericUpDown();
+            this.switchSmaxLabel1 = new System.Windows.Forms.Label();
+            this.switchSminLabel1 = new System.Windows.Forms.Label();
+            this.switchSminTick1 = new System.Windows.Forms.Label();
+            this.switchSmaxTick1 = new System.Windows.Forms.Label();
+            this.switchSmaxCtrl1 = new System.Windows.Forms.NumericUpDown();
+            this.switchSminCtrl1 = new System.Windows.Forms.NumericUpDown();
+            this.switchSignalBar1 = new System.Windows.Forms.ProgressBar();
+            this.switchGainCtrl1 = new System.Windows.Forms.NumericUpDown();
             this.switchInputBox = new System.Windows.Forms.ComboBox();
             this.label39 = new System.Windows.Forms.Label();
             this.label27 = new System.Windows.Forms.Label();
-            this.switchTimeCtrl = new System.Windows.Forms.NumericUpDown();
+            this.switchTimeCtrl1 = new System.Windows.Forms.NumericUpDown();
             this.label242 = new System.Windows.Forms.Label();
             this.switchModeBox = new System.Windows.Forms.ComboBox();
             this.switchLabel = new System.Windows.Forms.Label();
@@ -352,13 +428,13 @@
             this.label158 = new System.Windows.Forms.Label();
             this.label157 = new System.Windows.Forms.Label();
             this.label156 = new System.Windows.Forms.Label();
-            this.doF6 = new brachIOplexus.DoF();
-            this.doF5 = new brachIOplexus.DoF();
-            this.doF4 = new brachIOplexus.DoF();
-            this.doF3 = new brachIOplexus.DoF();
-            this.doF2 = new brachIOplexus.DoF();
-            this.doF1 = new brachIOplexus.DoF();
+            this.SwitchPanel = new System.Windows.Forms.Panel();
+            this.TaskTimerPanel = new System.Windows.Forms.Panel();
             this.tabBento = new System.Windows.Forms.TabPage();
+            this.groupBox19 = new System.Windows.Forms.GroupBox();
+            this.BentoProfileOpen = new System.Windows.Forms.Button();
+            this.BentoProfileBox = new System.Windows.Forms.ComboBox();
+            this.BentoProfileSave = new System.Windows.Forms.Button();
             this.BentoEnvLimitsBox = new System.Windows.Forms.GroupBox();
             this.label159 = new System.Windows.Forms.Label();
             this.label155 = new System.Windows.Forms.Label();
@@ -372,7 +448,179 @@
             this.label152 = new System.Windows.Forms.Label();
             this.BentoAdaptGripCtrl = new System.Windows.Forms.NumericUpDown();
             this.label151 = new System.Windows.Forms.Label();
+            this.tabHANDi = new System.Windows.Forms.TabPage();
+            this.HANDiGroupBox = new System.Windows.Forms.GroupBox();
+            this.label221 = new System.Windows.Forms.Label();
+            this.HANDiRun = new System.Windows.Forms.Button();
+            this.HANDiSuspend = new System.Windows.Forms.Button();
+            this.button12 = new System.Windows.Forms.Button();
+            this.button13 = new System.Windows.Forms.Button();
+            this.HANDiParamBox = new System.Windows.Forms.GroupBox();
+            this.D5_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D5_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D5_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D5_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label247 = new System.Windows.Forms.Label();
+            this.D4_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D4_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D4_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D4_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label224 = new System.Windows.Forms.Label();
+            this.D2_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D2_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label225 = new System.Windows.Forms.Label();
+            this.D2_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D2_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D1_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D1_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D1_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D1_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label226 = new System.Windows.Forms.Label();
+            this.D0_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D0_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D0_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D0_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label227 = new System.Windows.Forms.Label();
+            this.label228 = new System.Windows.Forms.Label();
+            this.D3_wmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D3_wmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D3_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.D3_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.label230 = new System.Windows.Forms.Label();
+            this.label243 = new System.Windows.Forms.Label();
+            this.label245 = new System.Windows.Forms.Label();
+            this.label246 = new System.Windows.Forms.Label();
+            this.HANDiFeedbackBox = new System.Windows.Forms.GroupBox();
+            this.label252 = new System.Windows.Forms.Label();
+            this.label265 = new System.Windows.Forms.Label();
+            this.label270 = new System.Windows.Forms.Label();
+            this.label248 = new System.Windows.Forms.Label();
+            this.label250 = new System.Windows.Forms.Label();
+            this.label251 = new System.Windows.Forms.Label();
+            this.label254 = new System.Windows.Forms.Label();
+            this.label256 = new System.Windows.Forms.Label();
+            this.label259 = new System.Windows.Forms.Label();
+            this.label261 = new System.Windows.Forms.Label();
+            this.label262 = new System.Windows.Forms.Label();
+            this.label264 = new System.Windows.Forms.Label();
+            this.label269 = new System.Windows.Forms.Label();
+            this.label271 = new System.Windows.Forms.Label();
+            this.label272 = new System.Windows.Forms.Label();
+            this.label274 = new System.Windows.Forms.Label();
+            this.label275 = new System.Windows.Forms.Label();
+            this.label276 = new System.Windows.Forms.Label();
+            this.label278 = new System.Windows.Forms.Label();
+            this.label279 = new System.Windows.Forms.Label();
             this.tabViz = new System.Windows.Forms.TabPage();
+            this.udpGroupBox = new System.Windows.Forms.GroupBox();
+            this.udp_ch10 = new System.Windows.Forms.Label();
+            this.label255 = new System.Windows.Forms.Label();
+            this.label260 = new System.Windows.Forms.Label();
+            this.udp_ch11 = new System.Windows.Forms.Label();
+            this.udp_ch8 = new System.Windows.Forms.Label();
+            this.label244 = new System.Windows.Forms.Label();
+            this.udp_ch1 = new System.Windows.Forms.Label();
+            this.udp_ch2 = new System.Windows.Forms.Label();
+            this.label222 = new System.Windows.Forms.Label();
+            this.label223 = new System.Windows.Forms.Label();
+            this.udp_ch3 = new System.Windows.Forms.Label();
+            this.udp_ch4 = new System.Windows.Forms.Label();
+            this.udp_ch5 = new System.Windows.Forms.Label();
+            this.udp_ch6 = new System.Windows.Forms.Label();
+            this.udp_ch7 = new System.Windows.Forms.Label();
+            this.label229 = new System.Windows.Forms.Label();
+            this.udp_ch9 = new System.Windows.Forms.Label();
+            this.label231 = new System.Windows.Forms.Label();
+            this.label232 = new System.Windows.Forms.Label();
+            this.label233 = new System.Windows.Forms.Label();
+            this.label234 = new System.Windows.Forms.Label();
+            this.label235 = new System.Windows.Forms.Label();
+            this.ArduinoInputGroupBox = new System.Windows.Forms.GroupBox();
+            this.arduino_A0 = new System.Windows.Forms.Label();
+            this.arduino_A1 = new System.Windows.Forms.Label();
+            this.label207 = new System.Windows.Forms.Label();
+            this.label208 = new System.Windows.Forms.Label();
+            this.arduino_A2 = new System.Windows.Forms.Label();
+            this.arduino_A3 = new System.Windows.Forms.Label();
+            this.arduino_A4 = new System.Windows.Forms.Label();
+            this.arduino_A5 = new System.Windows.Forms.Label();
+            this.arduino_A6 = new System.Windows.Forms.Label();
+            this.label214 = new System.Windows.Forms.Label();
+            this.arduino_A7 = new System.Windows.Forms.Label();
+            this.label216 = new System.Windows.Forms.Label();
+            this.label217 = new System.Windows.Forms.Label();
+            this.label218 = new System.Windows.Forms.Label();
+            this.label219 = new System.Windows.Forms.Label();
+            this.label220 = new System.Windows.Forms.Label();
+            this.biopatrecGroupBox = new System.Windows.Forms.GroupBox();
+            this.label184 = new System.Windows.Forms.Label();
+            this.label182 = new System.Windows.Forms.Label();
+            this.BPRclass12 = new System.Windows.Forms.CheckBox();
+            this.label165 = new System.Windows.Forms.Label();
+            this.BPRclass24 = new System.Windows.Forms.CheckBox();
+            this.label169 = new System.Windows.Forms.Label();
+            this.BPRclass23 = new System.Windows.Forms.CheckBox();
+            this.BPRclass17 = new System.Windows.Forms.CheckBox();
+            this.BPRclass18 = new System.Windows.Forms.CheckBox();
+            this.BPRclass21 = new System.Windows.Forms.CheckBox();
+            this.BPRclass20 = new System.Windows.Forms.CheckBox();
+            this.BPRclass19 = new System.Windows.Forms.CheckBox();
+            this.BPRclass22 = new System.Windows.Forms.CheckBox();
+            this.label170 = new System.Windows.Forms.Label();
+            this.label171 = new System.Windows.Forms.Label();
+            this.label172 = new System.Windows.Forms.Label();
+            this.label173 = new System.Windows.Forms.Label();
+            this.label175 = new System.Windows.Forms.Label();
+            this.label181 = new System.Windows.Forms.Label();
+            this.label201 = new System.Windows.Forms.Label();
+            this.BPRclass11 = new System.Windows.Forms.CheckBox();
+            this.label161 = new System.Windows.Forms.Label();
+            this.BPRclass10 = new System.Windows.Forms.CheckBox();
+            this.BPRclass3 = new System.Windows.Forms.CheckBox();
+            this.BPRclass2 = new System.Windows.Forms.CheckBox();
+            this.BPRclass1 = new System.Windows.Forms.CheckBox();
+            this.BPRclass0 = new System.Windows.Forms.CheckBox();
+            this.BPRclass4 = new System.Windows.Forms.CheckBox();
+            this.BPRclass5 = new System.Windows.Forms.CheckBox();
+            this.BPRclass8 = new System.Windows.Forms.CheckBox();
+            this.BPRclass7 = new System.Windows.Forms.CheckBox();
+            this.BPRclass13 = new System.Windows.Forms.CheckBox();
+            this.BPRclass14 = new System.Windows.Forms.CheckBox();
+            this.BPRclass15 = new System.Windows.Forms.CheckBox();
+            this.BPRclass16 = new System.Windows.Forms.CheckBox();
+            this.BPRclass6 = new System.Windows.Forms.CheckBox();
+            this.label183 = new System.Windows.Forms.Label();
+            this.label185 = new System.Windows.Forms.Label();
+            this.label187 = new System.Windows.Forms.Label();
+            this.label189 = new System.Windows.Forms.Label();
+            this.BPRclass9 = new System.Windows.Forms.CheckBox();
+            this.label190 = new System.Windows.Forms.Label();
+            this.label191 = new System.Windows.Forms.Label();
+            this.label192 = new System.Windows.Forms.Label();
+            this.label193 = new System.Windows.Forms.Label();
+            this.label194 = new System.Windows.Forms.Label();
+            this.label195 = new System.Windows.Forms.Label();
+            this.label196 = new System.Windows.Forms.Label();
+            this.label197 = new System.Windows.Forms.Label();
+            this.label198 = new System.Windows.Forms.Label();
+            this.label199 = new System.Windows.Forms.Label();
+            this.SLRTgroupBox = new System.Windows.Forms.GroupBox();
+            this.slrt_ch1 = new System.Windows.Forms.Label();
+            this.slrt_ch2 = new System.Windows.Forms.Label();
+            this.label167 = new System.Windows.Forms.Label();
+            this.label168 = new System.Windows.Forms.Label();
+            this.slrt_ch3 = new System.Windows.Forms.Label();
+            this.slrt_ch4 = new System.Windows.Forms.Label();
+            this.slrt_ch5 = new System.Windows.Forms.Label();
+            this.slrt_ch6 = new System.Windows.Forms.Label();
+            this.slrt_ch7 = new System.Windows.Forms.Label();
+            this.label174 = new System.Windows.Forms.Label();
+            this.slrt_ch8 = new System.Windows.Forms.Label();
+            this.label176 = new System.Windows.Forms.Label();
+            this.label177 = new System.Windows.Forms.Label();
+            this.label178 = new System.Windows.Forms.Label();
+            this.label179 = new System.Windows.Forms.Label();
+            this.label180 = new System.Windows.Forms.Label();
             this.statusPanel1 = new System.Windows.Forms.Panel();
             this.MYOstatus = new System.Windows.Forms.Label();
             this.BentoErrorText = new System.Windows.Forms.Label();
@@ -381,6 +629,14 @@
             this.BentoRunStatus = new System.Windows.Forms.Button();
             this.BentoStatus = new System.Windows.Forms.Label();
             this.label149 = new System.Windows.Forms.Label();
+            this.serialArduinoInput = new System.IO.Ports.SerialPort(this.components);
+            this.serialHANDi = new System.IO.Ports.SerialPort(this.components);
+            this.doF6 = new brachIOplexus.DoF();
+            this.doF5 = new brachIOplexus.DoF();
+            this.doF4 = new brachIOplexus.DoF();
+            this.doF3 = new brachIOplexus.DoF();
+            this.doF2 = new brachIOplexus.DoF();
+            this.doF1 = new brachIOplexus.DoF();
             this.MenuStrip1.SuspendLayout();
             this.RobotFeedbackBox.SuspendLayout();
             this.RobotParamBox.SuspendLayout();
@@ -404,10 +660,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_wmin_ctrl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_pmin_ctrl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_pmax_ctrl)).BeginInit();
-            this.SimBox.SuspendLayout();
             this.BentoGroupBox.SuspendLayout();
             this.xBoxGroupBox.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.groupBox20.SuspendLayout();
+            this.groupBox18.SuspendLayout();
+            this.groupBox17.SuspendLayout();
+            this.groupBox15.SuspendLayout();
             this.groupBox7.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).BeginInit();
             this.groupBox8.SuspendLayout();
@@ -421,24 +680,64 @@
             this.tabControl1.SuspendLayout();
             this.tabIO.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.groupBox21.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
             this.tabMapping.SuspendLayout();
+            this.TaskTimerGroupBox.SuspendLayout();
             this.groupBox16.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl2)).BeginInit();
             this.groupBox11.SuspendLayout();
             this.groupBox14.SuspendLayout();
             this.groupBox13.SuspendLayout();
             this.groupBox12.SuspendLayout();
             this.groupBox10.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl1)).BeginInit();
             this.tabBento.SuspendLayout();
+            this.groupBox19.SuspendLayout();
             this.BentoEnvLimitsBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.BentoAdaptGripBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BentoAdaptGripCtrl)).BeginInit();
+            this.tabHANDi.SuspendLayout();
+            this.HANDiGroupBox.SuspendLayout();
+            this.HANDiParamBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_wmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_wmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_pmax_ctrl)).BeginInit();
+            this.HANDiFeedbackBox.SuspendLayout();
             this.tabViz.SuspendLayout();
+            this.udpGroupBox.SuspendLayout();
+            this.ArduinoInputGroupBox.SuspendLayout();
+            this.biopatrecGroupBox.SuspendLayout();
+            this.SLRTgroupBox.SuspendLayout();
             this.statusPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -1002,7 +1301,7 @@
             this.hand_wmax_ctrl.Location = new System.Drawing.Point(314, 124);
             this.hand_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.hand_wmax_ctrl.Maximum = new decimal(new int[] {
-            200,
+            255,
             0,
             0,
             0});
@@ -1019,6 +1318,7 @@
             0,
             0,
             0});
+            this.hand_wmax_ctrl.ValueChanged += new System.EventHandler(this.hand_wmax_ctrl_ValueChanged);
             // 
             // hand_wmin_ctrl
             // 
@@ -1042,6 +1342,7 @@
             0,
             0,
             0});
+            this.hand_wmin_ctrl.ValueChanged += new System.EventHandler(this.hand_wmin_ctrl_ValueChanged);
             // 
             // hand_pmin_ctrl
             // 
@@ -1060,6 +1361,7 @@
             0,
             0,
             0});
+            this.hand_pmin_ctrl.ValueChanged += new System.EventHandler(this.hand_pmin_ctrl_ValueChanged);
             // 
             // hand_pmax_ctrl
             // 
@@ -1078,6 +1380,7 @@
             0,
             0,
             0});
+            this.hand_pmax_ctrl.ValueChanged += new System.EventHandler(this.hand_pmax_ctrl_ValueChanged);
             // 
             // label7
             // 
@@ -1094,7 +1397,7 @@
             this.wristRot_wmax_ctrl.Location = new System.Drawing.Point(314, 77);
             this.wristRot_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristRot_wmax_ctrl.Maximum = new decimal(new int[] {
-            200,
+            255,
             0,
             0,
             0});
@@ -1111,6 +1414,7 @@
             0,
             0,
             0});
+            this.wristRot_wmax_ctrl.ValueChanged += new System.EventHandler(this.wristRot_wmax_ctrl_ValueChanged);
             // 
             // wristRot_wmin_ctrl
             // 
@@ -1134,6 +1438,7 @@
             0,
             0,
             0});
+            this.wristRot_wmin_ctrl.ValueChanged += new System.EventHandler(this.wristRot_wmin_ctrl_ValueChanged);
             // 
             // Label18
             // 
@@ -1162,6 +1467,7 @@
             0,
             0,
             0});
+            this.wristRot_pmin_ctrl.ValueChanged += new System.EventHandler(this.wristRot_pmin_ctrl_ValueChanged);
             // 
             // wristRot_pmax_ctrl
             // 
@@ -1180,13 +1486,14 @@
             0,
             0,
             0});
+            this.wristRot_pmax_ctrl.ValueChanged += new System.EventHandler(this.wristRot_pmax_ctrl_ValueChanged);
             // 
             // elbow_wmax_ctrl
             // 
             this.elbow_wmax_ctrl.Location = new System.Drawing.Point(314, 52);
             this.elbow_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.elbow_wmax_ctrl.Maximum = new decimal(new int[] {
-            200,
+            255,
             0,
             0,
             0});
@@ -1203,6 +1510,7 @@
             0,
             0,
             0});
+            this.elbow_wmax_ctrl.ValueChanged += new System.EventHandler(this.elbow_wmax_ctrl_ValueChanged);
             // 
             // elbow_wmin_ctrl
             // 
@@ -1226,6 +1534,7 @@
             0,
             0,
             0});
+            this.elbow_wmin_ctrl.ValueChanged += new System.EventHandler(this.elbow_wmin_ctrl_ValueChanged);
             // 
             // elbow_pmin_ctrl
             // 
@@ -1244,6 +1553,7 @@
             0,
             0,
             0});
+            this.elbow_pmin_ctrl.ValueChanged += new System.EventHandler(this.elbow_pmin_ctrl_ValueChanged);
             // 
             // elbow_pmax_ctrl
             // 
@@ -1262,6 +1572,7 @@
             0,
             0,
             0});
+            this.elbow_pmax_ctrl.ValueChanged += new System.EventHandler(this.elbow_pmax_ctrl_ValueChanged);
             // 
             // Label20
             // 
@@ -1278,7 +1589,7 @@
             this.shoulder_wmax_ctrl.Location = new System.Drawing.Point(314, 30);
             this.shoulder_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.shoulder_wmax_ctrl.Maximum = new decimal(new int[] {
-            200,
+            255,
             0,
             0,
             0});
@@ -1295,6 +1606,7 @@
             0,
             0,
             0});
+            this.shoulder_wmax_ctrl.ValueChanged += new System.EventHandler(this.shoulder_wmax_ctrl_ValueChanged);
             // 
             // shoulder_wmin_ctrl
             // 
@@ -1318,6 +1630,7 @@
             0,
             0,
             0});
+            this.shoulder_wmin_ctrl.ValueChanged += new System.EventHandler(this.shoulder_wmin_ctrl_ValueChanged);
             // 
             // shoulder_pmin_ctrl
             // 
@@ -1336,6 +1649,7 @@
             0,
             0,
             0});
+            this.shoulder_pmin_ctrl.ValueChanged += new System.EventHandler(this.shoulder_pmin_ctrl_ValueChanged);
             // 
             // shoulder_pmax_ctrl
             // 
@@ -1354,6 +1668,7 @@
             0,
             0,
             0});
+            this.shoulder_pmax_ctrl.ValueChanged += new System.EventHandler(this.shoulder_pmax_ctrl_ValueChanged);
             // 
             // Label21
             // 
@@ -1380,7 +1695,7 @@
             this.wristFlex_wmax_ctrl.Location = new System.Drawing.Point(314, 102);
             this.wristFlex_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristFlex_wmax_ctrl.Maximum = new decimal(new int[] {
-            200,
+            255,
             0,
             0,
             0});
@@ -1397,6 +1712,7 @@
             0,
             0,
             0});
+            this.wristFlex_wmax_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_wmax_ctrl_ValueChanged);
             // 
             // wristFlex_wmin_ctrl
             // 
@@ -1420,6 +1736,7 @@
             0,
             0,
             0});
+            this.wristFlex_wmin_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_wmin_ctrl_ValueChanged);
             // 
             // wristFlex_pmin_ctrl
             // 
@@ -1438,6 +1755,7 @@
             0,
             0,
             0});
+            this.wristFlex_pmin_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_pmin_ctrl_ValueChanged);
             // 
             // wristFlex_pmax_ctrl
             // 
@@ -1456,6 +1774,7 @@
             0,
             0,
             0});
+            this.wristFlex_pmax_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_pmax_ctrl_ValueChanged);
             // 
             // label5
             // 
@@ -1497,64 +1816,6 @@
             this.label22.TabIndex = 122;
             this.label22.Text = "Vmax:";
             // 
-            // SimBox
-            // 
-            this.SimBox.Controls.Add(this.SIMdcBTN);
-            this.SimBox.Controls.Add(this.SIMconnectBTN);
-            this.SimBox.Controls.Add(this.openSim);
-            this.SimBox.Controls.Add(this.sim_flag);
-            this.SimBox.Location = new System.Drawing.Point(859, 106);
-            this.SimBox.Margin = new System.Windows.Forms.Padding(2);
-            this.SimBox.Name = "SimBox";
-            this.SimBox.Padding = new System.Windows.Forms.Padding(2);
-            this.SimBox.Size = new System.Drawing.Size(222, 68);
-            this.SimBox.TabIndex = 138;
-            this.SimBox.TabStop = false;
-            this.SimBox.Text = "Simulator";
-            this.SimBox.Visible = false;
-            // 
-            // SIMdcBTN
-            // 
-            this.SIMdcBTN.Enabled = false;
-            this.SIMdcBTN.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.SIMdcBTN.Location = new System.Drawing.Point(146, 24);
-            this.SIMdcBTN.Margin = new System.Windows.Forms.Padding(2);
-            this.SIMdcBTN.Name = "SIMdcBTN";
-            this.SIMdcBTN.Size = new System.Drawing.Size(70, 23);
-            this.SIMdcBTN.TabIndex = 11;
-            this.SIMdcBTN.Text = "Disconnect";
-            // 
-            // SIMconnectBTN
-            // 
-            this.SIMconnectBTN.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.SIMconnectBTN.Location = new System.Drawing.Point(78, 24);
-            this.SIMconnectBTN.Margin = new System.Windows.Forms.Padding(2);
-            this.SIMconnectBTN.Name = "SIMconnectBTN";
-            this.SIMconnectBTN.Size = new System.Drawing.Size(62, 23);
-            this.SIMconnectBTN.TabIndex = 10;
-            this.SIMconnectBTN.Text = "Connect";
-            // 
-            // openSim
-            // 
-            this.openSim.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.openSim.Location = new System.Drawing.Point(12, 24);
-            this.openSim.Margin = new System.Windows.Forms.Padding(2);
-            this.openSim.Name = "openSim";
-            this.openSim.Size = new System.Drawing.Size(62, 23);
-            this.openSim.TabIndex = 10;
-            this.openSim.Text = "Launch";
-            // 
-            // sim_flag
-            // 
-            this.sim_flag.AutoSize = true;
-            this.sim_flag.Location = new System.Drawing.Point(12, 51);
-            this.sim_flag.Margin = new System.Windows.Forms.Padding(2);
-            this.sim_flag.Name = "sim_flag";
-            this.sim_flag.Size = new System.Drawing.Size(15, 14);
-            this.sim_flag.TabIndex = 12;
-            this.sim_flag.UseVisualStyleBackColor = true;
-            this.sim_flag.Visible = false;
-            // 
             // cmbSerialPorts
             // 
             this.cmbSerialPorts.FormattingEnabled = true;
@@ -1563,21 +1824,9 @@
             this.cmbSerialPorts.Size = new System.Drawing.Size(66, 21);
             this.cmbSerialPorts.TabIndex = 15;
             // 
-            // Timer1
-            // 
-            this.Timer1.Interval = 30;
-            // 
-            // Timer3
-            // 
-            this.Timer3.Interval = 30;
-            // 
             // OpenFileDialog1
             // 
             this.OpenFileDialog1.FileName = "OpenFileDialog1";
-            // 
-            // Timer2
-            // 
-            this.Timer2.Interval = 30;
             // 
             // checkGuide
             // 
@@ -2239,7 +2488,7 @@
             // delay_max
             // 
             this.delay_max.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.delay_max.Location = new System.Drawing.Point(1080, 310);
+            this.delay_max.Location = new System.Drawing.Point(1074, 563);
             this.delay_max.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.delay_max.Name = "delay_max";
             this.delay_max.Size = new System.Drawing.Size(39, 15);
@@ -2250,7 +2499,7 @@
             // label121
             // 
             this.label121.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label121.Location = new System.Drawing.Point(981, 310);
+            this.label121.Location = new System.Drawing.Point(975, 563);
             this.label121.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label121.Name = "label121";
             this.label121.Size = new System.Drawing.Size(95, 15);
@@ -2262,7 +2511,7 @@
             // label119
             // 
             this.label119.AutoSize = true;
-            this.label119.Location = new System.Drawing.Point(982, 336);
+            this.label119.Location = new System.Drawing.Point(976, 589);
             this.label119.Name = "label119";
             this.label119.Size = new System.Drawing.Size(40, 13);
             this.label119.TabIndex = 204;
@@ -2272,7 +2521,7 @@
             // dynaStatus
             // 
             this.dynaStatus.AutoSize = true;
-            this.dynaStatus.Location = new System.Drawing.Point(1019, 336);
+            this.dynaStatus.Location = new System.Drawing.Point(1013, 589);
             this.dynaStatus.Name = "dynaStatus";
             this.dynaStatus.Size = new System.Drawing.Size(73, 13);
             this.dynaStatus.TabIndex = 205;
@@ -2419,15 +2668,519 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.groupBox20);
+            this.groupBox4.Controls.Add(this.groupBox18);
+            this.groupBox4.Controls.Add(this.groupBox17);
+            this.groupBox4.Controls.Add(this.groupBox15);
             this.groupBox4.Controls.Add(this.groupBox7);
             this.groupBox4.Controls.Add(this.groupBox8);
             this.groupBox4.Controls.Add(this.groupBox5);
             this.groupBox4.Location = new System.Drawing.Point(3, 6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(299, 472);
+            this.groupBox4.Size = new System.Drawing.Size(300, 474);
             this.groupBox4.TabIndex = 211;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Input Devices";
+            // 
+            // groupBox20
+            // 
+            this.groupBox20.Controls.Add(this.udpMode);
+            this.groupBox20.Controls.Add(this.label206);
+            this.groupBox20.Controls.Add(this.udpIPport);
+            this.groupBox20.Controls.Add(this.label210);
+            this.groupBox20.Controls.Add(this.label212);
+            this.groupBox20.Controls.Add(this.udpClearAll);
+            this.groupBox20.Controls.Add(this.udpConnect);
+            this.groupBox20.Controls.Add(this.udpIPaddr);
+            this.groupBox20.Controls.Add(this.udpSelectAll);
+            this.groupBox20.Controls.Add(this.udpDisconnect);
+            this.groupBox20.Controls.Add(this.udpList);
+            this.groupBox20.Location = new System.Drawing.Point(299, 319);
+            this.groupBox20.Name = "groupBox20";
+            this.groupBox20.Size = new System.Drawing.Size(287, 130);
+            this.groupBox20.TabIndex = 233;
+            this.groupBox20.TabStop = false;
+            this.groupBox20.Text = "UDP (UNB ACE)- Setup";
+            this.groupBox20.Visible = false;
+            // 
+            // udpMode
+            // 
+            this.udpMode.FormattingEnabled = true;
+            this.udpMode.Items.AddRange(new object[] {
+            "Joint Position1"});
+            this.udpMode.Location = new System.Drawing.Point(49, 90);
+            this.udpMode.Margin = new System.Windows.Forms.Padding(2);
+            this.udpMode.Name = "udpMode";
+            this.udpMode.Size = new System.Drawing.Size(88, 21);
+            this.udpMode.TabIndex = 232;
+            this.udpMode.Visible = false;
+            // 
+            // label206
+            // 
+            this.label206.AutoSize = true;
+            this.label206.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label206.Location = new System.Drawing.Point(10, 93);
+            this.label206.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label206.Name = "label206";
+            this.label206.Size = new System.Drawing.Size(37, 13);
+            this.label206.TabIndex = 231;
+            this.label206.Text = "Mode:";
+            this.label206.Visible = false;
+            // 
+            // udpIPport
+            // 
+            this.udpIPport.Location = new System.Drawing.Point(49, 66);
+            this.udpIPport.Margin = new System.Windows.Forms.Padding(2);
+            this.udpIPport.Name = "udpIPport";
+            this.udpIPport.Size = new System.Drawing.Size(39, 20);
+            this.udpIPport.TabIndex = 230;
+            this.udpIPport.Text = "9127";
+            // 
+            // label210
+            // 
+            this.label210.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label210.Location = new System.Drawing.Point(3, 45);
+            this.label210.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label210.Name = "label210";
+            this.label210.Size = new System.Drawing.Size(45, 12);
+            this.label210.TabIndex = 228;
+            this.label210.Text = "IP addr:";
+            // 
+            // label212
+            // 
+            this.label212.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label212.Location = new System.Drawing.Point(6, 69);
+            this.label212.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label212.Name = "label212";
+            this.label212.Size = new System.Drawing.Size(41, 17);
+            this.label212.TabIndex = 229;
+            this.label212.Text = "IP port:";
+            // 
+            // udpClearAll
+            // 
+            this.udpClearAll.Enabled = false;
+            this.udpClearAll.Location = new System.Drawing.Point(212, 108);
+            this.udpClearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.udpClearAll.Name = "udpClearAll";
+            this.udpClearAll.Size = new System.Drawing.Size(66, 19);
+            this.udpClearAll.TabIndex = 225;
+            this.udpClearAll.Text = "Clear All";
+            this.udpClearAll.UseVisualStyleBackColor = true;
+            this.udpClearAll.Click += new System.EventHandler(this.udpClearAll_Click);
+            // 
+            // udpConnect
+            // 
+            this.udpConnect.Location = new System.Drawing.Point(5, 18);
+            this.udpConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.udpConnect.Name = "udpConnect";
+            this.udpConnect.Size = new System.Drawing.Size(56, 19);
+            this.udpConnect.TabIndex = 209;
+            this.udpConnect.Text = "Connect";
+            this.udpConnect.UseVisualStyleBackColor = true;
+            this.udpConnect.Click += new System.EventHandler(this.udpConnect_Click);
+            // 
+            // udpIPaddr
+            // 
+            this.udpIPaddr.Location = new System.Drawing.Point(49, 42);
+            this.udpIPaddr.Margin = new System.Windows.Forms.Padding(2);
+            this.udpIPaddr.Name = "udpIPaddr";
+            this.udpIPaddr.Size = new System.Drawing.Size(88, 20);
+            this.udpIPaddr.TabIndex = 227;
+            this.udpIPaddr.Text = "127.0.0.1";
+            // 
+            // udpSelectAll
+            // 
+            this.udpSelectAll.Enabled = false;
+            this.udpSelectAll.Location = new System.Drawing.Point(142, 108);
+            this.udpSelectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.udpSelectAll.Name = "udpSelectAll";
+            this.udpSelectAll.Size = new System.Drawing.Size(66, 19);
+            this.udpSelectAll.TabIndex = 224;
+            this.udpSelectAll.Text = "Select All";
+            this.udpSelectAll.UseVisualStyleBackColor = true;
+            this.udpSelectAll.Click += new System.EventHandler(this.udpSelectAll_Click);
+            // 
+            // udpDisconnect
+            // 
+            this.udpDisconnect.Enabled = false;
+            this.udpDisconnect.Location = new System.Drawing.Point(65, 18);
+            this.udpDisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.udpDisconnect.Name = "udpDisconnect";
+            this.udpDisconnect.Size = new System.Drawing.Size(74, 19);
+            this.udpDisconnect.TabIndex = 210;
+            this.udpDisconnect.Text = "Disconnect";
+            this.udpDisconnect.UseVisualStyleBackColor = true;
+            this.udpDisconnect.Click += new System.EventHandler(this.udpDisconnect_Click);
+            // 
+            // udpList
+            // 
+            this.udpList.CheckOnClick = true;
+            this.udpList.Enabled = false;
+            this.udpList.FormattingEnabled = true;
+            this.udpList.Items.AddRange(new object[] {
+            "Rest",
+            "Open Hand",
+            "Close Hand",
+            "Wrist Flex",
+            "Wrist Extend",
+            "Pronation",
+            "Supination",
+            "Elbow Flex ",
+            "Elbow Extend",
+            "Shoulder (CW)",
+            "Shoulder (CCW)"});
+            this.udpList.Location = new System.Drawing.Point(144, 19);
+            this.udpList.Name = "udpList";
+            this.udpList.Size = new System.Drawing.Size(134, 79);
+            this.udpList.TabIndex = 223;
+            // 
+            // groupBox18
+            // 
+            this.groupBox18.Controls.Add(this.ArduinoInputCOM);
+            this.groupBox18.Controls.Add(this.label204);
+            this.groupBox18.Controls.Add(this.ArduinoInputClearAll);
+            this.groupBox18.Controls.Add(this.ArduinoInputConnect);
+            this.groupBox18.Controls.Add(this.ArduinoInputSelectAll);
+            this.groupBox18.Controls.Add(this.ArduinoInputDisconnect);
+            this.groupBox18.Controls.Add(this.ArduinoInputList);
+            this.groupBox18.Location = new System.Drawing.Point(299, 15);
+            this.groupBox18.Name = "groupBox18";
+            this.groupBox18.Size = new System.Drawing.Size(287, 146);
+            this.groupBox18.TabIndex = 227;
+            this.groupBox18.TabStop = false;
+            this.groupBox18.Text = "Arduino - Setup";
+            this.groupBox18.Visible = false;
+            // 
+            // ArduinoInputCOM
+            // 
+            this.ArduinoInputCOM.FormattingEnabled = true;
+            this.ArduinoInputCOM.Location = new System.Drawing.Point(64, 39);
+            this.ArduinoInputCOM.Name = "ArduinoInputCOM";
+            this.ArduinoInputCOM.Size = new System.Drawing.Size(74, 21);
+            this.ArduinoInputCOM.TabIndex = 226;
+            // 
+            // label204
+            // 
+            this.label204.AutoSize = true;
+            this.label204.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label204.Location = new System.Drawing.Point(6, 42);
+            this.label204.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label204.Name = "label204";
+            this.label204.Size = new System.Drawing.Size(56, 13);
+            this.label204.TabIndex = 227;
+            this.label204.Text = "COM Port:";
+            // 
+            // ArduinoInputClearAll
+            // 
+            this.ArduinoInputClearAll.Enabled = false;
+            this.ArduinoInputClearAll.Location = new System.Drawing.Point(212, 118);
+            this.ArduinoInputClearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.ArduinoInputClearAll.Name = "ArduinoInputClearAll";
+            this.ArduinoInputClearAll.Size = new System.Drawing.Size(66, 19);
+            this.ArduinoInputClearAll.TabIndex = 225;
+            this.ArduinoInputClearAll.Text = "Clear All";
+            this.ArduinoInputClearAll.UseVisualStyleBackColor = true;
+            this.ArduinoInputClearAll.Click += new System.EventHandler(this.ArduinoInputClearAll_Click);
+            // 
+            // ArduinoInputConnect
+            // 
+            this.ArduinoInputConnect.Location = new System.Drawing.Point(5, 18);
+            this.ArduinoInputConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.ArduinoInputConnect.Name = "ArduinoInputConnect";
+            this.ArduinoInputConnect.Size = new System.Drawing.Size(56, 19);
+            this.ArduinoInputConnect.TabIndex = 209;
+            this.ArduinoInputConnect.Text = "Connect";
+            this.ArduinoInputConnect.UseVisualStyleBackColor = true;
+            this.ArduinoInputConnect.Click += new System.EventHandler(this.ArduinoInputConnect_Click);
+            // 
+            // ArduinoInputSelectAll
+            // 
+            this.ArduinoInputSelectAll.Enabled = false;
+            this.ArduinoInputSelectAll.Location = new System.Drawing.Point(142, 118);
+            this.ArduinoInputSelectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.ArduinoInputSelectAll.Name = "ArduinoInputSelectAll";
+            this.ArduinoInputSelectAll.Size = new System.Drawing.Size(66, 19);
+            this.ArduinoInputSelectAll.TabIndex = 224;
+            this.ArduinoInputSelectAll.Text = "Select All";
+            this.ArduinoInputSelectAll.UseVisualStyleBackColor = true;
+            this.ArduinoInputSelectAll.Click += new System.EventHandler(this.ArduinoInputSelectAll_Click);
+            // 
+            // ArduinoInputDisconnect
+            // 
+            this.ArduinoInputDisconnect.Enabled = false;
+            this.ArduinoInputDisconnect.Location = new System.Drawing.Point(65, 18);
+            this.ArduinoInputDisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.ArduinoInputDisconnect.Name = "ArduinoInputDisconnect";
+            this.ArduinoInputDisconnect.Size = new System.Drawing.Size(74, 19);
+            this.ArduinoInputDisconnect.TabIndex = 210;
+            this.ArduinoInputDisconnect.Text = "Disconnect";
+            this.ArduinoInputDisconnect.UseVisualStyleBackColor = true;
+            this.ArduinoInputDisconnect.Click += new System.EventHandler(this.ArduinoInputDisconnect_Click);
+            // 
+            // ArduinoInputList
+            // 
+            this.ArduinoInputList.CheckOnClick = true;
+            this.ArduinoInputList.Enabled = false;
+            this.ArduinoInputList.FormattingEnabled = true;
+            this.ArduinoInputList.Items.AddRange(new object[] {
+            "A0 - Arduino",
+            "A1 - Arduino",
+            "A2 - Arduino",
+            "A3 - Arduino",
+            "A4 - Arduino",
+            "A5 - Arduino",
+            "A6 - Arduino",
+            "A7 - Arduino"});
+            this.ArduinoInputList.Location = new System.Drawing.Point(144, 19);
+            this.ArduinoInputList.Name = "ArduinoInputList";
+            this.ArduinoInputList.Size = new System.Drawing.Size(134, 79);
+            this.ArduinoInputList.TabIndex = 223;
+            // 
+            // groupBox17
+            // 
+            this.groupBox17.Controls.Add(this.SLRTclearAll);
+            this.groupBox17.Controls.Add(this.SLRTconnect);
+            this.groupBox17.Controls.Add(this.SLRTselectAll);
+            this.groupBox17.Controls.Add(this.SLRTdisconnect);
+            this.groupBox17.Controls.Add(this.SLRTlist);
+            this.groupBox17.Location = new System.Drawing.Point(300, 167);
+            this.groupBox17.Name = "groupBox17";
+            this.groupBox17.Size = new System.Drawing.Size(287, 146);
+            this.groupBox17.TabIndex = 226;
+            this.groupBox17.TabStop = false;
+            this.groupBox17.Text = "Simulink Realtime (xPC Target) - Setup";
+            this.groupBox17.Visible = false;
+            // 
+            // SLRTclearAll
+            // 
+            this.SLRTclearAll.Enabled = false;
+            this.SLRTclearAll.Location = new System.Drawing.Point(212, 118);
+            this.SLRTclearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.SLRTclearAll.Name = "SLRTclearAll";
+            this.SLRTclearAll.Size = new System.Drawing.Size(66, 19);
+            this.SLRTclearAll.TabIndex = 225;
+            this.SLRTclearAll.Text = "Clear All";
+            this.SLRTclearAll.UseVisualStyleBackColor = true;
+            this.SLRTclearAll.Click += new System.EventHandler(this.SLRTclearAll_Click);
+            // 
+            // SLRTconnect
+            // 
+            this.SLRTconnect.Location = new System.Drawing.Point(5, 18);
+            this.SLRTconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.SLRTconnect.Name = "SLRTconnect";
+            this.SLRTconnect.Size = new System.Drawing.Size(56, 19);
+            this.SLRTconnect.TabIndex = 209;
+            this.SLRTconnect.Text = "Connect";
+            this.SLRTconnect.UseVisualStyleBackColor = true;
+            this.SLRTconnect.Click += new System.EventHandler(this.SLRTconnect_Click);
+            // 
+            // SLRTselectAll
+            // 
+            this.SLRTselectAll.Enabled = false;
+            this.SLRTselectAll.Location = new System.Drawing.Point(142, 118);
+            this.SLRTselectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.SLRTselectAll.Name = "SLRTselectAll";
+            this.SLRTselectAll.Size = new System.Drawing.Size(66, 19);
+            this.SLRTselectAll.TabIndex = 224;
+            this.SLRTselectAll.Text = "Select All";
+            this.SLRTselectAll.UseVisualStyleBackColor = true;
+            this.SLRTselectAll.Click += new System.EventHandler(this.SLRTselectAll_Click);
+            // 
+            // SLRTdisconnect
+            // 
+            this.SLRTdisconnect.Enabled = false;
+            this.SLRTdisconnect.Location = new System.Drawing.Point(65, 18);
+            this.SLRTdisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.SLRTdisconnect.Name = "SLRTdisconnect";
+            this.SLRTdisconnect.Size = new System.Drawing.Size(74, 19);
+            this.SLRTdisconnect.TabIndex = 210;
+            this.SLRTdisconnect.Text = "Disconnect";
+            this.SLRTdisconnect.UseVisualStyleBackColor = true;
+            this.SLRTdisconnect.Click += new System.EventHandler(this.SLRTdisconnect_Click);
+            // 
+            // SLRTlist
+            // 
+            this.SLRTlist.CheckOnClick = true;
+            this.SLRTlist.Enabled = false;
+            this.SLRTlist.FormattingEnabled = true;
+            this.SLRTlist.Items.AddRange(new object[] {
+            "Ch1 - SLRT",
+            "Ch2 - SLRT",
+            "Ch3 - SLRT",
+            "Ch4 - SLRT",
+            "Ch5 - SLRT",
+            "Ch6 - SLRT",
+            "Ch7 - SLRT",
+            "Ch8 - SLRT"});
+            this.SLRTlist.Location = new System.Drawing.Point(144, 19);
+            this.SLRTlist.Name = "SLRTlist";
+            this.SLRTlist.Size = new System.Drawing.Size(134, 79);
+            this.SLRTlist.TabIndex = 223;
+            // 
+            // groupBox15
+            // 
+            this.groupBox15.Controls.Add(this.biopatrecMode);
+            this.groupBox15.Controls.Add(this.label202);
+            this.groupBox15.Controls.Add(this.biopatrecIPport);
+            this.groupBox15.Controls.Add(this.label186);
+            this.groupBox15.Controls.Add(this.label188);
+            this.groupBox15.Controls.Add(this.biopatrecClearAll);
+            this.groupBox15.Controls.Add(this.biopatrecConnect);
+            this.groupBox15.Controls.Add(this.biopatrecIPaddr);
+            this.groupBox15.Controls.Add(this.biopatrecSelectAll);
+            this.groupBox15.Controls.Add(this.biopatrecDisconnect);
+            this.groupBox15.Controls.Add(this.biopatrecList);
+            this.groupBox15.Location = new System.Drawing.Point(6, 470);
+            this.groupBox15.Name = "groupBox15";
+            this.groupBox15.Size = new System.Drawing.Size(287, 130);
+            this.groupBox15.TabIndex = 226;
+            this.groupBox15.TabStop = false;
+            this.groupBox15.Text = "BioPatRec - Setup";
+            this.groupBox15.Visible = false;
+            // 
+            // biopatrecMode
+            // 
+            this.biopatrecMode.FormattingEnabled = true;
+            this.biopatrecMode.Items.AddRange(new object[] {
+            "Input",
+            "Output - TAC"});
+            this.biopatrecMode.Location = new System.Drawing.Point(49, 90);
+            this.biopatrecMode.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecMode.Name = "biopatrecMode";
+            this.biopatrecMode.Size = new System.Drawing.Size(88, 21);
+            this.biopatrecMode.TabIndex = 232;
+            // 
+            // label202
+            // 
+            this.label202.AutoSize = true;
+            this.label202.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label202.Location = new System.Drawing.Point(10, 93);
+            this.label202.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label202.Name = "label202";
+            this.label202.Size = new System.Drawing.Size(37, 13);
+            this.label202.TabIndex = 231;
+            this.label202.Text = "Mode:";
+            // 
+            // biopatrecIPport
+            // 
+            this.biopatrecIPport.Location = new System.Drawing.Point(49, 66);
+            this.biopatrecIPport.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecIPport.Name = "biopatrecIPport";
+            this.biopatrecIPport.Size = new System.Drawing.Size(39, 20);
+            this.biopatrecIPport.TabIndex = 230;
+            this.biopatrecIPport.Text = "30000";
+            // 
+            // label186
+            // 
+            this.label186.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label186.Location = new System.Drawing.Point(3, 45);
+            this.label186.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label186.Name = "label186";
+            this.label186.Size = new System.Drawing.Size(45, 12);
+            this.label186.TabIndex = 228;
+            this.label186.Text = "IP addr:";
+            // 
+            // label188
+            // 
+            this.label188.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label188.Location = new System.Drawing.Point(6, 69);
+            this.label188.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label188.Name = "label188";
+            this.label188.Size = new System.Drawing.Size(41, 17);
+            this.label188.TabIndex = 229;
+            this.label188.Text = "IP port:";
+            // 
+            // biopatrecClearAll
+            // 
+            this.biopatrecClearAll.Enabled = false;
+            this.biopatrecClearAll.Location = new System.Drawing.Point(212, 108);
+            this.biopatrecClearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecClearAll.Name = "biopatrecClearAll";
+            this.biopatrecClearAll.Size = new System.Drawing.Size(66, 19);
+            this.biopatrecClearAll.TabIndex = 225;
+            this.biopatrecClearAll.Text = "Clear All";
+            this.biopatrecClearAll.UseVisualStyleBackColor = true;
+            this.biopatrecClearAll.Click += new System.EventHandler(this.biopatrecClearall_Click);
+            // 
+            // biopatrecConnect
+            // 
+            this.biopatrecConnect.Location = new System.Drawing.Point(5, 18);
+            this.biopatrecConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecConnect.Name = "biopatrecConnect";
+            this.biopatrecConnect.Size = new System.Drawing.Size(56, 19);
+            this.biopatrecConnect.TabIndex = 209;
+            this.biopatrecConnect.Text = "Connect";
+            this.biopatrecConnect.UseVisualStyleBackColor = true;
+            this.biopatrecConnect.Click += new System.EventHandler(this.biopatrecConnect_Click);
+            // 
+            // biopatrecIPaddr
+            // 
+            this.biopatrecIPaddr.Location = new System.Drawing.Point(49, 42);
+            this.biopatrecIPaddr.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecIPaddr.Name = "biopatrecIPaddr";
+            this.biopatrecIPaddr.Size = new System.Drawing.Size(88, 20);
+            this.biopatrecIPaddr.TabIndex = 227;
+            this.biopatrecIPaddr.Text = "0.0.0.0";
+            // 
+            // biopatrecSelectAll
+            // 
+            this.biopatrecSelectAll.Enabled = false;
+            this.biopatrecSelectAll.Location = new System.Drawing.Point(142, 108);
+            this.biopatrecSelectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecSelectAll.Name = "biopatrecSelectAll";
+            this.biopatrecSelectAll.Size = new System.Drawing.Size(66, 19);
+            this.biopatrecSelectAll.TabIndex = 224;
+            this.biopatrecSelectAll.Text = "Select All";
+            this.biopatrecSelectAll.UseVisualStyleBackColor = true;
+            this.biopatrecSelectAll.Click += new System.EventHandler(this.biopatrecSelectAll_Click);
+            // 
+            // biopatrecDisconnect
+            // 
+            this.biopatrecDisconnect.Enabled = false;
+            this.biopatrecDisconnect.Location = new System.Drawing.Point(65, 18);
+            this.biopatrecDisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.biopatrecDisconnect.Name = "biopatrecDisconnect";
+            this.biopatrecDisconnect.Size = new System.Drawing.Size(74, 19);
+            this.biopatrecDisconnect.TabIndex = 210;
+            this.biopatrecDisconnect.Text = "Disconnect";
+            this.biopatrecDisconnect.UseVisualStyleBackColor = true;
+            this.biopatrecDisconnect.Click += new System.EventHandler(this.biopatrecDisconnect_Click);
+            // 
+            // biopatrecList
+            // 
+            this.biopatrecList.CheckOnClick = true;
+            this.biopatrecList.Enabled = false;
+            this.biopatrecList.FormattingEnabled = true;
+            this.biopatrecList.Items.AddRange(new object[] {
+            "Rest",
+            "Open Hand",
+            "Close Hand",
+            "Flex Hand",
+            "Extend Hand",
+            "Pronation",
+            "Supination",
+            "Thumb Extend",
+            "Thumb Flex",
+            "Index Extend",
+            "Index Flex",
+            "Middle Extend",
+            "Middle Flex",
+            "Ring Extend",
+            "Ring Flex",
+            "Little Extend",
+            "Little Flex",
+            "Point",
+            "Thumb Yaw Flex",
+            "Thumb Yaw Extend",
+            "Flex Elbow",
+            "Extend Elbow",
+            "Rotate Elbow Int",
+            "Rotate Elbow Ext",
+            "Side Grip"});
+            this.biopatrecList.Location = new System.Drawing.Point(144, 19);
+            this.biopatrecList.Name = "biopatrecList";
+            this.biopatrecList.Size = new System.Drawing.Size(134, 79);
+            this.biopatrecList.TabIndex = 223;
             // 
             // groupBox7
             // 
@@ -2442,7 +3195,7 @@
             this.groupBox7.Size = new System.Drawing.Size(287, 146);
             this.groupBox7.TabIndex = 211;
             this.groupBox7.TabStop = false;
-            this.groupBox7.Text = "MYO Armband - Setup";
+            this.groupBox7.Text = "Myo Armband - Setup";
             // 
             // pictureBox10
             // 
@@ -2507,14 +3260,14 @@
             this.MYOlist.Enabled = false;
             this.MYOlist.FormattingEnabled = true;
             this.MYOlist.Items.AddRange(new object[] {
-            "Ch1",
-            "Ch2",
-            "Ch3",
-            "Ch4",
-            "Ch5",
-            "Ch6",
-            "Ch7",
-            "Ch8"});
+            "Ch1 - Myo",
+            "Ch2 - Myo",
+            "Ch3 - Myo",
+            "Ch4 - Myo",
+            "Ch5 - Myo",
+            "Ch6 - Myo",
+            "Ch7 - Myo",
+            "Ch8 - Myo"});
             this.MYOlist.Location = new System.Drawing.Point(144, 19);
             this.MYOlist.Name = "MYOlist";
             this.MYOlist.Size = new System.Drawing.Size(134, 79);
@@ -2808,7 +3561,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1010, 148);
+            this.button1.Location = new System.Drawing.Point(1004, 401);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(115, 23);
             this.button1.TabIndex = 214;
@@ -2822,7 +3575,7 @@
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.comboBox2.Location = new System.Drawing.Point(1011, 174);
+            this.comboBox2.Location = new System.Drawing.Point(1005, 427);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 213;
@@ -2836,7 +3589,7 @@
             "Apple",
             "Orange",
             "Banana"});
-            this.checkedListFruit.Location = new System.Drawing.Point(1037, 30);
+            this.checkedListFruit.Location = new System.Drawing.Point(1031, 283);
             this.checkedListFruit.Name = "checkedListFruit";
             this.checkedListFruit.Size = new System.Drawing.Size(120, 79);
             this.checkedListFruit.TabIndex = 212;
@@ -3469,16 +4222,25 @@
             this.tabControl1.Controls.Add(this.tabIO);
             this.tabControl1.Controls.Add(this.tabMapping);
             this.tabControl1.Controls.Add(this.tabBento);
+            this.tabControl1.Controls.Add(this.tabHANDi);
             this.tabControl1.Controls.Add(this.tabViz);
             this.tabControl1.Location = new System.Drawing.Point(8, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1170, 668);
             this.tabControl1.TabIndex = 215;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             this.tabControl1.Deselecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabControl1_Deselecting);
             // 
             // tabIO
             // 
+            this.tabIO.Controls.Add(this.demoDelsysButton);
+            this.tabIO.Controls.Add(this.label236);
+            this.tabIO.Controls.Add(this.label203);
+            this.tabIO.Controls.Add(this.biopatrecDelay);
+            this.tabIO.Controls.Add(this.demoShutdownButton);
+            this.tabIO.Controls.Add(this.demoMYObutton);
+            this.tabIO.Controls.Add(this.demoXBoxButton);
             this.tabIO.Controls.Add(this.InputComboBox);
             this.tabIO.Controls.Add(this.OutputComboBox);
             this.tabIO.Controls.Add(this.label166);
@@ -3504,11 +4266,88 @@
             this.tabIO.Text = "Input/Output";
             this.tabIO.UseVisualStyleBackColor = true;
             // 
+            // demoDelsysButton
+            // 
+            this.demoDelsysButton.Location = new System.Drawing.Point(723, 386);
+            this.demoDelsysButton.Name = "demoDelsysButton";
+            this.demoDelsysButton.Size = new System.Drawing.Size(103, 48);
+            this.demoDelsysButton.TabIndex = 230;
+            this.demoDelsysButton.Text = "Start xPC Demo";
+            this.demoDelsysButton.UseVisualStyleBackColor = true;
+            this.demoDelsysButton.Visible = false;
+            this.demoDelsysButton.Click += new System.EventHandler(this.demoDelsysButton_Click);
+            // 
+            // label236
+            // 
+            this.label236.AutoSize = true;
+            this.label236.Location = new System.Drawing.Point(1041, 91);
+            this.label236.Name = "label236";
+            this.label236.Size = new System.Drawing.Size(78, 13);
+            this.label236.TabIndex = 229;
+            this.label236.Text = "UDP test string";
+            this.label236.Visible = false;
+            // 
+            // label203
+            // 
+            this.label203.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label203.Location = new System.Drawing.Point(1015, 114);
+            this.label203.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label203.Name = "label203";
+            this.label203.Size = new System.Drawing.Size(83, 15);
+            this.label203.TabIndex = 223;
+            this.label203.Text = "Delay (ms):";
+            this.label203.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label203.Visible = false;
+            // 
+            // biopatrecDelay
+            // 
+            this.biopatrecDelay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.biopatrecDelay.Location = new System.Drawing.Point(1097, 114);
+            this.biopatrecDelay.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.biopatrecDelay.Name = "biopatrecDelay";
+            this.biopatrecDelay.Size = new System.Drawing.Size(42, 15);
+            this.biopatrecDelay.TabIndex = 224;
+            this.biopatrecDelay.Text = "--";
+            this.biopatrecDelay.Visible = false;
+            // 
+            // demoShutdownButton
+            // 
+            this.demoShutdownButton.Location = new System.Drawing.Point(723, 546);
+            this.demoShutdownButton.Name = "demoShutdownButton";
+            this.demoShutdownButton.Size = new System.Drawing.Size(103, 48);
+            this.demoShutdownButton.TabIndex = 228;
+            this.demoShutdownButton.Text = "Shutdown Demos";
+            this.demoShutdownButton.UseVisualStyleBackColor = true;
+            this.demoShutdownButton.Visible = false;
+            this.demoShutdownButton.Click += new System.EventHandler(this.demoShutdownButton_Click);
+            // 
+            // demoMYObutton
+            // 
+            this.demoMYObutton.Location = new System.Drawing.Point(723, 492);
+            this.demoMYObutton.Name = "demoMYObutton";
+            this.demoMYObutton.Size = new System.Drawing.Size(103, 48);
+            this.demoMYObutton.TabIndex = 227;
+            this.demoMYObutton.Text = "Start MYO Demo";
+            this.demoMYObutton.UseVisualStyleBackColor = true;
+            this.demoMYObutton.Visible = false;
+            this.demoMYObutton.Click += new System.EventHandler(this.demoMYObutton_Click);
+            // 
+            // demoXBoxButton
+            // 
+            this.demoXBoxButton.Location = new System.Drawing.Point(723, 440);
+            this.demoXBoxButton.Name = "demoXBoxButton";
+            this.demoXBoxButton.Size = new System.Drawing.Size(103, 48);
+            this.demoXBoxButton.TabIndex = 226;
+            this.demoXBoxButton.Text = "Start XBox Demo";
+            this.demoXBoxButton.UseVisualStyleBackColor = true;
+            this.demoXBoxButton.Visible = false;
+            this.demoXBoxButton.Click += new System.EventHandler(this.demoXBoxButton_Click);
+            // 
             // InputComboBox
             // 
             this.InputComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.InputComboBox.FormattingEnabled = true;
-            this.InputComboBox.Location = new System.Drawing.Point(923, 264);
+            this.InputComboBox.Location = new System.Drawing.Point(917, 517);
             this.InputComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.InputComboBox.Name = "InputComboBox";
             this.InputComboBox.Size = new System.Drawing.Size(99, 21);
@@ -3520,7 +4359,7 @@
             this.OutputComboBox.DisplayMember = "1";
             this.OutputComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.OutputComboBox.FormattingEnabled = true;
-            this.OutputComboBox.Location = new System.Drawing.Point(1044, 264);
+            this.OutputComboBox.Location = new System.Drawing.Point(1038, 517);
             this.OutputComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.OutputComboBox.Name = "OutputComboBox";
             this.OutputComboBox.Size = new System.Drawing.Size(99, 21);
@@ -3531,7 +4370,7 @@
             // 
             this.label166.AutoSize = true;
             this.label166.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label166.Location = new System.Drawing.Point(1023, 267);
+            this.label166.Location = new System.Drawing.Point(1017, 520);
             this.label166.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label166.Name = "label166";
             this.label166.Size = new System.Drawing.Size(19, 13);
@@ -3542,7 +4381,7 @@
             // labelType
             // 
             this.labelType.AutoSize = true;
-            this.labelType.Location = new System.Drawing.Point(1015, 227);
+            this.labelType.Location = new System.Drawing.Point(1009, 480);
             this.labelType.Name = "labelType";
             this.labelType.Size = new System.Drawing.Size(33, 13);
             this.labelType.TabIndex = 219;
@@ -3556,7 +4395,7 @@
             this.checkedListDairy.Items.AddRange(new object[] {
             "Cheese",
             "Milk"});
-            this.checkedListDairy.Location = new System.Drawing.Point(911, 30);
+            this.checkedListDairy.Location = new System.Drawing.Point(1031, 191);
             this.checkedListDairy.Name = "checkedListDairy";
             this.checkedListDairy.Size = new System.Drawing.Size(120, 79);
             this.checkedListDairy.TabIndex = 218;
@@ -3565,7 +4404,7 @@
             // button14
             // 
             this.button14.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button14.Location = new System.Drawing.Point(1011, 120);
+            this.button14.Location = new System.Drawing.Point(1005, 373);
             this.button14.Margin = new System.Windows.Forms.Padding(2);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(109, 23);
@@ -3577,7 +4416,7 @@
             // labelID
             // 
             this.labelID.AutoSize = true;
-            this.labelID.Location = new System.Drawing.Point(1015, 214);
+            this.labelID.Location = new System.Drawing.Point(1009, 467);
             this.labelID.Name = "labelID";
             this.labelID.Size = new System.Drawing.Size(18, 13);
             this.labelID.TabIndex = 217;
@@ -3587,7 +4426,7 @@
             // labelText
             // 
             this.labelText.AutoSize = true;
-            this.labelText.Location = new System.Drawing.Point(1015, 240);
+            this.labelText.Location = new System.Drawing.Point(1009, 493);
             this.labelText.Name = "labelText";
             this.labelText.Size = new System.Drawing.Size(24, 13);
             this.labelText.TabIndex = 216;
@@ -3596,6 +4435,7 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.groupBox21);
             this.groupBox9.Controls.Add(this.groupBox6);
             this.groupBox9.Location = new System.Drawing.Point(308, 6);
             this.groupBox9.Name = "groupBox9";
@@ -3604,8 +4444,142 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Output Devices";
             // 
+            // groupBox21
+            // 
+            this.groupBox21.Controls.Add(this.pictureBox13);
+            this.groupBox21.Controls.Add(this.HANDiClearAll);
+            this.groupBox21.Controls.Add(this.HANDiDisconnect);
+            this.groupBox21.Controls.Add(this.HANDiSelectAll);
+            this.groupBox21.Controls.Add(this.HANDiCOM);
+            this.groupBox21.Controls.Add(this.HANDiList);
+            this.groupBox21.Controls.Add(this.HANDiConnect);
+            this.groupBox21.Controls.Add(this.HANDiRefresh);
+            this.groupBox21.Controls.Add(this.label215);
+            this.groupBox21.Location = new System.Drawing.Point(6, 188);
+            this.groupBox21.Name = "groupBox21";
+            this.groupBox21.Size = new System.Drawing.Size(334, 167);
+            this.groupBox21.TabIndex = 226;
+            this.groupBox21.TabStop = false;
+            this.groupBox21.Text = "HANDi Hand - Setup";
+            this.groupBox21.Visible = false;
+            // 
+            // pictureBox13
+            // 
+            this.pictureBox13.Image = global::brachIOplexus.Properties.Resources.Handi_Hand_graphic;
+            this.pictureBox13.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox13.InitialImage")));
+            this.pictureBox13.Location = new System.Drawing.Point(6, 40);
+            this.pictureBox13.Name = "pictureBox13";
+            this.pictureBox13.Size = new System.Drawing.Size(176, 120);
+            this.pictureBox13.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox13.TabIndex = 223;
+            this.pictureBox13.TabStop = false;
+            // 
+            // HANDiClearAll
+            // 
+            this.HANDiClearAll.Enabled = false;
+            this.HANDiClearAll.Location = new System.Drawing.Point(261, 141);
+            this.HANDiClearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiClearAll.Name = "HANDiClearAll";
+            this.HANDiClearAll.Size = new System.Drawing.Size(66, 19);
+            this.HANDiClearAll.TabIndex = 225;
+            this.HANDiClearAll.Text = "Clear All";
+            this.HANDiClearAll.UseVisualStyleBackColor = true;
+            this.HANDiClearAll.Click += new System.EventHandler(this.HANDiClearAll_Click);
+            // 
+            // HANDiDisconnect
+            // 
+            this.HANDiDisconnect.Enabled = false;
+            this.HANDiDisconnect.Location = new System.Drawing.Point(68, 18);
+            this.HANDiDisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiDisconnect.Name = "HANDiDisconnect";
+            this.HANDiDisconnect.Size = new System.Drawing.Size(74, 19);
+            this.HANDiDisconnect.TabIndex = 186;
+            this.HANDiDisconnect.Text = "Disconnect";
+            this.HANDiDisconnect.UseVisualStyleBackColor = true;
+            this.HANDiDisconnect.Click += new System.EventHandler(this.HANDiDisconnect_Click);
+            // 
+            // HANDiSelectAll
+            // 
+            this.HANDiSelectAll.Enabled = false;
+            this.HANDiSelectAll.Location = new System.Drawing.Point(191, 141);
+            this.HANDiSelectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiSelectAll.Name = "HANDiSelectAll";
+            this.HANDiSelectAll.Size = new System.Drawing.Size(66, 19);
+            this.HANDiSelectAll.TabIndex = 224;
+            this.HANDiSelectAll.Text = "Select All";
+            this.HANDiSelectAll.UseVisualStyleBackColor = true;
+            this.HANDiSelectAll.Click += new System.EventHandler(this.HANDiSelectAll_Click);
+            // 
+            // HANDiCOM
+            // 
+            this.HANDiCOM.FormattingEnabled = true;
+            this.HANDiCOM.Location = new System.Drawing.Point(204, 18);
+            this.HANDiCOM.Name = "HANDiCOM";
+            this.HANDiCOM.Size = new System.Drawing.Size(66, 21);
+            this.HANDiCOM.TabIndex = 15;
+            // 
+            // HANDiList
+            // 
+            this.HANDiList.CheckOnClick = true;
+            this.HANDiList.Enabled = false;
+            this.HANDiList.FormattingEnabled = true;
+            this.HANDiList.Items.AddRange(new object[] {
+            "D0 (Thumb CCW)",
+            "D0 (Thumb CW)",
+            "D1 (Thumb Flex)",
+            "D1 (Thumb Extend)",
+            "D2 (Index Flex)",
+            "D2 (Index Extend)",
+            "D3 (Middle Flex)",
+            "D3 (Middle Extend)",
+            "D4 (Ring Flex)",
+            "D4 (Ring Extend)",
+            "D5 (Little Flex)",
+            "D5 (Little Extend)",
+            "Run/Suspend"});
+            this.HANDiList.Location = new System.Drawing.Point(193, 42);
+            this.HANDiList.Name = "HANDiList";
+            this.HANDiList.Size = new System.Drawing.Size(134, 79);
+            this.HANDiList.TabIndex = 223;
+            // 
+            // HANDiConnect
+            // 
+            this.HANDiConnect.Location = new System.Drawing.Point(6, 18);
+            this.HANDiConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiConnect.Name = "HANDiConnect";
+            this.HANDiConnect.Size = new System.Drawing.Size(56, 19);
+            this.HANDiConnect.TabIndex = 185;
+            this.HANDiConnect.Text = "Connect";
+            this.HANDiConnect.UseVisualStyleBackColor = true;
+            this.HANDiConnect.Click += new System.EventHandler(this.HANDiConnect_Click);
+            // 
+            // HANDiRefresh
+            // 
+            this.HANDiRefresh.Location = new System.Drawing.Point(275, 18);
+            this.HANDiRefresh.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiRefresh.Name = "HANDiRefresh";
+            this.HANDiRefresh.Size = new System.Drawing.Size(52, 19);
+            this.HANDiRefresh.TabIndex = 206;
+            this.HANDiRefresh.Text = "Refresh";
+            this.HANDiRefresh.UseVisualStyleBackColor = true;
+            this.HANDiRefresh.Click += new System.EventHandler(this.HANDiRefresh_Click);
+            // 
+            // label215
+            // 
+            this.label215.AutoSize = true;
+            this.label215.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label215.Location = new System.Drawing.Point(146, 21);
+            this.label215.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label215.Name = "label215";
+            this.label215.Size = new System.Drawing.Size(56, 13);
+            this.label215.TabIndex = 65;
+            this.label215.Text = "COM Port:";
+            // 
             // tabMapping
             // 
+            this.tabMapping.Controls.Add(this.TaskTimerStateLabel);
+            this.tabMapping.Controls.Add(this.label249);
+            this.tabMapping.Controls.Add(this.TaskTimerGroupBox);
             this.tabMapping.Controls.Add(this.ID2_state);
             this.tabMapping.Controls.Add(this.label148);
             this.tabMapping.Controls.Add(this.groupBox16);
@@ -3616,6 +4590,8 @@
             this.tabMapping.Controls.Add(this.label158);
             this.tabMapping.Controls.Add(this.label157);
             this.tabMapping.Controls.Add(this.label156);
+            this.tabMapping.Controls.Add(this.SwitchPanel);
+            this.tabMapping.Controls.Add(this.TaskTimerPanel);
             this.tabMapping.Controls.Add(this.doF6);
             this.tabMapping.Controls.Add(this.doF5);
             this.tabMapping.Controls.Add(this.doF4);
@@ -3630,22 +4606,133 @@
             this.tabMapping.Text = "Mapping";
             this.tabMapping.UseVisualStyleBackColor = true;
             // 
+            // TaskTimerStateLabel
+            // 
+            this.TaskTimerStateLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.TaskTimerStateLabel.Location = new System.Drawing.Point(810, 547);
+            this.TaskTimerStateLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.TaskTimerStateLabel.Name = "TaskTimerStateLabel";
+            this.TaskTimerStateLabel.Size = new System.Drawing.Size(80, 15);
+            this.TaskTimerStateLabel.TabIndex = 238;
+            this.TaskTimerStateLabel.Text = "--";
+            this.TaskTimerStateLabel.Visible = false;
+            // 
+            // label249
+            // 
+            this.label249.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label249.Location = new System.Drawing.Point(726, 547);
+            this.label249.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label249.Name = "label249";
+            this.label249.Size = new System.Drawing.Size(80, 15);
+            this.label249.TabIndex = 237;
+            this.label249.Text = "Task Timer:";
+            this.label249.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label249.Visible = false;
+            // 
+            // TaskTimerGroupBox
+            // 
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerClose);
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerValue);
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerOpen);
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerLabel);
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerReset);
+            this.TaskTimerGroupBox.Controls.Add(this.TaskTimerEnable);
+            this.TaskTimerGroupBox.Enabled = false;
+            this.TaskTimerGroupBox.Location = new System.Drawing.Point(724, 446);
+            this.TaskTimerGroupBox.Name = "TaskTimerGroupBox";
+            this.TaskTimerGroupBox.Size = new System.Drawing.Size(372, 98);
+            this.TaskTimerGroupBox.TabIndex = 236;
+            this.TaskTimerGroupBox.TabStop = false;
+            this.TaskTimerGroupBox.Text = "Task Timer";
+            this.TaskTimerGroupBox.Visible = false;
+            this.TaskTimerGroupBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TaskTimerValue_MouseClick);
+            // 
+            // TaskTimerClose
+            // 
+            this.TaskTimerClose.Location = new System.Drawing.Point(79, 67);
+            this.TaskTimerClose.Margin = new System.Windows.Forms.Padding(2);
+            this.TaskTimerClose.Name = "TaskTimerClose";
+            this.TaskTimerClose.Size = new System.Drawing.Size(76, 19);
+            this.TaskTimerClose.TabIndex = 241;
+            this.TaskTimerClose.Text = "Close Hand";
+            this.TaskTimerClose.UseVisualStyleBackColor = true;
+            this.TaskTimerClose.Click += new System.EventHandler(this.TaskTimerClose_Click);
+            // 
+            // TaskTimerValue
+            // 
+            this.TaskTimerValue.AutoSize = true;
+            this.TaskTimerValue.Enabled = false;
+            this.TaskTimerValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TaskTimerValue.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.TaskTimerValue.Location = new System.Drawing.Point(176, 14);
+            this.TaskTimerValue.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.TaskTimerValue.Name = "TaskTimerValue";
+            this.TaskTimerValue.Size = new System.Drawing.Size(46, 44);
+            this.TaskTimerValue.TabIndex = 215;
+            this.TaskTimerValue.Text = "--";
+            this.TaskTimerValue.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TaskTimerValue_MouseClick);
+            // 
+            // TaskTimerOpen
+            // 
+            this.TaskTimerOpen.Location = new System.Drawing.Point(5, 66);
+            this.TaskTimerOpen.Margin = new System.Windows.Forms.Padding(2);
+            this.TaskTimerOpen.Name = "TaskTimerOpen";
+            this.TaskTimerOpen.Size = new System.Drawing.Size(70, 21);
+            this.TaskTimerOpen.TabIndex = 242;
+            this.TaskTimerOpen.Text = "Open Hand";
+            this.TaskTimerOpen.UseVisualStyleBackColor = true;
+            this.TaskTimerOpen.Click += new System.EventHandler(this.TaskTimerOpen_Click);
+            // 
+            // TaskTimerLabel
+            // 
+            this.TaskTimerLabel.AutoSize = true;
+            this.TaskTimerLabel.Enabled = false;
+            this.TaskTimerLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.TaskTimerLabel.Location = new System.Drawing.Point(128, 29);
+            this.TaskTimerLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.TaskTimerLabel.Name = "TaskTimerLabel";
+            this.TaskTimerLabel.Size = new System.Drawing.Size(47, 13);
+            this.TaskTimerLabel.TabIndex = 214;
+            this.TaskTimerLabel.Text = "Time (s):";
+            // 
+            // TaskTimerReset
+            // 
+            this.TaskTimerReset.Enabled = false;
+            this.TaskTimerReset.Location = new System.Drawing.Point(65, 18);
+            this.TaskTimerReset.Margin = new System.Windows.Forms.Padding(2);
+            this.TaskTimerReset.Name = "TaskTimerReset";
+            this.TaskTimerReset.Size = new System.Drawing.Size(56, 40);
+            this.TaskTimerReset.TabIndex = 213;
+            this.TaskTimerReset.Text = "Reset\r\nPosition\r\n";
+            this.TaskTimerReset.UseVisualStyleBackColor = true;
+            this.TaskTimerReset.Click += new System.EventHandler(this.TaskTimerReset_Click);
+            // 
+            // TaskTimerEnable
+            // 
+            this.TaskTimerEnable.Location = new System.Drawing.Point(5, 18);
+            this.TaskTimerEnable.Margin = new System.Windows.Forms.Padding(2);
+            this.TaskTimerEnable.Name = "TaskTimerEnable";
+            this.TaskTimerEnable.Size = new System.Drawing.Size(56, 40);
+            this.TaskTimerEnable.TabIndex = 211;
+            this.TaskTimerEnable.Text = "Enable\r\nTimer";
+            this.TaskTimerEnable.UseVisualStyleBackColor = true;
+            this.TaskTimerEnable.Click += new System.EventHandler(this.TaskTimerEnable_Click);
+            // 
             // ID2_state
             // 
             this.ID2_state.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.ID2_state.Location = new System.Drawing.Point(828, 442);
+            this.ID2_state.Location = new System.Drawing.Point(833, 571);
             this.ID2_state.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.ID2_state.Name = "ID2_state";
             this.ID2_state.Size = new System.Drawing.Size(80, 15);
             this.ID2_state.TabIndex = 224;
             this.ID2_state.Text = "ID2 State:";
-            this.ID2_state.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.ID2_state.Visible = false;
             // 
             // label148
             // 
             this.label148.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label148.Location = new System.Drawing.Point(744, 442);
+            this.label148.Location = new System.Drawing.Point(749, 571);
             this.label148.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label148.Name = "label148";
             this.label148.Size = new System.Drawing.Size(80, 15);
@@ -3656,24 +4743,41 @@
             // 
             // groupBox16
             // 
+            this.groupBox16.Controls.Add(this.switchState_label);
+            this.groupBox16.Controls.Add(this.switchSmaxLabel2);
+            this.groupBox16.Controls.Add(this.label213);
+            this.groupBox16.Controls.Add(this.switchSminLabel2);
+            this.groupBox16.Controls.Add(this.flag2_label);
+            this.groupBox16.Controls.Add(this.switchSminTick2);
+            this.groupBox16.Controls.Add(this.label211);
+            this.groupBox16.Controls.Add(this.switchSmaxTick2);
+            this.groupBox16.Controls.Add(this.flag1_label);
+            this.groupBox16.Controls.Add(this.switchSmaxCtrl2);
+            this.groupBox16.Controls.Add(this.label209);
+            this.groupBox16.Controls.Add(this.switchSminCtrl2);
+            this.groupBox16.Controls.Add(this.timer1_label);
+            this.groupBox16.Controls.Add(this.label205);
+            this.groupBox16.Controls.Add(this.switchSignalBar2);
+            this.groupBox16.Controls.Add(this.switchGainCtrl2);
+            this.groupBox16.Controls.Add(this.switchTimeCtrl2);
             this.groupBox16.Controls.Add(this.groupBox11);
             this.groupBox16.Controls.Add(this.groupBox10);
             this.groupBox16.Controls.Add(this.label103);
             this.groupBox16.Controls.Add(this.label104);
             this.groupBox16.Controls.Add(this.label145);
             this.groupBox16.Controls.Add(this.label147);
-            this.groupBox16.Controls.Add(this.switchSmaxLabel);
-            this.groupBox16.Controls.Add(this.switchSminLabel);
-            this.groupBox16.Controls.Add(this.switchSminTick);
-            this.groupBox16.Controls.Add(this.switchSmaxTick);
-            this.groupBox16.Controls.Add(this.switchSmaxCtrl);
-            this.groupBox16.Controls.Add(this.switchSminCtrl);
-            this.groupBox16.Controls.Add(this.switchSignalBar);
-            this.groupBox16.Controls.Add(this.switchGainCtrl);
+            this.groupBox16.Controls.Add(this.switchSmaxLabel1);
+            this.groupBox16.Controls.Add(this.switchSminLabel1);
+            this.groupBox16.Controls.Add(this.switchSminTick1);
+            this.groupBox16.Controls.Add(this.switchSmaxTick1);
+            this.groupBox16.Controls.Add(this.switchSmaxCtrl1);
+            this.groupBox16.Controls.Add(this.switchSminCtrl1);
+            this.groupBox16.Controls.Add(this.switchSignalBar1);
+            this.groupBox16.Controls.Add(this.switchGainCtrl1);
             this.groupBox16.Controls.Add(this.switchInputBox);
             this.groupBox16.Controls.Add(this.label39);
             this.groupBox16.Controls.Add(this.label27);
-            this.groupBox16.Controls.Add(this.switchTimeCtrl);
+            this.groupBox16.Controls.Add(this.switchTimeCtrl1);
             this.groupBox16.Controls.Add(this.label242);
             this.groupBox16.Controls.Add(this.switchModeBox);
             this.groupBox16.Controls.Add(this.switchLabel);
@@ -3684,17 +4788,250 @@
             this.groupBox16.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox16.Name = "groupBox16";
             this.groupBox16.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox16.Size = new System.Drawing.Size(372, 373);
+            this.groupBox16.Size = new System.Drawing.Size(372, 423);
             this.groupBox16.TabIndex = 138;
             this.groupBox16.TabStop = false;
             this.groupBox16.Text = "Sequential Switch";
+            this.groupBox16.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
+            // 
+            // switchState_label
+            // 
+            this.switchState_label.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchState_label.Location = new System.Drawing.Point(286, 399);
+            this.switchState_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchState_label.Name = "switchState_label";
+            this.switchState_label.Size = new System.Drawing.Size(80, 15);
+            this.switchState_label.TabIndex = 232;
+            this.switchState_label.Text = "switchState";
+            this.switchState_label.Visible = false;
+            // 
+            // switchSmaxLabel2
+            // 
+            this.switchSmaxLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
+            this.switchSmaxLabel2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSmaxLabel2.Location = new System.Drawing.Point(134, 143);
+            this.switchSmaxLabel2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSmaxLabel2.Name = "switchSmaxLabel2";
+            this.switchSmaxLabel2.Size = new System.Drawing.Size(30, 15);
+            this.switchSmaxLabel2.TabIndex = 212;
+            this.switchSmaxLabel2.Text = "Smax";
+            this.switchSmaxLabel2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label213
+            // 
+            this.label213.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label213.Location = new System.Drawing.Point(202, 399);
+            this.label213.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label213.Name = "label213";
+            this.label213.Size = new System.Drawing.Size(80, 15);
+            this.label213.TabIndex = 231;
+            this.label213.Text = "switchState:";
+            this.label213.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label213.Visible = false;
+            // 
+            // switchSminLabel2
+            // 
+            this.switchSminLabel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
+            this.switchSminLabel2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSminLabel2.Location = new System.Drawing.Point(3, 143);
+            this.switchSminLabel2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSminLabel2.Name = "switchSminLabel2";
+            this.switchSminLabel2.Size = new System.Drawing.Size(26, 15);
+            this.switchSminLabel2.TabIndex = 211;
+            this.switchSminLabel2.Text = "Smin";
+            this.switchSminLabel2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // flag2_label
+            // 
+            this.flag2_label.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.flag2_label.Location = new System.Drawing.Point(286, 384);
+            this.flag2_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.flag2_label.Name = "flag2_label";
+            this.flag2_label.Size = new System.Drawing.Size(80, 15);
+            this.flag2_label.TabIndex = 230;
+            this.flag2_label.Text = "flag2";
+            this.flag2_label.Visible = false;
+            // 
+            // switchSminTick2
+            // 
+            this.switchSminTick2.BackColor = System.Drawing.Color.MediumPurple;
+            this.switchSminTick2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSminTick2.Location = new System.Drawing.Point(15, 119);
+            this.switchSminTick2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSminTick2.Name = "switchSminTick2";
+            this.switchSminTick2.Size = new System.Drawing.Size(2, 24);
+            this.switchSminTick2.TabIndex = 210;
+            // 
+            // label211
+            // 
+            this.label211.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label211.Location = new System.Drawing.Point(202, 384);
+            this.label211.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label211.Name = "label211";
+            this.label211.Size = new System.Drawing.Size(80, 15);
+            this.label211.TabIndex = 229;
+            this.label211.Text = "flag2:";
+            this.label211.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label211.Visible = false;
+            // 
+            // switchSmaxTick2
+            // 
+            this.switchSmaxTick2.BackColor = System.Drawing.Color.MediumPurple;
+            this.switchSmaxTick2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSmaxTick2.Location = new System.Drawing.Point(148, 119);
+            this.switchSmaxTick2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSmaxTick2.Name = "switchSmaxTick2";
+            this.switchSmaxTick2.Size = new System.Drawing.Size(2, 24);
+            this.switchSmaxTick2.TabIndex = 209;
+            // 
+            // flag1_label
+            // 
+            this.flag1_label.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.flag1_label.Location = new System.Drawing.Point(286, 369);
+            this.flag1_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.flag1_label.Name = "flag1_label";
+            this.flag1_label.Size = new System.Drawing.Size(80, 15);
+            this.flag1_label.TabIndex = 228;
+            this.flag1_label.Text = "flag1";
+            this.flag1_label.Visible = false;
+            // 
+            // switchSmaxCtrl2
+            // 
+            this.switchSmaxCtrl2.DecimalPlaces = 1;
+            this.switchSmaxCtrl2.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.switchSmaxCtrl2.Location = new System.Drawing.Point(252, 119);
+            this.switchSmaxCtrl2.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSmaxCtrl2.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.switchSmaxCtrl2.Name = "switchSmaxCtrl2";
+            this.switchSmaxCtrl2.Size = new System.Drawing.Size(40, 20);
+            this.switchSmaxCtrl2.TabIndex = 208;
+            this.switchSmaxCtrl2.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.switchSmaxCtrl2.ValueChanged += new System.EventHandler(this.switchSmaxCtrl2_ValueChanged);
+            // 
+            // label209
+            // 
+            this.label209.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label209.Location = new System.Drawing.Point(202, 369);
+            this.label209.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label209.Name = "label209";
+            this.label209.Size = new System.Drawing.Size(80, 15);
+            this.label209.TabIndex = 227;
+            this.label209.Text = "flag1:";
+            this.label209.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label209.Visible = false;
+            // 
+            // switchSminCtrl2
+            // 
+            this.switchSminCtrl2.DecimalPlaces = 1;
+            this.switchSminCtrl2.Increment = new decimal(new int[] {
+            2,
+            0,
+            0,
+            65536});
+            this.switchSminCtrl2.Location = new System.Drawing.Point(209, 119);
+            this.switchSminCtrl2.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSminCtrl2.Maximum = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            this.switchSminCtrl2.Name = "switchSminCtrl2";
+            this.switchSminCtrl2.Size = new System.Drawing.Size(40, 20);
+            this.switchSminCtrl2.TabIndex = 207;
+            this.switchSminCtrl2.Value = new decimal(new int[] {
+            6,
+            0,
+            0,
+            65536});
+            this.switchSminCtrl2.ValueChanged += new System.EventHandler(this.switchSminCtrl2_ValueChanged);
+            // 
+            // timer1_label
+            // 
+            this.timer1_label.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.timer1_label.Location = new System.Drawing.Point(286, 354);
+            this.timer1_label.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.timer1_label.Name = "timer1_label";
+            this.timer1_label.Size = new System.Drawing.Size(80, 15);
+            this.timer1_label.TabIndex = 226;
+            this.timer1_label.Text = "timer1";
+            this.timer1_label.Visible = false;
+            // 
+            // label205
+            // 
+            this.label205.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label205.Location = new System.Drawing.Point(202, 354);
+            this.label205.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label205.Name = "label205";
+            this.label205.Size = new System.Drawing.Size(80, 15);
+            this.label205.TabIndex = 225;
+            this.label205.Text = "timer1:";
+            this.label205.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.label205.Visible = false;
+            // 
+            // switchSignalBar2
+            // 
+            this.switchSignalBar2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSignalBar2.Location = new System.Drawing.Point(15, 119);
+            this.switchSignalBar2.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSignalBar2.MarqueeAnimationSpeed = 30;
+            this.switchSignalBar2.Maximum = 500;
+            this.switchSignalBar2.Name = "switchSignalBar2";
+            this.switchSignalBar2.Size = new System.Drawing.Size(134, 22);
+            this.switchSignalBar2.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.switchSignalBar2.TabIndex = 206;
+            this.switchSignalBar2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
+            // 
+            // switchGainCtrl2
+            // 
+            this.switchGainCtrl2.Enabled = false;
+            this.switchGainCtrl2.Location = new System.Drawing.Point(162, 119);
+            this.switchGainCtrl2.Margin = new System.Windows.Forms.Padding(2);
+            this.switchGainCtrl2.Maximum = new decimal(new int[] {
+            5000,
+            0,
+            0,
+            0});
+            this.switchGainCtrl2.Name = "switchGainCtrl2";
+            this.switchGainCtrl2.Size = new System.Drawing.Size(42, 20);
+            this.switchGainCtrl2.TabIndex = 205;
+            this.switchGainCtrl2.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // switchTimeCtrl2
+            // 
+            this.switchTimeCtrl2.Enabled = false;
+            this.switchTimeCtrl2.Location = new System.Drawing.Point(298, 119);
+            this.switchTimeCtrl2.Margin = new System.Windows.Forms.Padding(2);
+            this.switchTimeCtrl2.Maximum = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.switchTimeCtrl2.Name = "switchTimeCtrl2";
+            this.switchTimeCtrl2.Size = new System.Drawing.Size(46, 20);
+            this.switchTimeCtrl2.TabIndex = 204;
             // 
             // groupBox11
             // 
             this.groupBox11.Controls.Add(this.groupBox14);
             this.groupBox11.Controls.Add(this.groupBox13);
             this.groupBox11.Controls.Add(this.groupBox12);
-            this.groupBox11.Location = new System.Drawing.Point(244, 121);
+            this.groupBox11.Location = new System.Drawing.Point(244, 161);
             this.groupBox11.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox11.Name = "groupBox11";
             this.groupBox11.Padding = new System.Windows.Forms.Padding(2);
@@ -3702,6 +5039,7 @@
             this.groupBox11.TabIndex = 203;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Feedback";
+            this.groupBox11.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // groupBox14
             // 
@@ -3712,6 +5050,7 @@
             this.groupBox14.TabIndex = 208;
             this.groupBox14.TabStop = false;
             this.groupBox14.Text = "Visual";
+            this.groupBox14.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // textBox
             // 
@@ -3734,6 +5073,7 @@
             this.groupBox13.TabIndex = 207;
             this.groupBox13.TabStop = false;
             this.groupBox13.Text = "Vibration";
+            this.groupBox13.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // XboxBuzzBox
             // 
@@ -3767,6 +5107,7 @@
             this.groupBox12.TabIndex = 206;
             this.groupBox12.TabStop = false;
             this.groupBox12.Text = "Auditory";
+            this.groupBox12.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // dingBox
             // 
@@ -3778,6 +5119,7 @@
             this.dingBox.TabIndex = 157;
             this.dingBox.Text = "Ding";
             this.dingBox.UseVisualStyleBackColor = true;
+            this.dingBox.CheckedChanged += new System.EventHandler(this.dingBox_CheckedChanged);
             // 
             // vocalBox
             // 
@@ -3790,6 +5132,7 @@
             this.vocalBox.TabIndex = 158;
             this.vocalBox.Text = "Vocal";
             this.vocalBox.UseVisualStyleBackColor = true;
+            this.vocalBox.CheckedChanged += new System.EventHandler(this.vocalBox_CheckedChanged);
             // 
             // groupBox10
             // 
@@ -3816,7 +5159,7 @@
             this.groupBox10.Controls.Add(this.switch5OutputBox);
             this.groupBox10.Controls.Add(this.switch2MappingBox);
             this.groupBox10.Controls.Add(this.switch4OutputBox);
-            this.groupBox10.Location = new System.Drawing.Point(5, 121);
+            this.groupBox10.Location = new System.Drawing.Point(5, 161);
             this.groupBox10.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox10.Name = "groupBox10";
             this.groupBox10.Padding = new System.Windows.Forms.Padding(2);
@@ -3824,6 +5167,7 @@
             this.groupBox10.TabIndex = 202;
             this.groupBox10.TabStop = false;
             this.groupBox10.Text = "Switching List";
+            this.groupBox10.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // label37
             // 
@@ -3894,12 +5238,16 @@
             this.switch5MappingBox.Items.AddRange(new object[] {
             "First to Smin",
             "Differential",
-            "Single site"});
+            "Single Site - 2",
+            "Joint Position-2",
+            "Joint Position-1",
+            "Toggle"});
             this.switch5MappingBox.Location = new System.Drawing.Point(114, 128);
             this.switch5MappingBox.Margin = new System.Windows.Forms.Padding(2);
             this.switch5MappingBox.Name = "switch5MappingBox";
             this.switch5MappingBox.Size = new System.Drawing.Size(84, 21);
             this.switch5MappingBox.TabIndex = 183;
+            this.switch5MappingBox.SelectedIndexChanged += new System.EventHandler(this.switch5MappingBox_SelectedIndexChanged);
             // 
             // switch4MappingBox
             // 
@@ -3909,12 +5257,16 @@
             this.switch4MappingBox.Items.AddRange(new object[] {
             "First to Smin",
             "Differential",
-            "Single site"});
+            "Single Site - 2",
+            "Joint Position-2",
+            "Joint Position-1",
+            "Toggle"});
             this.switch4MappingBox.Location = new System.Drawing.Point(114, 108);
             this.switch4MappingBox.Margin = new System.Windows.Forms.Padding(2);
             this.switch4MappingBox.Name = "switch4MappingBox";
             this.switch4MappingBox.Size = new System.Drawing.Size(84, 21);
             this.switch4MappingBox.TabIndex = 181;
+            this.switch4MappingBox.SelectedIndexChanged += new System.EventHandler(this.switch4MappingBox_SelectedIndexChanged);
             // 
             // switch2OutputBox
             // 
@@ -4028,12 +5380,16 @@
             this.switch1MappingBox.Items.AddRange(new object[] {
             "First to Smin",
             "Differential",
-            "Single site"});
+            "Single Site - 2",
+            "Joint Position-2",
+            "Joint Position-1",
+            "Toggle"});
             this.switch1MappingBox.Location = new System.Drawing.Point(114, 45);
             this.switch1MappingBox.Margin = new System.Windows.Forms.Padding(2);
             this.switch1MappingBox.Name = "switch1MappingBox";
             this.switch1MappingBox.Size = new System.Drawing.Size(84, 21);
             this.switch1MappingBox.TabIndex = 136;
+            this.switch1MappingBox.SelectedIndexChanged += new System.EventHandler(this.switch1MappingBox_SelectedIndexChanged);
             // 
             // switch3OutputBox
             // 
@@ -4072,12 +5428,16 @@
             this.switch3MappingBox.Items.AddRange(new object[] {
             "First to Smin",
             "Differential",
-            "Single site"});
+            "Single Site - 2",
+            "Joint Position-2",
+            "Joint Position-1",
+            "Toggle"});
             this.switch3MappingBox.Location = new System.Drawing.Point(114, 87);
             this.switch3MappingBox.Margin = new System.Windows.Forms.Padding(2);
             this.switch3MappingBox.Name = "switch3MappingBox";
             this.switch3MappingBox.Size = new System.Drawing.Size(84, 21);
             this.switch3MappingBox.TabIndex = 179;
+            this.switch3MappingBox.SelectedIndexChanged += new System.EventHandler(this.switch3MappingBox_SelectedIndexChanged);
             // 
             // switch5OutputBox
             // 
@@ -4105,12 +5465,16 @@
             this.switch2MappingBox.Items.AddRange(new object[] {
             "First to Smin",
             "Differential",
-            "Single site"});
+            "Single Site - 2",
+            "Joint Position-2",
+            "Joint Position-1",
+            "Toggle"});
             this.switch2MappingBox.Location = new System.Drawing.Point(114, 66);
             this.switch2MappingBox.Margin = new System.Windows.Forms.Padding(2);
             this.switch2MappingBox.Name = "switch2MappingBox";
             this.switch2MappingBox.Size = new System.Drawing.Size(84, 21);
             this.switch2MappingBox.TabIndex = 177;
+            this.switch2MappingBox.SelectedIndexChanged += new System.EventHandler(this.switch2MappingBox_SelectedIndexChanged);
             // 
             // switch4OutputBox
             // 
@@ -4174,125 +5538,126 @@
             this.label147.TabIndex = 201;
             this.label147.Text = "Smax:";
             // 
-            // switchSmaxLabel
+            // switchSmaxLabel1
             // 
-            this.switchSmaxLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
-            this.switchSmaxLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchSmaxLabel.Location = new System.Drawing.Point(134, 104);
-            this.switchSmaxLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.switchSmaxLabel.Name = "switchSmaxLabel";
-            this.switchSmaxLabel.Size = new System.Drawing.Size(30, 15);
-            this.switchSmaxLabel.TabIndex = 197;
-            this.switchSmaxLabel.Text = "Smax";
-            this.switchSmaxLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.switchSmaxLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
+            this.switchSmaxLabel1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSmaxLabel1.Location = new System.Drawing.Point(134, 104);
+            this.switchSmaxLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSmaxLabel1.Name = "switchSmaxLabel1";
+            this.switchSmaxLabel1.Size = new System.Drawing.Size(30, 15);
+            this.switchSmaxLabel1.TabIndex = 197;
+            this.switchSmaxLabel1.Text = "Smax";
+            this.switchSmaxLabel1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // switchSminLabel
+            // switchSminLabel1
             // 
-            this.switchSminLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
-            this.switchSminLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchSminLabel.Location = new System.Drawing.Point(3, 104);
-            this.switchSminLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.switchSminLabel.Name = "switchSminLabel";
-            this.switchSminLabel.Size = new System.Drawing.Size(26, 15);
-            this.switchSminLabel.TabIndex = 196;
-            this.switchSminLabel.Text = "Smin";
-            this.switchSminLabel.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.switchSminLabel1.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F);
+            this.switchSminLabel1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSminLabel1.Location = new System.Drawing.Point(3, 104);
+            this.switchSminLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSminLabel1.Name = "switchSminLabel1";
+            this.switchSminLabel1.Size = new System.Drawing.Size(26, 15);
+            this.switchSminLabel1.TabIndex = 196;
+            this.switchSminLabel1.Text = "Smin";
+            this.switchSminLabel1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // switchSminTick
+            // switchSminTick1
             // 
-            this.switchSminTick.BackColor = System.Drawing.Color.MediumPurple;
-            this.switchSminTick.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchSminTick.Location = new System.Drawing.Point(15, 80);
-            this.switchSminTick.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.switchSminTick.Name = "switchSminTick";
-            this.switchSminTick.Size = new System.Drawing.Size(2, 24);
-            this.switchSminTick.TabIndex = 195;
+            this.switchSminTick1.BackColor = System.Drawing.Color.MediumPurple;
+            this.switchSminTick1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSminTick1.Location = new System.Drawing.Point(15, 80);
+            this.switchSminTick1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSminTick1.Name = "switchSminTick1";
+            this.switchSminTick1.Size = new System.Drawing.Size(2, 24);
+            this.switchSminTick1.TabIndex = 195;
             // 
-            // switchSmaxTick
+            // switchSmaxTick1
             // 
-            this.switchSmaxTick.BackColor = System.Drawing.Color.MediumPurple;
-            this.switchSmaxTick.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchSmaxTick.Location = new System.Drawing.Point(148, 80);
-            this.switchSmaxTick.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.switchSmaxTick.Name = "switchSmaxTick";
-            this.switchSmaxTick.Size = new System.Drawing.Size(2, 24);
-            this.switchSmaxTick.TabIndex = 194;
+            this.switchSmaxTick1.BackColor = System.Drawing.Color.MediumPurple;
+            this.switchSmaxTick1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSmaxTick1.Location = new System.Drawing.Point(148, 80);
+            this.switchSmaxTick1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.switchSmaxTick1.Name = "switchSmaxTick1";
+            this.switchSmaxTick1.Size = new System.Drawing.Size(2, 24);
+            this.switchSmaxTick1.TabIndex = 194;
             // 
-            // switchSmaxCtrl
+            // switchSmaxCtrl1
             // 
-            this.switchSmaxCtrl.DecimalPlaces = 1;
-            this.switchSmaxCtrl.Increment = new decimal(new int[] {
+            this.switchSmaxCtrl1.DecimalPlaces = 1;
+            this.switchSmaxCtrl1.Increment = new decimal(new int[] {
             2,
             0,
             0,
             65536});
-            this.switchSmaxCtrl.Location = new System.Drawing.Point(252, 80);
-            this.switchSmaxCtrl.Margin = new System.Windows.Forms.Padding(2);
-            this.switchSmaxCtrl.Maximum = new decimal(new int[] {
+            this.switchSmaxCtrl1.Location = new System.Drawing.Point(252, 80);
+            this.switchSmaxCtrl1.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSmaxCtrl1.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
-            this.switchSmaxCtrl.Name = "switchSmaxCtrl";
-            this.switchSmaxCtrl.Size = new System.Drawing.Size(40, 20);
-            this.switchSmaxCtrl.TabIndex = 193;
-            this.switchSmaxCtrl.Value = new decimal(new int[] {
+            this.switchSmaxCtrl1.Name = "switchSmaxCtrl1";
+            this.switchSmaxCtrl1.Size = new System.Drawing.Size(40, 20);
+            this.switchSmaxCtrl1.TabIndex = 193;
+            this.switchSmaxCtrl1.Value = new decimal(new int[] {
             5,
             0,
             0,
             0});
-            this.switchSmaxCtrl.ValueChanged += new System.EventHandler(this.switchSmaxCtrl_ValueChanged);
+            this.switchSmaxCtrl1.ValueChanged += new System.EventHandler(this.switchSmaxCtrl1_ValueChanged);
             // 
-            // switchSminCtrl
+            // switchSminCtrl1
             // 
-            this.switchSminCtrl.DecimalPlaces = 1;
-            this.switchSminCtrl.Increment = new decimal(new int[] {
+            this.switchSminCtrl1.DecimalPlaces = 1;
+            this.switchSminCtrl1.Increment = new decimal(new int[] {
             2,
             0,
             0,
             65536});
-            this.switchSminCtrl.Location = new System.Drawing.Point(209, 80);
-            this.switchSminCtrl.Margin = new System.Windows.Forms.Padding(2);
-            this.switchSminCtrl.Maximum = new decimal(new int[] {
+            this.switchSminCtrl1.Location = new System.Drawing.Point(209, 80);
+            this.switchSminCtrl1.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSminCtrl1.Maximum = new decimal(new int[] {
             5,
             0,
             0,
             0});
-            this.switchSminCtrl.Name = "switchSminCtrl";
-            this.switchSminCtrl.Size = new System.Drawing.Size(40, 20);
-            this.switchSminCtrl.TabIndex = 192;
-            this.switchSminCtrl.ValueChanged += new System.EventHandler(this.switchSminCtrl_ValueChanged);
+            this.switchSminCtrl1.Name = "switchSminCtrl1";
+            this.switchSminCtrl1.Size = new System.Drawing.Size(40, 20);
+            this.switchSminCtrl1.TabIndex = 192;
+            this.switchSminCtrl1.ValueChanged += new System.EventHandler(this.switchSminCtrl1_ValueChanged);
             // 
-            // switchSignalBar
+            // switchSignalBar1
             // 
-            this.switchSignalBar.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchSignalBar.Location = new System.Drawing.Point(15, 80);
-            this.switchSignalBar.Margin = new System.Windows.Forms.Padding(2);
-            this.switchSignalBar.MarqueeAnimationSpeed = 30;
-            this.switchSignalBar.Maximum = 500;
-            this.switchSignalBar.Name = "switchSignalBar";
-            this.switchSignalBar.Size = new System.Drawing.Size(134, 22);
-            this.switchSignalBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.switchSignalBar.TabIndex = 191;
+            this.switchSignalBar1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.switchSignalBar1.Location = new System.Drawing.Point(15, 80);
+            this.switchSignalBar1.Margin = new System.Windows.Forms.Padding(2);
+            this.switchSignalBar1.MarqueeAnimationSpeed = 30;
+            this.switchSignalBar1.Maximum = 500;
+            this.switchSignalBar1.Name = "switchSignalBar1";
+            this.switchSignalBar1.Size = new System.Drawing.Size(134, 22);
+            this.switchSignalBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.switchSignalBar1.TabIndex = 191;
+            this.switchSignalBar1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
-            // switchGainCtrl
+            // switchGainCtrl1
             // 
-            this.switchGainCtrl.Location = new System.Drawing.Point(162, 80);
-            this.switchGainCtrl.Margin = new System.Windows.Forms.Padding(2);
-            this.switchGainCtrl.Maximum = new decimal(new int[] {
+            this.switchGainCtrl1.Location = new System.Drawing.Point(162, 80);
+            this.switchGainCtrl1.Margin = new System.Windows.Forms.Padding(2);
+            this.switchGainCtrl1.Maximum = new decimal(new int[] {
             5000,
             0,
             0,
             0});
-            this.switchGainCtrl.Name = "switchGainCtrl";
-            this.switchGainCtrl.Size = new System.Drawing.Size(42, 20);
-            this.switchGainCtrl.TabIndex = 190;
-            this.switchGainCtrl.Value = new decimal(new int[] {
+            this.switchGainCtrl1.Name = "switchGainCtrl1";
+            this.switchGainCtrl1.Size = new System.Drawing.Size(42, 20);
+            this.switchGainCtrl1.TabIndex = 190;
+            this.switchGainCtrl1.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.switchGainCtrl.ValueChanged += new System.EventHandler(this.switchGainCtrl_ValueChanged);
+            this.switchGainCtrl1.ValueChanged += new System.EventHandler(this.switchGainCtrl1_ValueChanged);
             // 
             // switchInputBox
             // 
@@ -4330,24 +5695,24 @@
             this.label27.TabIndex = 184;
             this.label27.Text = "Degree of Freedom:";
             // 
-            // switchTimeCtrl
+            // switchTimeCtrl1
             // 
-            this.switchTimeCtrl.Location = new System.Drawing.Point(298, 80);
-            this.switchTimeCtrl.Margin = new System.Windows.Forms.Padding(2);
-            this.switchTimeCtrl.Maximum = new decimal(new int[] {
+            this.switchTimeCtrl1.Location = new System.Drawing.Point(298, 80);
+            this.switchTimeCtrl1.Margin = new System.Windows.Forms.Padding(2);
+            this.switchTimeCtrl1.Maximum = new decimal(new int[] {
             2000,
             0,
             0,
             0});
-            this.switchTimeCtrl.Name = "switchTimeCtrl";
-            this.switchTimeCtrl.Size = new System.Drawing.Size(46, 20);
-            this.switchTimeCtrl.TabIndex = 175;
-            this.switchTimeCtrl.Value = new decimal(new int[] {
+            this.switchTimeCtrl1.Name = "switchTimeCtrl1";
+            this.switchTimeCtrl1.Size = new System.Drawing.Size(46, 20);
+            this.switchTimeCtrl1.TabIndex = 175;
+            this.switchTimeCtrl1.Value = new decimal(new int[] {
             40,
             0,
             0,
             0});
-            this.switchTimeCtrl.ValueChanged += new System.EventHandler(this.switchTimeCtrl_ValueChanged);
+            this.switchTimeCtrl1.ValueChanged += new System.EventHandler(this.switchTimeCtrl1_ValueChanged);
             // 
             // label242
             // 
@@ -4379,18 +5744,19 @@
             this.switchLabel.AutoSize = true;
             this.switchLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 28.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.switchLabel.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.switchLabel.Location = new System.Drawing.Point(79, 289);
+            this.switchLabel.Location = new System.Drawing.Point(79, 329);
             this.switchLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.switchLabel.Name = "switchLabel";
             this.switchLabel.Size = new System.Drawing.Size(46, 44);
             this.switchLabel.TabIndex = 69;
             this.switchLabel.Text = "--";
+            this.switchLabel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // label257
             // 
             this.label257.AutoSize = true;
             this.label257.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label257.Location = new System.Drawing.Point(9, 306);
+            this.label257.Location = new System.Drawing.Point(9, 346);
             this.label257.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label257.Name = "label257";
             this.label257.Size = new System.Drawing.Size(66, 13);
@@ -4505,59 +5871,27 @@
             this.label156.TabIndex = 29;
             this.label156.Text = "Smax";
             // 
-            // doF6
+            // SwitchPanel
             // 
-            this.doF6.Location = new System.Drawing.Point(6, 512);
-            this.doF6.Margin = new System.Windows.Forms.Padding(4);
-            this.doF6.Name = "doF6";
-            this.doF6.Size = new System.Drawing.Size(649, 94);
-            this.doF6.TabIndex = 144;
+            this.SwitchPanel.Location = new System.Drawing.Point(724, 18);
+            this.SwitchPanel.Name = "SwitchPanel";
+            this.SwitchPanel.Size = new System.Drawing.Size(372, 423);
+            this.SwitchPanel.TabIndex = 239;
+            this.SwitchPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
-            // doF5
+            // TaskTimerPanel
             // 
-            this.doF5.Location = new System.Drawing.Point(6, 412);
-            this.doF5.Margin = new System.Windows.Forms.Padding(4);
-            this.doF5.Name = "doF5";
-            this.doF5.Size = new System.Drawing.Size(649, 94);
-            this.doF5.TabIndex = 143;
-            // 
-            // doF4
-            // 
-            this.doF4.Location = new System.Drawing.Point(6, 312);
-            this.doF4.Margin = new System.Windows.Forms.Padding(4);
-            this.doF4.Name = "doF4";
-            this.doF4.Size = new System.Drawing.Size(649, 94);
-            this.doF4.TabIndex = 142;
-            // 
-            // doF3
-            // 
-            this.doF3.Location = new System.Drawing.Point(6, 212);
-            this.doF3.Margin = new System.Windows.Forms.Padding(4);
-            this.doF3.Name = "doF3";
-            this.doF3.Size = new System.Drawing.Size(649, 94);
-            this.doF3.TabIndex = 141;
-            // 
-            // doF2
-            // 
-            this.doF2.Location = new System.Drawing.Point(6, 115);
-            this.doF2.Margin = new System.Windows.Forms.Padding(4);
-            this.doF2.Name = "doF2";
-            this.doF2.Size = new System.Drawing.Size(649, 94);
-            this.doF2.TabIndex = 140;
-            // 
-            // doF1
-            // 
-            this.doF1.Location = new System.Drawing.Point(6, 18);
-            this.doF1.Margin = new System.Windows.Forms.Padding(4);
-            this.doF1.Name = "doF1";
-            this.doF1.Size = new System.Drawing.Size(649, 94);
-            this.doF1.TabIndex = 139;
+            this.TaskTimerPanel.Location = new System.Drawing.Point(724, 447);
+            this.TaskTimerPanel.Name = "TaskTimerPanel";
+            this.TaskTimerPanel.Size = new System.Drawing.Size(372, 97);
+            this.TaskTimerPanel.TabIndex = 240;
+            this.TaskTimerPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TaskTimerValue_MouseClick);
             // 
             // tabBento
             // 
+            this.tabBento.Controls.Add(this.groupBox19);
             this.tabBento.Controls.Add(this.BentoEnvLimitsBox);
             this.tabBento.Controls.Add(this.BentoAdaptGripBox);
-            this.tabBento.Controls.Add(this.SimBox);
             this.tabBento.Controls.Add(this.BentoGroupBox);
             this.tabBento.Controls.Add(this.RobotParamBox);
             this.tabBento.Controls.Add(this.RobotFeedbackBox);
@@ -4576,6 +5910,63 @@
             this.tabBento.TabIndex = 2;
             this.tabBento.Text = "Bento Arm";
             this.tabBento.UseVisualStyleBackColor = true;
+            // 
+            // groupBox19
+            // 
+            this.groupBox19.Controls.Add(this.BentoProfileOpen);
+            this.groupBox19.Controls.Add(this.BentoProfileBox);
+            this.groupBox19.Controls.Add(this.BentoProfileSave);
+            this.groupBox19.Location = new System.Drawing.Point(376, 288);
+            this.groupBox19.Name = "groupBox19";
+            this.groupBox19.Size = new System.Drawing.Size(227, 78);
+            this.groupBox19.TabIndex = 210;
+            this.groupBox19.TabStop = false;
+            this.groupBox19.Text = "Joint Limit Profiles";
+            this.groupBox19.Visible = false;
+            // 
+            // BentoProfileOpen
+            // 
+            this.BentoProfileOpen.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.BentoProfileOpen.Location = new System.Drawing.Point(168, 29);
+            this.BentoProfileOpen.Margin = new System.Windows.Forms.Padding(2);
+            this.BentoProfileOpen.Name = "BentoProfileOpen";
+            this.BentoProfileOpen.Size = new System.Drawing.Size(44, 23);
+            this.BentoProfileOpen.TabIndex = 13;
+            this.BentoProfileOpen.Text = "Open";
+            this.BentoProfileOpen.Click += new System.EventHandler(this.BentoProfileOpen_Click);
+            // 
+            // BentoProfileBox
+            // 
+            this.BentoProfileBox.DisplayMember = "1";
+            this.BentoProfileBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.BentoProfileBox.FormattingEnabled = true;
+            this.BentoProfileBox.Items.AddRange(new object[] {
+            "profile0",
+            "profile1",
+            "profile2",
+            "profile3",
+            "profile4",
+            "profile5",
+            "profile6",
+            "profile7",
+            "profile8",
+            "profile9"});
+            this.BentoProfileBox.Location = new System.Drawing.Point(7, 31);
+            this.BentoProfileBox.Margin = new System.Windows.Forms.Padding(2);
+            this.BentoProfileBox.Name = "BentoProfileBox";
+            this.BentoProfileBox.Size = new System.Drawing.Size(98, 21);
+            this.BentoProfileBox.TabIndex = 189;
+            // 
+            // BentoProfileSave
+            // 
+            this.BentoProfileSave.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.BentoProfileSave.Location = new System.Drawing.Point(120, 29);
+            this.BentoProfileSave.Margin = new System.Windows.Forms.Padding(2);
+            this.BentoProfileSave.Name = "BentoProfileSave";
+            this.BentoProfileSave.Size = new System.Drawing.Size(44, 23);
+            this.BentoProfileSave.TabIndex = 14;
+            this.BentoProfileSave.Text = "Save";
+            this.BentoProfileSave.Click += new System.EventHandler(this.BentoProfileSave_Click);
             // 
             // BentoEnvLimitsBox
             // 
@@ -4743,8 +6134,983 @@
             this.label151.TabIndex = 150;
             this.label151.Text = "Load Threshold (1-1023):";
             // 
+            // tabHANDi
+            // 
+            this.tabHANDi.Controls.Add(this.HANDiGroupBox);
+            this.tabHANDi.Controls.Add(this.HANDiParamBox);
+            this.tabHANDi.Controls.Add(this.HANDiFeedbackBox);
+            this.tabHANDi.Location = new System.Drawing.Point(4, 22);
+            this.tabHANDi.Name = "tabHANDi";
+            this.tabHANDi.Size = new System.Drawing.Size(1162, 642);
+            this.tabHANDi.TabIndex = 5;
+            this.tabHANDi.Text = "HANDi Hand";
+            this.tabHANDi.UseVisualStyleBackColor = true;
+            // 
+            // HANDiGroupBox
+            // 
+            this.HANDiGroupBox.Controls.Add(this.label221);
+            this.HANDiGroupBox.Controls.Add(this.HANDiRun);
+            this.HANDiGroupBox.Controls.Add(this.HANDiSuspend);
+            this.HANDiGroupBox.Controls.Add(this.button12);
+            this.HANDiGroupBox.Controls.Add(this.button13);
+            this.HANDiGroupBox.Enabled = false;
+            this.HANDiGroupBox.Location = new System.Drawing.Point(3, 5);
+            this.HANDiGroupBox.Name = "HANDiGroupBox";
+            this.HANDiGroupBox.Size = new System.Drawing.Size(369, 121);
+            this.HANDiGroupBox.TabIndex = 210;
+            this.HANDiGroupBox.TabStop = false;
+            this.HANDiGroupBox.Text = "Main Controls";
+            // 
+            // label221
+            // 
+            this.label221.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label221.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.label221.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label221.Location = new System.Drawing.Point(6, 50);
+            this.label221.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label221.Name = "label221";
+            this.label221.Size = new System.Drawing.Size(356, 31);
+            this.label221.TabIndex = 205;
+            this.label221.Text = "Click \'Torque On\' to allow the arm to hold its position and click \'Run\' to \r\nconn" +
+    "ect the input devices to the arm, so that it can move.";
+            // 
+            // HANDiRun
+            // 
+            this.HANDiRun.Enabled = false;
+            this.HANDiRun.Location = new System.Drawing.Point(186, 20);
+            this.HANDiRun.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiRun.Name = "HANDiRun";
+            this.HANDiRun.Size = new System.Drawing.Size(79, 21);
+            this.HANDiRun.TabIndex = 200;
+            this.HANDiRun.Text = "Run";
+            this.HANDiRun.UseVisualStyleBackColor = true;
+            this.HANDiRun.Click += new System.EventHandler(this.HANDiRun_Click);
+            // 
+            // HANDiSuspend
+            // 
+            this.HANDiSuspend.Enabled = false;
+            this.HANDiSuspend.Location = new System.Drawing.Point(261, 20);
+            this.HANDiSuspend.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiSuspend.Name = "HANDiSuspend";
+            this.HANDiSuspend.Size = new System.Drawing.Size(86, 21);
+            this.HANDiSuspend.TabIndex = 201;
+            this.HANDiSuspend.Text = "Suspend";
+            this.HANDiSuspend.UseVisualStyleBackColor = true;
+            this.HANDiSuspend.Click += new System.EventHandler(this.HANDiSuspend_Click);
+            // 
+            // button12
+            // 
+            this.button12.Location = new System.Drawing.Point(8, 20);
+            this.button12.Margin = new System.Windows.Forms.Padding(2);
+            this.button12.Name = "button12";
+            this.button12.Size = new System.Drawing.Size(79, 21);
+            this.button12.TabIndex = 187;
+            this.button12.Text = "Torque On";
+            this.button12.UseVisualStyleBackColor = true;
+            // 
+            // button13
+            // 
+            this.button13.Enabled = false;
+            this.button13.Location = new System.Drawing.Point(84, 20);
+            this.button13.Margin = new System.Windows.Forms.Padding(2);
+            this.button13.Name = "button13";
+            this.button13.Size = new System.Drawing.Size(86, 21);
+            this.button13.TabIndex = 188;
+            this.button13.Text = "Torque Off";
+            this.button13.UseVisualStyleBackColor = true;
+            // 
+            // HANDiParamBox
+            // 
+            this.HANDiParamBox.Controls.Add(this.D5_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D5_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D5_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D5_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label247);
+            this.HANDiParamBox.Controls.Add(this.D4_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D4_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D4_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D4_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label224);
+            this.HANDiParamBox.Controls.Add(this.D2_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D2_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label225);
+            this.HANDiParamBox.Controls.Add(this.D2_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D2_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D1_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D1_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D1_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D1_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label226);
+            this.HANDiParamBox.Controls.Add(this.D0_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D0_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D0_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D0_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label227);
+            this.HANDiParamBox.Controls.Add(this.label228);
+            this.HANDiParamBox.Controls.Add(this.D3_wmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D3_wmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D3_pmin_ctrl);
+            this.HANDiParamBox.Controls.Add(this.D3_pmax_ctrl);
+            this.HANDiParamBox.Controls.Add(this.label230);
+            this.HANDiParamBox.Controls.Add(this.label243);
+            this.HANDiParamBox.Controls.Add(this.label245);
+            this.HANDiParamBox.Controls.Add(this.label246);
+            this.HANDiParamBox.Enabled = false;
+            this.HANDiParamBox.Location = new System.Drawing.Point(3, 131);
+            this.HANDiParamBox.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiParamBox.Name = "HANDiParamBox";
+            this.HANDiParamBox.Padding = new System.Windows.Forms.Padding(2);
+            this.HANDiParamBox.Size = new System.Drawing.Size(369, 179);
+            this.HANDiParamBox.TabIndex = 208;
+            this.HANDiParamBox.TabStop = false;
+            this.HANDiParamBox.Text = "Joint Limits (Position, Velocity)";
+            // 
+            // D5_wmax_ctrl
+            // 
+            this.D5_wmax_ctrl.Location = new System.Drawing.Point(314, 150);
+            this.D5_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D5_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D5_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D5_wmax_ctrl.Name = "D5_wmax_ctrl";
+            this.D5_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D5_wmax_ctrl.TabIndex = 154;
+            this.D5_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D5_wmin_ctrl
+            // 
+            this.D5_wmin_ctrl.Location = new System.Drawing.Point(258, 150);
+            this.D5_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D5_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D5_wmin_ctrl.Name = "D5_wmin_ctrl";
+            this.D5_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D5_wmin_ctrl.TabIndex = 153;
+            // 
+            // D5_pmin_ctrl
+            // 
+            this.D5_pmin_ctrl.Location = new System.Drawing.Point(148, 150);
+            this.D5_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D5_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D5_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D5_pmin_ctrl.Name = "D5_pmin_ctrl";
+            this.D5_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D5_pmin_ctrl.TabIndex = 151;
+            this.D5_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D5_pmax_ctrl
+            // 
+            this.D5_pmax_ctrl.Location = new System.Drawing.Point(203, 150);
+            this.D5_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D5_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D5_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D5_pmax_ctrl.Name = "D5_pmax_ctrl";
+            this.D5_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D5_pmax_ctrl.TabIndex = 152;
+            this.D5_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // label247
+            // 
+            this.label247.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label247.Location = new System.Drawing.Point(4, 152);
+            this.label247.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label247.Name = "label247";
+            this.label247.Size = new System.Drawing.Size(128, 15);
+            this.label247.TabIndex = 150;
+            this.label247.Text = "D5 - Little Flex/Extend:";
+            // 
+            // D4_wmax_ctrl
+            // 
+            this.D4_wmax_ctrl.Location = new System.Drawing.Point(314, 126);
+            this.D4_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D4_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D4_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D4_wmax_ctrl.Name = "D4_wmax_ctrl";
+            this.D4_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D4_wmax_ctrl.TabIndex = 149;
+            this.D4_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D4_wmin_ctrl
+            // 
+            this.D4_wmin_ctrl.Location = new System.Drawing.Point(258, 126);
+            this.D4_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D4_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D4_wmin_ctrl.Name = "D4_wmin_ctrl";
+            this.D4_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D4_wmin_ctrl.TabIndex = 148;
+            // 
+            // D4_pmin_ctrl
+            // 
+            this.D4_pmin_ctrl.Location = new System.Drawing.Point(148, 126);
+            this.D4_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D4_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D4_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D4_pmin_ctrl.Name = "D4_pmin_ctrl";
+            this.D4_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D4_pmin_ctrl.TabIndex = 146;
+            this.D4_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D4_pmax_ctrl
+            // 
+            this.D4_pmax_ctrl.Location = new System.Drawing.Point(203, 126);
+            this.D4_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D4_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D4_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D4_pmax_ctrl.Name = "D4_pmax_ctrl";
+            this.D4_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D4_pmax_ctrl.TabIndex = 147;
+            this.D4_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // label224
+            // 
+            this.label224.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label224.Location = new System.Drawing.Point(4, 128);
+            this.label224.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label224.Name = "label224";
+            this.label224.Size = new System.Drawing.Size(128, 15);
+            this.label224.TabIndex = 145;
+            this.label224.Text = "D4 - Ring Flex/Extend:";
+            // 
+            // D2_wmax_ctrl
+            // 
+            this.D2_wmax_ctrl.Location = new System.Drawing.Point(314, 77);
+            this.D2_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D2_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D2_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D2_wmax_ctrl.Name = "D2_wmax_ctrl";
+            this.D2_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D2_wmax_ctrl.TabIndex = 144;
+            this.D2_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D2_wmin_ctrl
+            // 
+            this.D2_wmin_ctrl.Location = new System.Drawing.Point(258, 77);
+            this.D2_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D2_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D2_wmin_ctrl.Name = "D2_wmin_ctrl";
+            this.D2_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D2_wmin_ctrl.TabIndex = 143;
+            // 
+            // label225
+            // 
+            this.label225.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label225.Location = new System.Drawing.Point(4, 79);
+            this.label225.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label225.Name = "label225";
+            this.label225.Size = new System.Drawing.Size(130, 15);
+            this.label225.TabIndex = 142;
+            this.label225.Text = "D2 - Index Flex/Extend:";
+            // 
+            // D2_pmin_ctrl
+            // 
+            this.D2_pmin_ctrl.Location = new System.Drawing.Point(148, 77);
+            this.D2_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D2_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D2_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D2_pmin_ctrl.Name = "D2_pmin_ctrl";
+            this.D2_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D2_pmin_ctrl.TabIndex = 140;
+            this.D2_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D2_pmax_ctrl
+            // 
+            this.D2_pmax_ctrl.Location = new System.Drawing.Point(203, 77);
+            this.D2_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D2_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D2_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D2_pmax_ctrl.Name = "D2_pmax_ctrl";
+            this.D2_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D2_pmax_ctrl.TabIndex = 141;
+            this.D2_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // D1_wmax_ctrl
+            // 
+            this.D1_wmax_ctrl.Location = new System.Drawing.Point(314, 52);
+            this.D1_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D1_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D1_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D1_wmax_ctrl.Name = "D1_wmax_ctrl";
+            this.D1_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D1_wmax_ctrl.TabIndex = 139;
+            this.D1_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D1_wmin_ctrl
+            // 
+            this.D1_wmin_ctrl.Location = new System.Drawing.Point(258, 53);
+            this.D1_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D1_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D1_wmin_ctrl.Name = "D1_wmin_ctrl";
+            this.D1_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D1_wmin_ctrl.TabIndex = 138;
+            // 
+            // D1_pmin_ctrl
+            // 
+            this.D1_pmin_ctrl.Location = new System.Drawing.Point(148, 54);
+            this.D1_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D1_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D1_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D1_pmin_ctrl.Name = "D1_pmin_ctrl";
+            this.D1_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D1_pmin_ctrl.TabIndex = 136;
+            this.D1_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D1_pmax_ctrl
+            // 
+            this.D1_pmax_ctrl.Location = new System.Drawing.Point(203, 54);
+            this.D1_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D1_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D1_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D1_pmax_ctrl.Name = "D1_pmax_ctrl";
+            this.D1_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D1_pmax_ctrl.TabIndex = 137;
+            this.D1_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // label226
+            // 
+            this.label226.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label226.Location = new System.Drawing.Point(4, 55);
+            this.label226.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label226.Name = "label226";
+            this.label226.Size = new System.Drawing.Size(128, 15);
+            this.label226.TabIndex = 135;
+            this.label226.Text = "D1 - Thumb Flex/Extend:";
+            // 
+            // D0_wmax_ctrl
+            // 
+            this.D0_wmax_ctrl.Location = new System.Drawing.Point(314, 30);
+            this.D0_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D0_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D0_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D0_wmax_ctrl.Name = "D0_wmax_ctrl";
+            this.D0_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D0_wmax_ctrl.TabIndex = 134;
+            this.D0_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D0_wmin_ctrl
+            // 
+            this.D0_wmin_ctrl.Location = new System.Drawing.Point(258, 30);
+            this.D0_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D0_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D0_wmin_ctrl.Name = "D0_wmin_ctrl";
+            this.D0_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D0_wmin_ctrl.TabIndex = 133;
+            // 
+            // D0_pmin_ctrl
+            // 
+            this.D0_pmin_ctrl.Location = new System.Drawing.Point(148, 30);
+            this.D0_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D0_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D0_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D0_pmin_ctrl.Name = "D0_pmin_ctrl";
+            this.D0_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D0_pmin_ctrl.TabIndex = 131;
+            this.D0_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D0_pmax_ctrl
+            // 
+            this.D0_pmax_ctrl.Location = new System.Drawing.Point(203, 30);
+            this.D0_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D0_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D0_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D0_pmax_ctrl.Name = "D0_pmax_ctrl";
+            this.D0_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D0_pmax_ctrl.TabIndex = 132;
+            this.D0_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // label227
+            // 
+            this.label227.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label227.Location = new System.Drawing.Point(4, 32);
+            this.label227.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label227.Name = "label227";
+            this.label227.Size = new System.Drawing.Size(128, 15);
+            this.label227.TabIndex = 130;
+            this.label227.Text = "D0 - Thumb CCW/CW:";
+            // 
+            // label228
+            // 
+            this.label228.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label228.Location = new System.Drawing.Point(4, 103);
+            this.label228.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label228.Name = "label228";
+            this.label228.Size = new System.Drawing.Size(130, 15);
+            this.label228.TabIndex = 129;
+            this.label228.Text = "D3 - Middle Flex/Extend:";
+            // 
+            // D3_wmax_ctrl
+            // 
+            this.D3_wmax_ctrl.Location = new System.Drawing.Point(314, 102);
+            this.D3_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D3_wmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.D3_wmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.D3_wmax_ctrl.Name = "D3_wmax_ctrl";
+            this.D3_wmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D3_wmax_ctrl.TabIndex = 128;
+            this.D3_wmax_ctrl.Value = new decimal(new int[] {
+            125,
+            0,
+            0,
+            0});
+            // 
+            // D3_wmin_ctrl
+            // 
+            this.D3_wmin_ctrl.Location = new System.Drawing.Point(258, 102);
+            this.D3_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D3_wmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.D3_wmin_ctrl.Name = "D3_wmin_ctrl";
+            this.D3_wmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D3_wmin_ctrl.TabIndex = 127;
+            // 
+            // D3_pmin_ctrl
+            // 
+            this.D3_pmin_ctrl.Location = new System.Drawing.Point(148, 102);
+            this.D3_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D3_pmin_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D3_pmin_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D3_pmin_ctrl.Name = "D3_pmin_ctrl";
+            this.D3_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D3_pmin_ctrl.TabIndex = 125;
+            this.D3_pmin_ctrl.Value = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            // 
+            // D3_pmax_ctrl
+            // 
+            this.D3_pmax_ctrl.Location = new System.Drawing.Point(203, 102);
+            this.D3_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.D3_pmax_ctrl.Maximum = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            this.D3_pmax_ctrl.Minimum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.D3_pmax_ctrl.Name = "D3_pmax_ctrl";
+            this.D3_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.D3_pmax_ctrl.TabIndex = 126;
+            this.D3_pmax_ctrl.Value = new decimal(new int[] {
+            2400,
+            0,
+            0,
+            0});
+            // 
+            // label230
+            // 
+            this.label230.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label230.Location = new System.Drawing.Point(145, 12);
+            this.label230.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label230.Name = "label230";
+            this.label230.Size = new System.Drawing.Size(35, 15);
+            this.label230.TabIndex = 123;
+            this.label230.Text = "Pmin:";
+            // 
+            // label243
+            // 
+            this.label243.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label243.Location = new System.Drawing.Point(200, 12);
+            this.label243.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label243.Name = "label243";
+            this.label243.Size = new System.Drawing.Size(51, 15);
+            this.label243.TabIndex = 124;
+            this.label243.Text = "Pmax:";
+            // 
+            // label245
+            // 
+            this.label245.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label245.Location = new System.Drawing.Point(256, 12);
+            this.label245.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label245.Name = "label245";
+            this.label245.Size = new System.Drawing.Size(50, 15);
+            this.label245.TabIndex = 121;
+            this.label245.Text = "Vmin:";
+            // 
+            // label246
+            // 
+            this.label246.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label246.Location = new System.Drawing.Point(311, 12);
+            this.label246.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label246.Name = "label246";
+            this.label246.Size = new System.Drawing.Size(41, 15);
+            this.label246.TabIndex = 122;
+            this.label246.Text = "Vmax:";
+            // 
+            // HANDiFeedbackBox
+            // 
+            this.HANDiFeedbackBox.Controls.Add(this.label252);
+            this.HANDiFeedbackBox.Controls.Add(this.label265);
+            this.HANDiFeedbackBox.Controls.Add(this.label270);
+            this.HANDiFeedbackBox.Controls.Add(this.label248);
+            this.HANDiFeedbackBox.Controls.Add(this.label250);
+            this.HANDiFeedbackBox.Controls.Add(this.label251);
+            this.HANDiFeedbackBox.Controls.Add(this.label254);
+            this.HANDiFeedbackBox.Controls.Add(this.label256);
+            this.HANDiFeedbackBox.Controls.Add(this.label259);
+            this.HANDiFeedbackBox.Controls.Add(this.label261);
+            this.HANDiFeedbackBox.Controls.Add(this.label262);
+            this.HANDiFeedbackBox.Controls.Add(this.label264);
+            this.HANDiFeedbackBox.Controls.Add(this.label269);
+            this.HANDiFeedbackBox.Controls.Add(this.label271);
+            this.HANDiFeedbackBox.Controls.Add(this.label272);
+            this.HANDiFeedbackBox.Controls.Add(this.label274);
+            this.HANDiFeedbackBox.Controls.Add(this.label275);
+            this.HANDiFeedbackBox.Controls.Add(this.label276);
+            this.HANDiFeedbackBox.Controls.Add(this.label278);
+            this.HANDiFeedbackBox.Controls.Add(this.label279);
+            this.HANDiFeedbackBox.Enabled = false;
+            this.HANDiFeedbackBox.Location = new System.Drawing.Point(376, 131);
+            this.HANDiFeedbackBox.Margin = new System.Windows.Forms.Padding(2);
+            this.HANDiFeedbackBox.Name = "HANDiFeedbackBox";
+            this.HANDiFeedbackBox.Padding = new System.Windows.Forms.Padding(2);
+            this.HANDiFeedbackBox.Size = new System.Drawing.Size(192, 179);
+            this.HANDiFeedbackBox.TabIndex = 209;
+            this.HANDiFeedbackBox.TabStop = false;
+            this.HANDiFeedbackBox.Text = "Feedback";
+            // 
+            // label252
+            // 
+            this.label252.AutoSize = true;
+            this.label252.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label252.Location = new System.Drawing.Point(150, 152);
+            this.label252.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label252.Name = "label252";
+            this.label252.Size = new System.Drawing.Size(13, 13);
+            this.label252.TabIndex = 172;
+            this.label252.Text = "--";
+            // 
+            // label265
+            // 
+            this.label265.AutoSize = true;
+            this.label265.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label265.Location = new System.Drawing.Point(58, 152);
+            this.label265.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label265.Name = "label265";
+            this.label265.Size = new System.Drawing.Size(13, 13);
+            this.label265.TabIndex = 170;
+            this.label265.Text = "--";
+            // 
+            // label270
+            // 
+            this.label270.AutoSize = true;
+            this.label270.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label270.Location = new System.Drawing.Point(5, 152);
+            this.label270.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label270.Name = "label270";
+            this.label270.Size = new System.Drawing.Size(13, 13);
+            this.label270.TabIndex = 169;
+            this.label270.Text = "--";
+            // 
+            // label248
+            // 
+            this.label248.AutoSize = true;
+            this.label248.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label248.Location = new System.Drawing.Point(150, 127);
+            this.label248.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label248.Name = "label248";
+            this.label248.Size = new System.Drawing.Size(13, 13);
+            this.label248.TabIndex = 168;
+            this.label248.Text = "--";
+            // 
+            // label250
+            // 
+            this.label250.AutoSize = true;
+            this.label250.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label250.Location = new System.Drawing.Point(58, 127);
+            this.label250.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label250.Name = "label250";
+            this.label250.Size = new System.Drawing.Size(13, 13);
+            this.label250.TabIndex = 166;
+            this.label250.Text = "--";
+            // 
+            // label251
+            // 
+            this.label251.AutoSize = true;
+            this.label251.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label251.Location = new System.Drawing.Point(5, 127);
+            this.label251.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label251.Name = "label251";
+            this.label251.Size = new System.Drawing.Size(13, 13);
+            this.label251.TabIndex = 165;
+            this.label251.Text = "--";
+            // 
+            // label254
+            // 
+            this.label254.AutoSize = true;
+            this.label254.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label254.Location = new System.Drawing.Point(150, 79);
+            this.label254.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label254.Name = "label254";
+            this.label254.Size = new System.Drawing.Size(13, 13);
+            this.label254.TabIndex = 162;
+            this.label254.Text = "--";
+            // 
+            // label256
+            // 
+            this.label256.AutoSize = true;
+            this.label256.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label256.Location = new System.Drawing.Point(58, 79);
+            this.label256.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label256.Name = "label256";
+            this.label256.Size = new System.Drawing.Size(13, 13);
+            this.label256.TabIndex = 160;
+            this.label256.Text = "--";
+            // 
+            // label259
+            // 
+            this.label259.AutoSize = true;
+            this.label259.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label259.Location = new System.Drawing.Point(5, 79);
+            this.label259.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label259.Name = "label259";
+            this.label259.Size = new System.Drawing.Size(13, 13);
+            this.label259.TabIndex = 159;
+            this.label259.Text = "--";
+            // 
+            // label261
+            // 
+            this.label261.AutoSize = true;
+            this.label261.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label261.Location = new System.Drawing.Point(149, 55);
+            this.label261.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label261.Name = "label261";
+            this.label261.Size = new System.Drawing.Size(13, 13);
+            this.label261.TabIndex = 156;
+            this.label261.Text = "--";
+            // 
+            // label262
+            // 
+            this.label262.AutoSize = true;
+            this.label262.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label262.Location = new System.Drawing.Point(110, 55);
+            this.label262.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label262.Name = "label262";
+            this.label262.Size = new System.Drawing.Size(13, 13);
+            this.label262.TabIndex = 155;
+            this.label262.Text = "--";
+            // 
+            // label264
+            // 
+            this.label264.AutoSize = true;
+            this.label264.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label264.Location = new System.Drawing.Point(4, 55);
+            this.label264.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label264.Name = "label264";
+            this.label264.Size = new System.Drawing.Size(13, 13);
+            this.label264.TabIndex = 153;
+            this.label264.Text = "--";
+            // 
+            // label269
+            // 
+            this.label269.AutoSize = true;
+            this.label269.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label269.Location = new System.Drawing.Point(4, 32);
+            this.label269.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label269.Name = "label269";
+            this.label269.Size = new System.Drawing.Size(13, 13);
+            this.label269.TabIndex = 147;
+            this.label269.Text = "--";
+            // 
+            // label271
+            // 
+            this.label271.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label271.Location = new System.Drawing.Point(149, 12);
+            this.label271.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label271.Name = "label271";
+            this.label271.Size = new System.Drawing.Size(31, 20);
+            this.label271.TabIndex = 144;
+            this.label271.Text = "FSR:";
+            // 
+            // label272
+            // 
+            this.label272.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label272.Location = new System.Drawing.Point(110, 12);
+            this.label272.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label272.Name = "label272";
+            this.label272.Size = new System.Drawing.Size(39, 20);
+            this.label272.TabIndex = 143;
+            this.label272.Text = "D:";
+            // 
+            // label274
+            // 
+            this.label274.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label274.Location = new System.Drawing.Point(57, 12);
+            this.label274.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label274.Name = "label274";
+            this.label274.Size = new System.Drawing.Size(49, 20);
+            this.label274.TabIndex = 142;
+            this.label274.Text = "I:";
+            // 
+            // label275
+            // 
+            this.label275.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label275.Location = new System.Drawing.Point(4, 12);
+            this.label275.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label275.Name = "label275";
+            this.label275.Size = new System.Drawing.Size(49, 20);
+            this.label275.TabIndex = 140;
+            this.label275.Text = "P:";
+            // 
+            // label276
+            // 
+            this.label276.AutoSize = true;
+            this.label276.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label276.Location = new System.Drawing.Point(150, 103);
+            this.label276.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label276.Name = "label276";
+            this.label276.Size = new System.Drawing.Size(13, 13);
+            this.label276.TabIndex = 132;
+            this.label276.Text = "--";
+            // 
+            // label278
+            // 
+            this.label278.AutoSize = true;
+            this.label278.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label278.Location = new System.Drawing.Point(58, 103);
+            this.label278.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label278.Name = "label278";
+            this.label278.Size = new System.Drawing.Size(13, 13);
+            this.label278.TabIndex = 122;
+            this.label278.Text = "--";
+            // 
+            // label279
+            // 
+            this.label279.AutoSize = true;
+            this.label279.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label279.Location = new System.Drawing.Point(5, 103);
+            this.label279.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label279.Name = "label279";
+            this.label279.Size = new System.Drawing.Size(13, 13);
+            this.label279.TabIndex = 117;
+            this.label279.Text = "--";
+            // 
             // tabViz
             // 
+            this.tabViz.Controls.Add(this.udpGroupBox);
+            this.tabViz.Controls.Add(this.ArduinoInputGroupBox);
+            this.tabViz.Controls.Add(this.biopatrecGroupBox);
+            this.tabViz.Controls.Add(this.SLRTgroupBox);
             this.tabViz.Controls.Add(this.KBgroupBox);
             this.tabViz.Controls.Add(this.xBoxGroupBox);
             this.tabViz.Controls.Add(this.MYOgroupBox);
@@ -4754,6 +7120,1311 @@
             this.tabViz.TabIndex = 4;
             this.tabViz.Text = "Visualization";
             this.tabViz.UseVisualStyleBackColor = true;
+            // 
+            // udpGroupBox
+            // 
+            this.udpGroupBox.Controls.Add(this.udp_ch10);
+            this.udpGroupBox.Controls.Add(this.label255);
+            this.udpGroupBox.Controls.Add(this.label260);
+            this.udpGroupBox.Controls.Add(this.udp_ch11);
+            this.udpGroupBox.Controls.Add(this.udp_ch8);
+            this.udpGroupBox.Controls.Add(this.label244);
+            this.udpGroupBox.Controls.Add(this.udp_ch1);
+            this.udpGroupBox.Controls.Add(this.udp_ch2);
+            this.udpGroupBox.Controls.Add(this.label222);
+            this.udpGroupBox.Controls.Add(this.label223);
+            this.udpGroupBox.Controls.Add(this.udp_ch3);
+            this.udpGroupBox.Controls.Add(this.udp_ch4);
+            this.udpGroupBox.Controls.Add(this.udp_ch5);
+            this.udpGroupBox.Controls.Add(this.udp_ch6);
+            this.udpGroupBox.Controls.Add(this.udp_ch7);
+            this.udpGroupBox.Controls.Add(this.label229);
+            this.udpGroupBox.Controls.Add(this.udp_ch9);
+            this.udpGroupBox.Controls.Add(this.label231);
+            this.udpGroupBox.Controls.Add(this.label232);
+            this.udpGroupBox.Controls.Add(this.label233);
+            this.udpGroupBox.Controls.Add(this.label234);
+            this.udpGroupBox.Controls.Add(this.label235);
+            this.udpGroupBox.Enabled = false;
+            this.udpGroupBox.Location = new System.Drawing.Point(539, 3);
+            this.udpGroupBox.Name = "udpGroupBox";
+            this.udpGroupBox.Size = new System.Drawing.Size(262, 224);
+            this.udpGroupBox.TabIndex = 211;
+            this.udpGroupBox.TabStop = false;
+            this.udpGroupBox.Text = "UDP - Interactive Myocontrol";
+            this.udpGroupBox.Visible = false;
+            // 
+            // udp_ch10
+            // 
+            this.udp_ch10.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch10.Location = new System.Drawing.Point(68, 181);
+            this.udp_ch10.Name = "udp_ch10";
+            this.udp_ch10.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch10.TabIndex = 193;
+            this.udp_ch10.Text = "1.0";
+            this.udp_ch10.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label255
+            // 
+            this.label255.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label255.Location = new System.Drawing.Point(5, 179);
+            this.label255.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label255.Name = "label255";
+            this.label255.Size = new System.Drawing.Size(61, 15);
+            this.label255.TabIndex = 194;
+            this.label255.Text = "Elbow Flex:";
+            this.label255.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label260
+            // 
+            this.label260.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label260.Location = new System.Drawing.Point(5, 200);
+            this.label260.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label260.Name = "label260";
+            this.label260.Size = new System.Drawing.Size(61, 15);
+            this.label260.TabIndex = 192;
+            this.label260.Text = "Elbow Rot:";
+            this.label260.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // udp_ch11
+            // 
+            this.udp_ch11.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch11.Location = new System.Drawing.Point(68, 201);
+            this.udp_ch11.Name = "udp_ch11";
+            this.udp_ch11.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch11.TabIndex = 191;
+            this.udp_ch11.Text = "1.0";
+            this.udp_ch11.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch8
+            // 
+            this.udp_ch8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch8.Location = new System.Drawing.Point(68, 141);
+            this.udp_ch8.Name = "udp_ch8";
+            this.udp_ch8.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch8.TabIndex = 189;
+            this.udp_ch8.Text = "1.0";
+            this.udp_ch8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label244
+            // 
+            this.label244.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label244.Location = new System.Drawing.Point(5, 139);
+            this.label244.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label244.Name = "label244";
+            this.label244.Size = new System.Drawing.Size(61, 15);
+            this.label244.TabIndex = 190;
+            this.label244.Text = "Wrist Add:";
+            this.label244.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // udp_ch1
+            // 
+            this.udp_ch1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch1.Location = new System.Drawing.Point(68, 16);
+            this.udp_ch1.Name = "udp_ch1";
+            this.udp_ch1.Size = new System.Drawing.Size(60, 16);
+            this.udp_ch1.TabIndex = 185;
+            this.udp_ch1.Text = "1.0";
+            this.udp_ch1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch2
+            // 
+            this.udp_ch2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch2.Location = new System.Drawing.Point(68, 30);
+            this.udp_ch2.Name = "udp_ch2";
+            this.udp_ch2.Size = new System.Drawing.Size(60, 16);
+            this.udp_ch2.TabIndex = 186;
+            this.udp_ch2.Text = "1.0";
+            this.udp_ch2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label222
+            // 
+            this.label222.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label222.Location = new System.Drawing.Point(18, 31);
+            this.label222.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label222.Name = "label222";
+            this.label222.Size = new System.Drawing.Size(48, 15);
+            this.label222.TabIndex = 188;
+            this.label222.Text = "D1 Rot:";
+            this.label222.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label223
+            // 
+            this.label223.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label223.Location = new System.Drawing.Point(10, 16);
+            this.label223.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label223.Name = "label223";
+            this.label223.Size = new System.Drawing.Size(56, 15);
+            this.label223.TabIndex = 187;
+            this.label223.Text = "D1 Flex:";
+            this.label223.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // udp_ch3
+            // 
+            this.udp_ch3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch3.Location = new System.Drawing.Point(68, 52);
+            this.udp_ch3.Name = "udp_ch3";
+            this.udp_ch3.Size = new System.Drawing.Size(60, 16);
+            this.udp_ch3.TabIndex = 157;
+            this.udp_ch3.Text = "1.0";
+            this.udp_ch3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch4
+            // 
+            this.udp_ch4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch4.Location = new System.Drawing.Point(68, 66);
+            this.udp_ch4.Name = "udp_ch4";
+            this.udp_ch4.Size = new System.Drawing.Size(60, 16);
+            this.udp_ch4.TabIndex = 158;
+            this.udp_ch4.Text = "1.0";
+            this.udp_ch4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch5
+            // 
+            this.udp_ch5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch5.Location = new System.Drawing.Point(68, 87);
+            this.udp_ch5.Name = "udp_ch5";
+            this.udp_ch5.Size = new System.Drawing.Size(60, 16);
+            this.udp_ch5.TabIndex = 159;
+            this.udp_ch5.Text = "1.0";
+            this.udp_ch5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch6
+            // 
+            this.udp_ch6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch6.Location = new System.Drawing.Point(68, 102);
+            this.udp_ch6.Name = "udp_ch6";
+            this.udp_ch6.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch6.TabIndex = 160;
+            this.udp_ch6.Text = "1.0";
+            this.udp_ch6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // udp_ch7
+            // 
+            this.udp_ch7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch7.Location = new System.Drawing.Point(68, 122);
+            this.udp_ch7.Name = "udp_ch7";
+            this.udp_ch7.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch7.TabIndex = 161;
+            this.udp_ch7.Text = "1.0";
+            this.udp_ch7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label229
+            // 
+            this.label229.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label229.Location = new System.Drawing.Point(5, 160);
+            this.label229.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label229.Name = "label229";
+            this.label229.Size = new System.Drawing.Size(61, 15);
+            this.label229.TabIndex = 184;
+            this.label229.Text = "Wrist Rot:";
+            this.label229.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // udp_ch9
+            // 
+            this.udp_ch9.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.udp_ch9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.udp_ch9.Location = new System.Drawing.Point(68, 161);
+            this.udp_ch9.Name = "udp_ch9";
+            this.udp_ch9.Size = new System.Drawing.Size(60, 15);
+            this.udp_ch9.TabIndex = 162;
+            this.udp_ch9.Text = "1.0";
+            this.udp_ch9.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label231
+            // 
+            this.label231.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label231.Location = new System.Drawing.Point(5, 120);
+            this.label231.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label231.Name = "label231";
+            this.label231.Size = new System.Drawing.Size(61, 15);
+            this.label231.TabIndex = 183;
+            this.label231.Text = "Wrist Flex:";
+            this.label231.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label232
+            // 
+            this.label232.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label232.Location = new System.Drawing.Point(13, 103);
+            this.label232.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label232.Name = "label232";
+            this.label232.Size = new System.Drawing.Size(53, 15);
+            this.label232.TabIndex = 182;
+            this.label232.Text = "D5 Flex:";
+            this.label232.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label233
+            // 
+            this.label233.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label233.Location = new System.Drawing.Point(18, 88);
+            this.label233.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label233.Name = "label233";
+            this.label233.Size = new System.Drawing.Size(48, 15);
+            this.label233.TabIndex = 181;
+            this.label233.Text = "D4 Flex:";
+            this.label233.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label234
+            // 
+            this.label234.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label234.Location = new System.Drawing.Point(18, 67);
+            this.label234.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label234.Name = "label234";
+            this.label234.Size = new System.Drawing.Size(48, 15);
+            this.label234.TabIndex = 180;
+            this.label234.Text = "D3 Flex:";
+            this.label234.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label235
+            // 
+            this.label235.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label235.Location = new System.Drawing.Point(18, 52);
+            this.label235.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label235.Name = "label235";
+            this.label235.Size = new System.Drawing.Size(48, 15);
+            this.label235.TabIndex = 179;
+            this.label235.Text = "D2 Flex:";
+            this.label235.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // ArduinoInputGroupBox
+            // 
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A0);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A1);
+            this.ArduinoInputGroupBox.Controls.Add(this.label207);
+            this.ArduinoInputGroupBox.Controls.Add(this.label208);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A2);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A3);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A4);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A5);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A6);
+            this.ArduinoInputGroupBox.Controls.Add(this.label214);
+            this.ArduinoInputGroupBox.Controls.Add(this.arduino_A7);
+            this.ArduinoInputGroupBox.Controls.Add(this.label216);
+            this.ArduinoInputGroupBox.Controls.Add(this.label217);
+            this.ArduinoInputGroupBox.Controls.Add(this.label218);
+            this.ArduinoInputGroupBox.Controls.Add(this.label219);
+            this.ArduinoInputGroupBox.Controls.Add(this.label220);
+            this.ArduinoInputGroupBox.Enabled = false;
+            this.ArduinoInputGroupBox.Location = new System.Drawing.Point(271, 3);
+            this.ArduinoInputGroupBox.Name = "ArduinoInputGroupBox";
+            this.ArduinoInputGroupBox.Size = new System.Drawing.Size(262, 164);
+            this.ArduinoInputGroupBox.TabIndex = 211;
+            this.ArduinoInputGroupBox.TabStop = false;
+            this.ArduinoInputGroupBox.Text = "Arduino Analog Inputs";
+            this.ArduinoInputGroupBox.Visible = false;
+            // 
+            // arduino_A0
+            // 
+            this.arduino_A0.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A0.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A0.Location = new System.Drawing.Point(39, 16);
+            this.arduino_A0.Name = "arduino_A0";
+            this.arduino_A0.Size = new System.Drawing.Size(60, 16);
+            this.arduino_A0.TabIndex = 185;
+            this.arduino_A0.Text = "1.0";
+            this.arduino_A0.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // arduino_A1
+            // 
+            this.arduino_A1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A1.Location = new System.Drawing.Point(39, 30);
+            this.arduino_A1.Name = "arduino_A1";
+            this.arduino_A1.Size = new System.Drawing.Size(60, 16);
+            this.arduino_A1.TabIndex = 186;
+            this.arduino_A1.Text = "1.0";
+            this.arduino_A1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label207
+            // 
+            this.label207.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label207.Location = new System.Drawing.Point(10, 30);
+            this.label207.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label207.Name = "label207";
+            this.label207.Size = new System.Drawing.Size(29, 15);
+            this.label207.TabIndex = 188;
+            this.label207.Text = "A1:";
+            this.label207.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label208
+            // 
+            this.label208.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label208.Location = new System.Drawing.Point(2, 15);
+            this.label208.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label208.Name = "label208";
+            this.label208.Size = new System.Drawing.Size(37, 15);
+            this.label208.TabIndex = 187;
+            this.label208.Text = "A0:";
+            this.label208.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // arduino_A2
+            // 
+            this.arduino_A2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A2.Location = new System.Drawing.Point(39, 52);
+            this.arduino_A2.Name = "arduino_A2";
+            this.arduino_A2.Size = new System.Drawing.Size(60, 16);
+            this.arduino_A2.TabIndex = 157;
+            this.arduino_A2.Text = "1.0";
+            this.arduino_A2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // arduino_A3
+            // 
+            this.arduino_A3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A3.Location = new System.Drawing.Point(39, 66);
+            this.arduino_A3.Name = "arduino_A3";
+            this.arduino_A3.Size = new System.Drawing.Size(60, 16);
+            this.arduino_A3.TabIndex = 158;
+            this.arduino_A3.Text = "1.0";
+            this.arduino_A3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // arduino_A4
+            // 
+            this.arduino_A4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A4.Location = new System.Drawing.Point(39, 87);
+            this.arduino_A4.Name = "arduino_A4";
+            this.arduino_A4.Size = new System.Drawing.Size(60, 16);
+            this.arduino_A4.TabIndex = 159;
+            this.arduino_A4.Text = "1.0";
+            this.arduino_A4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // arduino_A5
+            // 
+            this.arduino_A5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A5.Location = new System.Drawing.Point(39, 102);
+            this.arduino_A5.Name = "arduino_A5";
+            this.arduino_A5.Size = new System.Drawing.Size(60, 15);
+            this.arduino_A5.TabIndex = 160;
+            this.arduino_A5.Text = "1.0";
+            this.arduino_A5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // arduino_A6
+            // 
+            this.arduino_A6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A6.Location = new System.Drawing.Point(39, 122);
+            this.arduino_A6.Name = "arduino_A6";
+            this.arduino_A6.Size = new System.Drawing.Size(60, 15);
+            this.arduino_A6.TabIndex = 161;
+            this.arduino_A6.Text = "1.0";
+            this.arduino_A6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label214
+            // 
+            this.label214.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label214.Location = new System.Drawing.Point(5, 135);
+            this.label214.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label214.Name = "label214";
+            this.label214.Size = new System.Drawing.Size(33, 15);
+            this.label214.TabIndex = 184;
+            this.label214.Text = "A7:";
+            this.label214.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // arduino_A7
+            // 
+            this.arduino_A7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.arduino_A7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.arduino_A7.Location = new System.Drawing.Point(39, 136);
+            this.arduino_A7.Name = "arduino_A7";
+            this.arduino_A7.Size = new System.Drawing.Size(60, 15);
+            this.arduino_A7.TabIndex = 162;
+            this.arduino_A7.Text = "1.0";
+            this.arduino_A7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label216
+            // 
+            this.label216.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label216.Location = new System.Drawing.Point(5, 120);
+            this.label216.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label216.Name = "label216";
+            this.label216.Size = new System.Drawing.Size(33, 15);
+            this.label216.TabIndex = 183;
+            this.label216.Text = "A6:";
+            this.label216.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label217
+            // 
+            this.label217.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label217.Location = new System.Drawing.Point(5, 102);
+            this.label217.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label217.Name = "label217";
+            this.label217.Size = new System.Drawing.Size(33, 15);
+            this.label217.TabIndex = 182;
+            this.label217.Text = "A5:";
+            this.label217.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label218
+            // 
+            this.label218.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label218.Location = new System.Drawing.Point(10, 87);
+            this.label218.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label218.Name = "label218";
+            this.label218.Size = new System.Drawing.Size(29, 15);
+            this.label218.TabIndex = 181;
+            this.label218.Text = "A4:";
+            this.label218.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label219
+            // 
+            this.label219.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label219.Location = new System.Drawing.Point(10, 66);
+            this.label219.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label219.Name = "label219";
+            this.label219.Size = new System.Drawing.Size(29, 15);
+            this.label219.TabIndex = 180;
+            this.label219.Text = "A3:";
+            this.label219.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label220
+            // 
+            this.label220.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label220.Location = new System.Drawing.Point(10, 51);
+            this.label220.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label220.Name = "label220";
+            this.label220.Size = new System.Drawing.Size(29, 15);
+            this.label220.TabIndex = 179;
+            this.label220.Text = "A2:";
+            this.label220.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // biopatrecGroupBox
+            // 
+            this.biopatrecGroupBox.Controls.Add(this.label184);
+            this.biopatrecGroupBox.Controls.Add(this.label182);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass12);
+            this.biopatrecGroupBox.Controls.Add(this.label165);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass24);
+            this.biopatrecGroupBox.Controls.Add(this.label169);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass23);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass17);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass18);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass21);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass20);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass19);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass22);
+            this.biopatrecGroupBox.Controls.Add(this.label170);
+            this.biopatrecGroupBox.Controls.Add(this.label171);
+            this.biopatrecGroupBox.Controls.Add(this.label172);
+            this.biopatrecGroupBox.Controls.Add(this.label173);
+            this.biopatrecGroupBox.Controls.Add(this.label175);
+            this.biopatrecGroupBox.Controls.Add(this.label181);
+            this.biopatrecGroupBox.Controls.Add(this.label201);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass11);
+            this.biopatrecGroupBox.Controls.Add(this.label161);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass10);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass3);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass2);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass1);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass0);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass4);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass5);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass8);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass7);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass13);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass14);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass15);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass16);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass6);
+            this.biopatrecGroupBox.Controls.Add(this.label183);
+            this.biopatrecGroupBox.Controls.Add(this.label185);
+            this.biopatrecGroupBox.Controls.Add(this.label187);
+            this.biopatrecGroupBox.Controls.Add(this.label189);
+            this.biopatrecGroupBox.Controls.Add(this.BPRclass9);
+            this.biopatrecGroupBox.Controls.Add(this.label190);
+            this.biopatrecGroupBox.Controls.Add(this.label191);
+            this.biopatrecGroupBox.Controls.Add(this.label192);
+            this.biopatrecGroupBox.Controls.Add(this.label193);
+            this.biopatrecGroupBox.Controls.Add(this.label194);
+            this.biopatrecGroupBox.Controls.Add(this.label195);
+            this.biopatrecGroupBox.Controls.Add(this.label196);
+            this.biopatrecGroupBox.Controls.Add(this.label197);
+            this.biopatrecGroupBox.Controls.Add(this.label198);
+            this.biopatrecGroupBox.Controls.Add(this.label199);
+            this.biopatrecGroupBox.Enabled = false;
+            this.biopatrecGroupBox.Location = new System.Drawing.Point(539, 233);
+            this.biopatrecGroupBox.Name = "biopatrecGroupBox";
+            this.biopatrecGroupBox.Size = new System.Drawing.Size(262, 220);
+            this.biopatrecGroupBox.TabIndex = 211;
+            this.biopatrecGroupBox.TabStop = false;
+            this.biopatrecGroupBox.Text = "BioPatRec";
+            this.biopatrecGroupBox.Visible = false;
+            // 
+            // label184
+            // 
+            this.label184.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label184.Location = new System.Drawing.Point(138, 39);
+            this.label184.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label184.Name = "label184";
+            this.label184.Size = new System.Drawing.Size(81, 15);
+            this.label184.TabIndex = 205;
+            this.label184.Text = "Little Extend:";
+            this.label184.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label182
+            // 
+            this.label182.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label182.Location = new System.Drawing.Point(5, 193);
+            this.label182.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label182.Name = "label182";
+            this.label182.Size = new System.Drawing.Size(85, 15);
+            this.label182.TabIndex = 204;
+            this.label182.Text = "Middle Flex:";
+            this.label182.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass12
+            // 
+            this.BPRclass12.AutoSize = true;
+            this.BPRclass12.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass12.Enabled = false;
+            this.BPRclass12.Location = new System.Drawing.Point(90, 194);
+            this.BPRclass12.Name = "BPRclass12";
+            this.BPRclass12.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass12.TabIndex = 203;
+            this.BPRclass12.UseVisualStyleBackColor = false;
+            // 
+            // label165
+            // 
+            this.label165.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label165.Location = new System.Drawing.Point(143, 177);
+            this.label165.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label165.Name = "label165";
+            this.label165.Size = new System.Drawing.Size(76, 15);
+            this.label165.TabIndex = 202;
+            this.label165.Text = "Side Grip:";
+            this.label165.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass24
+            // 
+            this.BPRclass24.AutoSize = true;
+            this.BPRclass24.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass24.Enabled = false;
+            this.BPRclass24.Location = new System.Drawing.Point(220, 179);
+            this.BPRclass24.Name = "BPRclass24";
+            this.BPRclass24.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass24.TabIndex = 201;
+            this.BPRclass24.UseVisualStyleBackColor = false;
+            // 
+            // label169
+            // 
+            this.label169.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label169.Location = new System.Drawing.Point(114, 162);
+            this.label169.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label169.Name = "label169";
+            this.label169.Size = new System.Drawing.Size(105, 15);
+            this.label169.TabIndex = 196;
+            this.label169.Text = "Rotate Elbow Ext:";
+            this.label169.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass23
+            // 
+            this.BPRclass23.AutoSize = true;
+            this.BPRclass23.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass23.Enabled = false;
+            this.BPRclass23.Location = new System.Drawing.Point(220, 164);
+            this.BPRclass23.Name = "BPRclass23";
+            this.BPRclass23.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass23.TabIndex = 187;
+            this.BPRclass23.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass17
+            // 
+            this.BPRclass17.AutoSize = true;
+            this.BPRclass17.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass17.Enabled = false;
+            this.BPRclass17.Location = new System.Drawing.Point(220, 70);
+            this.BPRclass17.Name = "BPRclass17";
+            this.BPRclass17.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass17.TabIndex = 188;
+            this.BPRclass17.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass18
+            // 
+            this.BPRclass18.AutoSize = true;
+            this.BPRclass18.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass18.Enabled = false;
+            this.BPRclass18.Location = new System.Drawing.Point(220, 86);
+            this.BPRclass18.Name = "BPRclass18";
+            this.BPRclass18.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass18.TabIndex = 189;
+            this.BPRclass18.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass21
+            // 
+            this.BPRclass21.AutoSize = true;
+            this.BPRclass21.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass21.Enabled = false;
+            this.BPRclass21.Location = new System.Drawing.Point(220, 133);
+            this.BPRclass21.Name = "BPRclass21";
+            this.BPRclass21.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass21.TabIndex = 190;
+            this.BPRclass21.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass20
+            // 
+            this.BPRclass20.AutoSize = true;
+            this.BPRclass20.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass20.Enabled = false;
+            this.BPRclass20.Location = new System.Drawing.Point(220, 118);
+            this.BPRclass20.Name = "BPRclass20";
+            this.BPRclass20.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass20.TabIndex = 191;
+            this.BPRclass20.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass19
+            // 
+            this.BPRclass19.AutoSize = true;
+            this.BPRclass19.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass19.Enabled = false;
+            this.BPRclass19.Location = new System.Drawing.Point(220, 101);
+            this.BPRclass19.Name = "BPRclass19";
+            this.BPRclass19.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass19.TabIndex = 192;
+            this.BPRclass19.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass22
+            // 
+            this.BPRclass22.AutoSize = true;
+            this.BPRclass22.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass22.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.BPRclass22.Enabled = false;
+            this.BPRclass22.Location = new System.Drawing.Point(219, 149);
+            this.BPRclass22.Name = "BPRclass22";
+            this.BPRclass22.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass22.TabIndex = 200;
+            this.BPRclass22.UseVisualStyleBackColor = false;
+            // 
+            // label170
+            // 
+            this.label170.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label170.Location = new System.Drawing.Point(138, 118);
+            this.label170.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label170.Name = "label170";
+            this.label170.Size = new System.Drawing.Size(81, 15);
+            this.label170.TabIndex = 193;
+            this.label170.Text = "Flex Elbow:";
+            this.label170.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label171
+            // 
+            this.label171.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label171.Location = new System.Drawing.Point(113, 100);
+            this.label171.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label171.Name = "label171";
+            this.label171.Size = new System.Drawing.Size(106, 15);
+            this.label171.TabIndex = 199;
+            this.label171.Text = "Thumb Yaw Extend:";
+            this.label171.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label172
+            // 
+            this.label172.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label172.Location = new System.Drawing.Point(143, 133);
+            this.label172.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label172.Name = "label172";
+            this.label172.Size = new System.Drawing.Size(76, 15);
+            this.label172.TabIndex = 194;
+            this.label172.Text = "Extend Elbow:";
+            this.label172.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label173
+            // 
+            this.label173.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label173.Location = new System.Drawing.Point(128, 86);
+            this.label173.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label173.Name = "label173";
+            this.label173.Size = new System.Drawing.Size(91, 15);
+            this.label173.TabIndex = 198;
+            this.label173.Text = "Thumb Yaw Flex:";
+            this.label173.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label175
+            // 
+            this.label175.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label175.Location = new System.Drawing.Point(130, 147);
+            this.label175.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label175.Name = "label175";
+            this.label175.Size = new System.Drawing.Size(89, 15);
+            this.label175.TabIndex = 195;
+            this.label175.Text = "Rotate Elbow Int:";
+            this.label175.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label181
+            // 
+            this.label181.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label181.Location = new System.Drawing.Point(139, 70);
+            this.label181.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label181.Name = "label181";
+            this.label181.Size = new System.Drawing.Size(80, 15);
+            this.label181.TabIndex = 197;
+            this.label181.Text = "Point:";
+            this.label181.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label201
+            // 
+            this.label201.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label201.Location = new System.Drawing.Point(5, 178);
+            this.label201.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label201.Name = "label201";
+            this.label201.Size = new System.Drawing.Size(85, 15);
+            this.label201.TabIndex = 186;
+            this.label201.Text = "Middle Extend:";
+            this.label201.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass11
+            // 
+            this.BPRclass11.AutoSize = true;
+            this.BPRclass11.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass11.Enabled = false;
+            this.BPRclass11.Location = new System.Drawing.Point(90, 179);
+            this.BPRclass11.Name = "BPRclass11";
+            this.BPRclass11.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass11.TabIndex = 185;
+            this.BPRclass11.UseVisualStyleBackColor = false;
+            // 
+            // label161
+            // 
+            this.label161.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label161.Location = new System.Drawing.Point(10, 163);
+            this.label161.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label161.Name = "label161";
+            this.label161.Size = new System.Drawing.Size(80, 15);
+            this.label161.TabIndex = 170;
+            this.label161.Text = "Index Flex:";
+            this.label161.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass10
+            // 
+            this.BPRclass10.AutoSize = true;
+            this.BPRclass10.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass10.Enabled = false;
+            this.BPRclass10.Location = new System.Drawing.Point(90, 164);
+            this.BPRclass10.Name = "BPRclass10";
+            this.BPRclass10.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass10.TabIndex = 144;
+            this.BPRclass10.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass3
+            // 
+            this.BPRclass3.AutoSize = true;
+            this.BPRclass3.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass3.Enabled = false;
+            this.BPRclass3.Location = new System.Drawing.Point(90, 55);
+            this.BPRclass3.Name = "BPRclass3";
+            this.BPRclass3.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass3.TabIndex = 145;
+            this.BPRclass3.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass2
+            // 
+            this.BPRclass2.AutoSize = true;
+            this.BPRclass2.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass2.Enabled = false;
+            this.BPRclass2.Location = new System.Drawing.Point(90, 40);
+            this.BPRclass2.Name = "BPRclass2";
+            this.BPRclass2.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass2.TabIndex = 146;
+            this.BPRclass2.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass1
+            // 
+            this.BPRclass1.AutoSize = true;
+            this.BPRclass1.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass1.Enabled = false;
+            this.BPRclass1.Location = new System.Drawing.Point(90, 26);
+            this.BPRclass1.Name = "BPRclass1";
+            this.BPRclass1.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass1.TabIndex = 147;
+            this.BPRclass1.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass0
+            // 
+            this.BPRclass0.AutoSize = true;
+            this.BPRclass0.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass0.Enabled = false;
+            this.BPRclass0.Location = new System.Drawing.Point(90, 12);
+            this.BPRclass0.Name = "BPRclass0";
+            this.BPRclass0.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass0.TabIndex = 148;
+            this.BPRclass0.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass4
+            // 
+            this.BPRclass4.AutoSize = true;
+            this.BPRclass4.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass4.Enabled = false;
+            this.BPRclass4.Location = new System.Drawing.Point(90, 70);
+            this.BPRclass4.Name = "BPRclass4";
+            this.BPRclass4.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass4.TabIndex = 149;
+            this.BPRclass4.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass5
+            // 
+            this.BPRclass5.AutoSize = true;
+            this.BPRclass5.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass5.Enabled = false;
+            this.BPRclass5.Location = new System.Drawing.Point(90, 86);
+            this.BPRclass5.Name = "BPRclass5";
+            this.BPRclass5.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass5.TabIndex = 150;
+            this.BPRclass5.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass8
+            // 
+            this.BPRclass8.AutoSize = true;
+            this.BPRclass8.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass8.Enabled = false;
+            this.BPRclass8.Location = new System.Drawing.Point(90, 133);
+            this.BPRclass8.Name = "BPRclass8";
+            this.BPRclass8.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass8.TabIndex = 151;
+            this.BPRclass8.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass7
+            // 
+            this.BPRclass7.AutoSize = true;
+            this.BPRclass7.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass7.Enabled = false;
+            this.BPRclass7.Location = new System.Drawing.Point(90, 118);
+            this.BPRclass7.Name = "BPRclass7";
+            this.BPRclass7.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass7.TabIndex = 152;
+            this.BPRclass7.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass13
+            // 
+            this.BPRclass13.AutoSize = true;
+            this.BPRclass13.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass13.Enabled = false;
+            this.BPRclass13.Location = new System.Drawing.Point(220, 12);
+            this.BPRclass13.Name = "BPRclass13";
+            this.BPRclass13.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass13.TabIndex = 153;
+            this.BPRclass13.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass14
+            // 
+            this.BPRclass14.AutoSize = true;
+            this.BPRclass14.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass14.Enabled = false;
+            this.BPRclass14.Location = new System.Drawing.Point(220, 26);
+            this.BPRclass14.Name = "BPRclass14";
+            this.BPRclass14.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass14.TabIndex = 154;
+            this.BPRclass14.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass15
+            // 
+            this.BPRclass15.AutoSize = true;
+            this.BPRclass15.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass15.Enabled = false;
+            this.BPRclass15.Location = new System.Drawing.Point(220, 40);
+            this.BPRclass15.Name = "BPRclass15";
+            this.BPRclass15.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass15.TabIndex = 155;
+            this.BPRclass15.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass16
+            // 
+            this.BPRclass16.AutoSize = true;
+            this.BPRclass16.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass16.Enabled = false;
+            this.BPRclass16.Location = new System.Drawing.Point(220, 55);
+            this.BPRclass16.Name = "BPRclass16";
+            this.BPRclass16.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass16.TabIndex = 156;
+            this.BPRclass16.UseVisualStyleBackColor = false;
+            // 
+            // BPRclass6
+            // 
+            this.BPRclass6.AutoSize = true;
+            this.BPRclass6.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass6.Enabled = false;
+            this.BPRclass6.Location = new System.Drawing.Point(90, 101);
+            this.BPRclass6.Name = "BPRclass6";
+            this.BPRclass6.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass6.TabIndex = 163;
+            this.BPRclass6.UseVisualStyleBackColor = false;
+            // 
+            // label183
+            // 
+            this.label183.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label183.Location = new System.Drawing.Point(57, 10);
+            this.label183.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label183.Name = "label183";
+            this.label183.Size = new System.Drawing.Size(33, 15);
+            this.label183.TabIndex = 150;
+            this.label183.Text = "Rest:";
+            this.label183.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label185
+            // 
+            this.label185.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label185.Location = new System.Drawing.Point(21, 25);
+            this.label185.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label185.Name = "label185";
+            this.label185.Size = new System.Drawing.Size(69, 15);
+            this.label185.TabIndex = 164;
+            this.label185.Text = "Open Hand:";
+            this.label185.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label187
+            // 
+            this.label187.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label187.Location = new System.Drawing.Point(24, 40);
+            this.label187.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label187.Name = "label187";
+            this.label187.Size = new System.Drawing.Size(66, 15);
+            this.label187.TabIndex = 165;
+            this.label187.Text = "Close Hand:";
+            this.label187.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label189
+            // 
+            this.label189.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label189.Location = new System.Drawing.Point(27, 54);
+            this.label189.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label189.Name = "label189";
+            this.label189.Size = new System.Drawing.Size(63, 15);
+            this.label189.TabIndex = 166;
+            this.label189.Text = "Flex Hand:";
+            this.label189.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // BPRclass9
+            // 
+            this.BPRclass9.AutoSize = true;
+            this.BPRclass9.BackColor = System.Drawing.Color.Transparent;
+            this.BPRclass9.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.BPRclass9.Enabled = false;
+            this.BPRclass9.Location = new System.Drawing.Point(89, 149);
+            this.BPRclass9.Name = "BPRclass9";
+            this.BPRclass9.Size = new System.Drawing.Size(15, 14);
+            this.BPRclass9.TabIndex = 178;
+            this.BPRclass9.UseVisualStyleBackColor = false;
+            // 
+            // label190
+            // 
+            this.label190.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label190.Location = new System.Drawing.Point(9, 116);
+            this.label190.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label190.Name = "label190";
+            this.label190.Size = new System.Drawing.Size(81, 15);
+            this.label190.TabIndex = 167;
+            this.label190.Text = "Thumb Extend:";
+            this.label190.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label191
+            // 
+            this.label191.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label191.Location = new System.Drawing.Point(20, 101);
+            this.label191.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label191.Name = "label191";
+            this.label191.Size = new System.Drawing.Size(70, 15);
+            this.label191.TabIndex = 177;
+            this.label191.Text = "Supination:";
+            this.label191.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label192
+            // 
+            this.label192.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label192.Location = new System.Drawing.Point(24, 131);
+            this.label192.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label192.Name = "label192";
+            this.label192.Size = new System.Drawing.Size(66, 15);
+            this.label192.TabIndex = 168;
+            this.label192.Text = "Thumb Flex:";
+            this.label192.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label193
+            // 
+            this.label193.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label193.Location = new System.Drawing.Point(24, 86);
+            this.label193.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label193.Name = "label193";
+            this.label193.Size = new System.Drawing.Size(66, 15);
+            this.label193.TabIndex = 176;
+            this.label193.Text = "Pronation:";
+            this.label193.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label194
+            // 
+            this.label194.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label194.Location = new System.Drawing.Point(11, 147);
+            this.label194.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label194.Name = "label194";
+            this.label194.Size = new System.Drawing.Size(79, 15);
+            this.label194.TabIndex = 169;
+            this.label194.Text = "Index Extend:";
+            this.label194.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label195
+            // 
+            this.label195.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label195.Location = new System.Drawing.Point(10, 70);
+            this.label195.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label195.Name = "label195";
+            this.label195.Size = new System.Drawing.Size(80, 15);
+            this.label195.TabIndex = 175;
+            this.label195.Text = "Extend Hand:";
+            this.label195.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label196
+            // 
+            this.label196.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label196.Location = new System.Drawing.Point(129, 12);
+            this.label196.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label196.Name = "label196";
+            this.label196.Size = new System.Drawing.Size(90, 15);
+            this.label196.TabIndex = 171;
+            this.label196.Text = "Ring Extend:";
+            this.label196.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label197
+            // 
+            this.label197.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label197.Location = new System.Drawing.Point(139, 55);
+            this.label197.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label197.Name = "label197";
+            this.label197.Size = new System.Drawing.Size(80, 15);
+            this.label197.TabIndex = 174;
+            this.label197.Text = "Little Flex:";
+            this.label197.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label198
+            // 
+            this.label198.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label198.Location = new System.Drawing.Point(114, 25);
+            this.label198.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label198.Name = "label198";
+            this.label198.Size = new System.Drawing.Size(105, 15);
+            this.label198.TabIndex = 172;
+            this.label198.Text = "Ring Flex:";
+            this.label198.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label199
+            // 
+            this.label199.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label199.Location = new System.Drawing.Point(108, 38);
+            this.label199.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label199.Name = "label199";
+            this.label199.Size = new System.Drawing.Size(80, 15);
+            this.label199.TabIndex = 173;
+            this.label199.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // SLRTgroupBox
+            // 
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch1);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch2);
+            this.SLRTgroupBox.Controls.Add(this.label167);
+            this.SLRTgroupBox.Controls.Add(this.label168);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch3);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch4);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch5);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch6);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch7);
+            this.SLRTgroupBox.Controls.Add(this.label174);
+            this.SLRTgroupBox.Controls.Add(this.slrt_ch8);
+            this.SLRTgroupBox.Controls.Add(this.label176);
+            this.SLRTgroupBox.Controls.Add(this.label177);
+            this.SLRTgroupBox.Controls.Add(this.label178);
+            this.SLRTgroupBox.Controls.Add(this.label179);
+            this.SLRTgroupBox.Controls.Add(this.label180);
+            this.SLRTgroupBox.Enabled = false;
+            this.SLRTgroupBox.Location = new System.Drawing.Point(271, 173);
+            this.SLRTgroupBox.Name = "SLRTgroupBox";
+            this.SLRTgroupBox.Size = new System.Drawing.Size(262, 164);
+            this.SLRTgroupBox.TabIndex = 210;
+            this.SLRTgroupBox.TabStop = false;
+            this.SLRTgroupBox.Text = "Simulink Realtime (SLRT)";
+            this.SLRTgroupBox.Visible = false;
+            // 
+            // slrt_ch1
+            // 
+            this.slrt_ch1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch1.Location = new System.Drawing.Point(39, 16);
+            this.slrt_ch1.Name = "slrt_ch1";
+            this.slrt_ch1.Size = new System.Drawing.Size(60, 16);
+            this.slrt_ch1.TabIndex = 185;
+            this.slrt_ch1.Text = "1.0";
+            this.slrt_ch1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // slrt_ch2
+            // 
+            this.slrt_ch2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch2.Location = new System.Drawing.Point(39, 30);
+            this.slrt_ch2.Name = "slrt_ch2";
+            this.slrt_ch2.Size = new System.Drawing.Size(60, 16);
+            this.slrt_ch2.TabIndex = 186;
+            this.slrt_ch2.Text = "1.0";
+            this.slrt_ch2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label167
+            // 
+            this.label167.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label167.Location = new System.Drawing.Point(10, 30);
+            this.label167.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label167.Name = "label167";
+            this.label167.Size = new System.Drawing.Size(29, 15);
+            this.label167.TabIndex = 188;
+            this.label167.Text = "Ch2:";
+            this.label167.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label168
+            // 
+            this.label168.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label168.Location = new System.Drawing.Point(2, 15);
+            this.label168.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label168.Name = "label168";
+            this.label168.Size = new System.Drawing.Size(37, 15);
+            this.label168.TabIndex = 187;
+            this.label168.Text = "Ch1:";
+            this.label168.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // slrt_ch3
+            // 
+            this.slrt_ch3.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch3.Location = new System.Drawing.Point(39, 52);
+            this.slrt_ch3.Name = "slrt_ch3";
+            this.slrt_ch3.Size = new System.Drawing.Size(60, 16);
+            this.slrt_ch3.TabIndex = 157;
+            this.slrt_ch3.Text = "1.0";
+            this.slrt_ch3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // slrt_ch4
+            // 
+            this.slrt_ch4.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch4.Location = new System.Drawing.Point(39, 66);
+            this.slrt_ch4.Name = "slrt_ch4";
+            this.slrt_ch4.Size = new System.Drawing.Size(60, 16);
+            this.slrt_ch4.TabIndex = 158;
+            this.slrt_ch4.Text = "1.0";
+            this.slrt_ch4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // slrt_ch5
+            // 
+            this.slrt_ch5.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch5.Location = new System.Drawing.Point(39, 87);
+            this.slrt_ch5.Name = "slrt_ch5";
+            this.slrt_ch5.Size = new System.Drawing.Size(60, 16);
+            this.slrt_ch5.TabIndex = 159;
+            this.slrt_ch5.Text = "1.0";
+            this.slrt_ch5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // slrt_ch6
+            // 
+            this.slrt_ch6.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch6.Location = new System.Drawing.Point(39, 102);
+            this.slrt_ch6.Name = "slrt_ch6";
+            this.slrt_ch6.Size = new System.Drawing.Size(60, 15);
+            this.slrt_ch6.TabIndex = 160;
+            this.slrt_ch6.Text = "1.0";
+            this.slrt_ch6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // slrt_ch7
+            // 
+            this.slrt_ch7.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch7.Location = new System.Drawing.Point(39, 122);
+            this.slrt_ch7.Name = "slrt_ch7";
+            this.slrt_ch7.Size = new System.Drawing.Size(60, 15);
+            this.slrt_ch7.TabIndex = 161;
+            this.slrt_ch7.Text = "1.0";
+            this.slrt_ch7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label174
+            // 
+            this.label174.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label174.Location = new System.Drawing.Point(5, 135);
+            this.label174.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label174.Name = "label174";
+            this.label174.Size = new System.Drawing.Size(33, 15);
+            this.label174.TabIndex = 184;
+            this.label174.Text = "Ch8:";
+            this.label174.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // slrt_ch8
+            // 
+            this.slrt_ch8.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.slrt_ch8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.slrt_ch8.Location = new System.Drawing.Point(39, 136);
+            this.slrt_ch8.Name = "slrt_ch8";
+            this.slrt_ch8.Size = new System.Drawing.Size(60, 15);
+            this.slrt_ch8.TabIndex = 162;
+            this.slrt_ch8.Text = "1.0";
+            this.slrt_ch8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label176
+            // 
+            this.label176.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label176.Location = new System.Drawing.Point(5, 120);
+            this.label176.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label176.Name = "label176";
+            this.label176.Size = new System.Drawing.Size(33, 15);
+            this.label176.TabIndex = 183;
+            this.label176.Text = "Ch7:";
+            this.label176.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label177
+            // 
+            this.label177.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label177.Location = new System.Drawing.Point(5, 102);
+            this.label177.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label177.Name = "label177";
+            this.label177.Size = new System.Drawing.Size(33, 15);
+            this.label177.TabIndex = 182;
+            this.label177.Text = "Ch6:";
+            this.label177.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label178
+            // 
+            this.label178.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label178.Location = new System.Drawing.Point(10, 87);
+            this.label178.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label178.Name = "label178";
+            this.label178.Size = new System.Drawing.Size(29, 15);
+            this.label178.TabIndex = 181;
+            this.label178.Text = "Ch5:";
+            this.label178.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label179
+            // 
+            this.label179.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label179.Location = new System.Drawing.Point(10, 66);
+            this.label179.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label179.Name = "label179";
+            this.label179.Size = new System.Drawing.Size(29, 15);
+            this.label179.TabIndex = 180;
+            this.label179.Text = "Ch4:";
+            this.label179.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label180
+            // 
+            this.label180.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label180.Location = new System.Drawing.Point(10, 51);
+            this.label180.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label180.Name = "label180";
+            this.label180.Size = new System.Drawing.Size(29, 15);
+            this.label180.TabIndex = 179;
+            this.label180.Text = "Ch3:";
+            this.label180.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // statusPanel1
             // 
@@ -4837,6 +8508,64 @@
             this.label149.TabIndex = 224;
             this.label149.Text = "Bento Status:";
             // 
+            // serialArduinoInput
+            // 
+            this.serialArduinoInput.RtsEnable = true;
+            this.serialArduinoInput.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialArduinoInput_DataReceived);
+            // 
+            // serialHANDi
+            // 
+            this.serialHANDi.RtsEnable = true;
+            this.serialHANDi.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialHANDi_DataReceived);
+            // 
+            // doF6
+            // 
+            this.doF6.Location = new System.Drawing.Point(6, 512);
+            this.doF6.Margin = new System.Windows.Forms.Padding(4);
+            this.doF6.Name = "doF6";
+            this.doF6.Size = new System.Drawing.Size(649, 94);
+            this.doF6.TabIndex = 144;
+            // 
+            // doF5
+            // 
+            this.doF5.Location = new System.Drawing.Point(6, 412);
+            this.doF5.Margin = new System.Windows.Forms.Padding(4);
+            this.doF5.Name = "doF5";
+            this.doF5.Size = new System.Drawing.Size(649, 94);
+            this.doF5.TabIndex = 143;
+            // 
+            // doF4
+            // 
+            this.doF4.Location = new System.Drawing.Point(6, 312);
+            this.doF4.Margin = new System.Windows.Forms.Padding(4);
+            this.doF4.Name = "doF4";
+            this.doF4.Size = new System.Drawing.Size(649, 94);
+            this.doF4.TabIndex = 142;
+            // 
+            // doF3
+            // 
+            this.doF3.Location = new System.Drawing.Point(6, 212);
+            this.doF3.Margin = new System.Windows.Forms.Padding(4);
+            this.doF3.Name = "doF3";
+            this.doF3.Size = new System.Drawing.Size(649, 94);
+            this.doF3.TabIndex = 141;
+            // 
+            // doF2
+            // 
+            this.doF2.Location = new System.Drawing.Point(6, 115);
+            this.doF2.Margin = new System.Windows.Forms.Padding(4);
+            this.doF2.Name = "doF2";
+            this.doF2.Size = new System.Drawing.Size(649, 94);
+            this.doF2.TabIndex = 140;
+            // 
+            // doF1
+            // 
+            this.doF1.Location = new System.Drawing.Point(6, 18);
+            this.doF1.Margin = new System.Windows.Forms.Padding(4);
+            this.doF1.Name = "doF1";
+            this.doF1.Size = new System.Drawing.Size(649, 94);
+            this.doF1.TabIndex = 139;
+            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4850,7 +8579,7 @@
             this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(1200, 727);
             this.Name = "mainForm";
-            this.Text = "brachI/Oplexus - V1.0";
+            this.Text = "brachI/Oplexus - V1.5";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mainForm_KeyDown);
@@ -4879,12 +8608,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_wmin_ctrl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_pmin_ctrl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wristFlex_pmax_ctrl)).EndInit();
-            this.SimBox.ResumeLayout(false);
-            this.SimBox.PerformLayout();
             this.BentoGroupBox.ResumeLayout(false);
             this.xBoxGroupBox.ResumeLayout(false);
             this.xBoxGroupBox.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            this.groupBox20.ResumeLayout(false);
+            this.groupBox20.PerformLayout();
+            this.groupBox18.ResumeLayout(false);
+            this.groupBox18.PerformLayout();
+            this.groupBox17.ResumeLayout(false);
+            this.groupBox15.ResumeLayout(false);
+            this.groupBox15.PerformLayout();
             this.groupBox7.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox10)).EndInit();
             this.groupBox8.ResumeLayout(false);
@@ -4902,9 +8636,18 @@
             this.tabIO.ResumeLayout(false);
             this.tabIO.PerformLayout();
             this.groupBox9.ResumeLayout(false);
+            this.groupBox21.ResumeLayout(false);
+            this.groupBox21.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
             this.tabMapping.ResumeLayout(false);
+            this.TaskTimerGroupBox.ResumeLayout(false);
+            this.TaskTimerGroupBox.PerformLayout();
             this.groupBox16.ResumeLayout(false);
             this.groupBox16.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl2)).EndInit();
             this.groupBox11.ResumeLayout(false);
             this.groupBox14.ResumeLayout(false);
             this.groupBox14.PerformLayout();
@@ -4914,12 +8657,13 @@
             this.groupBox12.PerformLayout();
             this.groupBox10.ResumeLayout(false);
             this.groupBox10.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.switchTimeCtrl1)).EndInit();
             this.tabBento.ResumeLayout(false);
             this.tabBento.PerformLayout();
+            this.groupBox19.ResumeLayout(false);
             this.BentoEnvLimitsBox.ResumeLayout(false);
             this.BentoEnvLimitsBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
@@ -4927,7 +8671,41 @@
             this.BentoAdaptGripBox.ResumeLayout(false);
             this.BentoAdaptGripBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BentoAdaptGripCtrl)).EndInit();
+            this.tabHANDi.ResumeLayout(false);
+            this.HANDiGroupBox.ResumeLayout(false);
+            this.HANDiParamBox.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.D5_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D5_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D4_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D2_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D1_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D0_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_wmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_wmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.D3_pmax_ctrl)).EndInit();
+            this.HANDiFeedbackBox.ResumeLayout(false);
+            this.HANDiFeedbackBox.PerformLayout();
             this.tabViz.ResumeLayout(false);
+            this.udpGroupBox.ResumeLayout(false);
+            this.ArduinoInputGroupBox.ResumeLayout(false);
+            this.biopatrecGroupBox.ResumeLayout(false);
+            this.biopatrecGroupBox.PerformLayout();
+            this.SLRTgroupBox.ResumeLayout(false);
             this.statusPanel1.ResumeLayout(false);
             this.statusPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -4936,7 +8714,6 @@
         }
 
         #endregion
-
         internal System.Windows.Forms.MenuStrip MenuStrip1;
         internal System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
         internal System.Windows.Forms.ToolStripMenuItem NewToolStripMenuItem;
@@ -5012,17 +8789,12 @@
         internal System.Windows.Forms.Label label107;
         internal System.Windows.Forms.Label label106;
         internal System.Windows.Forms.Label label200;
-        internal System.Windows.Forms.GroupBox SimBox;
-        internal System.Windows.Forms.Button SIMdcBTN;
-        internal System.Windows.Forms.Button SIMconnectBTN;
-        internal System.Windows.Forms.Button openSim;
         internal System.Windows.Forms.Timer Timer1;
         internal System.Windows.Forms.Timer Timer3;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         internal System.Windows.Forms.OpenFileDialog OpenFileDialog1;
         internal System.Windows.Forms.HelpProvider HelpProvider1;
         internal System.Windows.Forms.Timer Timer2;
-        private System.Windows.Forms.CheckBox sim_flag;
         private System.Windows.Forms.ComboBox cmbSerialPorts;
         internal System.Windows.Forms.Label label114;
         internal System.Windows.Forms.Label label115;
@@ -5198,7 +8970,7 @@
         internal System.Windows.Forms.Label label240;
         internal System.Windows.Forms.ComboBox switch2MappingBox;
         internal System.Windows.Forms.Label label241;
-        internal System.Windows.Forms.NumericUpDown switchTimeCtrl;
+        internal System.Windows.Forms.NumericUpDown switchTimeCtrl1;
         internal System.Windows.Forms.ComboBox switch1MappingBox;
         internal System.Windows.Forms.Label label242;
         private System.Windows.Forms.CheckBox vocalBox;
@@ -5223,8 +8995,6 @@
         internal System.Windows.Forms.Button button14;
         private System.Windows.Forms.CheckedListBox checkedListDairy;
         private System.Windows.Forms.Label labelType;
-        internal System.Windows.Forms.ComboBox InputComboBox;
-        internal System.Windows.Forms.ComboBox OutputComboBox;
         internal System.Windows.Forms.Label label166;
         private brachIOplexus.DoF doF1;
         private brachIOplexus.DoF doF6;
@@ -5246,14 +9016,14 @@
         internal System.Windows.Forms.Label label104;
         internal System.Windows.Forms.Label label145;
         internal System.Windows.Forms.Label label147;
-        private System.Windows.Forms.Label switchSmaxLabel;
-        private System.Windows.Forms.Label switchSminLabel;
-        private System.Windows.Forms.Label switchSminTick;
-        private System.Windows.Forms.Label switchSmaxTick;
-        public System.Windows.Forms.NumericUpDown switchSmaxCtrl;
-        public System.Windows.Forms.NumericUpDown switchSminCtrl;
-        public System.Windows.Forms.ProgressBar switchSignalBar;
-        public System.Windows.Forms.NumericUpDown switchGainCtrl;
+        private System.Windows.Forms.Label switchSmaxLabel1;
+        private System.Windows.Forms.Label switchSminLabel1;
+        private System.Windows.Forms.Label switchSminTick1;
+        private System.Windows.Forms.Label switchSmaxTick1;
+        public System.Windows.Forms.NumericUpDown switchSmaxCtrl1;
+        public System.Windows.Forms.NumericUpDown switchSminCtrl1;
+        public System.Windows.Forms.ProgressBar switchSignalBar1;
+        public System.Windows.Forms.NumericUpDown switchGainCtrl1;
         private System.Windows.Forms.CheckBox myoBuzzBox;
         internal System.Windows.Forms.Label ID2_state;
         internal System.Windows.Forms.Label label148;
@@ -5288,6 +9058,269 @@
         private System.Windows.Forms.ToolStripMenuItem mYOSequentialLeftToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem mYOSequentialRightToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem keyboardMultijointToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox15;
+        private System.Windows.Forms.Button biopatrecClearAll;
+        private System.Windows.Forms.Button biopatrecConnect;
+        private System.Windows.Forms.Button biopatrecSelectAll;
+        private System.Windows.Forms.Button biopatrecDisconnect;
+        private System.Windows.Forms.CheckedListBox biopatrecList;
+        private System.Windows.Forms.GroupBox groupBox17;
+        private System.Windows.Forms.Button SLRTclearAll;
+        private System.Windows.Forms.Button SLRTconnect;
+        private System.Windows.Forms.Button SLRTselectAll;
+        private System.Windows.Forms.Button SLRTdisconnect;
+        private System.Windows.Forms.CheckedListBox SLRTlist;
+        private System.Windows.Forms.GroupBox SLRTgroupBox;
+        private System.Windows.Forms.Label slrt_ch1;
+        private System.Windows.Forms.Label slrt_ch2;
+        internal System.Windows.Forms.Label label167;
+        internal System.Windows.Forms.Label label168;
+        private System.Windows.Forms.Label slrt_ch3;
+        private System.Windows.Forms.Label slrt_ch4;
+        private System.Windows.Forms.Label slrt_ch5;
+        private System.Windows.Forms.Label slrt_ch6;
+        private System.Windows.Forms.Label slrt_ch7;
+        internal System.Windows.Forms.Label label174;
+        private System.Windows.Forms.Label slrt_ch8;
+        internal System.Windows.Forms.Label label176;
+        internal System.Windows.Forms.Label label177;
+        internal System.Windows.Forms.Label label178;
+        internal System.Windows.Forms.Label label179;
+        internal System.Windows.Forms.Label label180;
+        private System.Windows.Forms.GroupBox biopatrecGroupBox;
+        internal System.Windows.Forms.Label label184;
+        internal System.Windows.Forms.Label label182;
+        private System.Windows.Forms.CheckBox BPRclass12;
+        internal System.Windows.Forms.Label label165;
+        private System.Windows.Forms.CheckBox BPRclass24;
+        internal System.Windows.Forms.Label label169;
+        private System.Windows.Forms.CheckBox BPRclass23;
+        private System.Windows.Forms.CheckBox BPRclass17;
+        private System.Windows.Forms.CheckBox BPRclass18;
+        private System.Windows.Forms.CheckBox BPRclass21;
+        private System.Windows.Forms.CheckBox BPRclass20;
+        private System.Windows.Forms.CheckBox BPRclass19;
+        private System.Windows.Forms.CheckBox BPRclass22;
+        internal System.Windows.Forms.Label label170;
+        internal System.Windows.Forms.Label label171;
+        internal System.Windows.Forms.Label label172;
+        internal System.Windows.Forms.Label label173;
+        internal System.Windows.Forms.Label label175;
+        internal System.Windows.Forms.Label label181;
+        internal System.Windows.Forms.Label label201;
+        private System.Windows.Forms.CheckBox BPRclass11;
+        internal System.Windows.Forms.Label label161;
+        private System.Windows.Forms.CheckBox BPRclass10;
+        private System.Windows.Forms.CheckBox BPRclass3;
+        private System.Windows.Forms.CheckBox BPRclass2;
+        private System.Windows.Forms.CheckBox BPRclass1;
+        private System.Windows.Forms.CheckBox BPRclass0;
+        private System.Windows.Forms.CheckBox BPRclass4;
+        private System.Windows.Forms.CheckBox BPRclass5;
+        private System.Windows.Forms.CheckBox BPRclass8;
+        private System.Windows.Forms.CheckBox BPRclass7;
+        private System.Windows.Forms.CheckBox BPRclass13;
+        private System.Windows.Forms.CheckBox BPRclass14;
+        private System.Windows.Forms.CheckBox BPRclass15;
+        private System.Windows.Forms.CheckBox BPRclass16;
+        private System.Windows.Forms.CheckBox BPRclass6;
+        internal System.Windows.Forms.Label label183;
+        internal System.Windows.Forms.Label label185;
+        internal System.Windows.Forms.Label label187;
+        internal System.Windows.Forms.Label label189;
+        private System.Windows.Forms.CheckBox BPRclass9;
+        internal System.Windows.Forms.Label label190;
+        internal System.Windows.Forms.Label label191;
+        internal System.Windows.Forms.Label label192;
+        internal System.Windows.Forms.Label label193;
+        internal System.Windows.Forms.Label label194;
+        internal System.Windows.Forms.Label label195;
+        internal System.Windows.Forms.Label label196;
+        internal System.Windows.Forms.Label label197;
+        internal System.Windows.Forms.Label label198;
+        internal System.Windows.Forms.Label label199;
+        internal System.Windows.Forms.ComboBox biopatrecMode;
+        internal System.Windows.Forms.Label label202;
+        internal System.Windows.Forms.TextBox biopatrecIPport;
+        internal System.Windows.Forms.Label label186;
+        internal System.Windows.Forms.Label label188;
+        internal System.Windows.Forms.TextBox biopatrecIPaddr;
+        private System.IO.Ports.SerialPort serialArduinoInput;
+        private System.Windows.Forms.GroupBox groupBox18;
+        private System.Windows.Forms.ComboBox ArduinoInputCOM;
+        internal System.Windows.Forms.Label label204;
+        private System.Windows.Forms.Button ArduinoInputClearAll;
+        private System.Windows.Forms.Button ArduinoInputConnect;
+        private System.Windows.Forms.Button ArduinoInputSelectAll;
+        private System.Windows.Forms.Button ArduinoInputDisconnect;
+        private System.Windows.Forms.CheckedListBox ArduinoInputList;
+        private System.Windows.Forms.GroupBox ArduinoInputGroupBox;
+        private System.Windows.Forms.Label arduino_A0;
+        private System.Windows.Forms.Label arduino_A1;
+        internal System.Windows.Forms.Label label207;
+        internal System.Windows.Forms.Label label208;
+        private System.Windows.Forms.Label arduino_A2;
+        private System.Windows.Forms.Label arduino_A3;
+        private System.Windows.Forms.Label arduino_A4;
+        private System.Windows.Forms.Label arduino_A5;
+        private System.Windows.Forms.Label arduino_A6;
+        internal System.Windows.Forms.Label label214;
+        private System.Windows.Forms.Label arduino_A7;
+        internal System.Windows.Forms.Label label216;
+        internal System.Windows.Forms.Label label217;
+        internal System.Windows.Forms.Label label218;
+        internal System.Windows.Forms.Label label219;
+        internal System.Windows.Forms.Label label220;
+        private System.Windows.Forms.Label switchSmaxLabel2;
+        private System.Windows.Forms.Label switchSminLabel2;
+        private System.Windows.Forms.Label switchSminTick2;
+        private System.Windows.Forms.Label switchSmaxTick2;
+        public System.Windows.Forms.NumericUpDown switchSmaxCtrl2;
+        public System.Windows.Forms.NumericUpDown switchSminCtrl2;
+        public System.Windows.Forms.ProgressBar switchSignalBar2;
+        public System.Windows.Forms.NumericUpDown switchGainCtrl2;
+        internal System.Windows.Forms.NumericUpDown switchTimeCtrl2;
+        internal System.Windows.Forms.Label label205;
+        internal System.Windows.Forms.Label switchState_label;
+        internal System.Windows.Forms.Label label213;
+        internal System.Windows.Forms.Label flag2_label;
+        internal System.Windows.Forms.Label label211;
+        internal System.Windows.Forms.Label flag1_label;
+        internal System.Windows.Forms.Label label209;
+        internal System.Windows.Forms.Label timer1_label;
+        private System.Windows.Forms.GroupBox groupBox19;
+        internal System.Windows.Forms.Button BentoProfileOpen;
+        internal System.Windows.Forms.ComboBox BentoProfileBox;
+        internal System.Windows.Forms.Button BentoProfileSave;
+        private System.Windows.Forms.GroupBox groupBox20;
+        internal System.Windows.Forms.ComboBox udpMode;
+        internal System.Windows.Forms.Label label206;
+        internal System.Windows.Forms.TextBox udpIPport;
+        internal System.Windows.Forms.Label label210;
+        internal System.Windows.Forms.Label label212;
+        private System.Windows.Forms.Button udpClearAll;
+        private System.Windows.Forms.Button udpConnect;
+        internal System.Windows.Forms.TextBox udpIPaddr;
+        private System.Windows.Forms.Button udpSelectAll;
+        private System.Windows.Forms.Button udpDisconnect;
+        private System.Windows.Forms.CheckedListBox udpList;
+        private System.Windows.Forms.GroupBox udpGroupBox;
+        private System.Windows.Forms.Label udp_ch1;
+        private System.Windows.Forms.Label udp_ch2;
+        internal System.Windows.Forms.Label label222;
+        internal System.Windows.Forms.Label label223;
+        private System.Windows.Forms.Label udp_ch3;
+        private System.Windows.Forms.Label udp_ch4;
+        private System.Windows.Forms.Label udp_ch6;
+        private System.Windows.Forms.Label udp_ch7;
+        internal System.Windows.Forms.Label label229;
+        private System.Windows.Forms.Label udp_ch9;
+        internal System.Windows.Forms.Label label231;
+        internal System.Windows.Forms.Label label232;
+        internal System.Windows.Forms.Label label233;
+        internal System.Windows.Forms.Label label234;
+        internal System.Windows.Forms.Label label235;
+        private System.Windows.Forms.Label udp_ch8;
+        internal System.Windows.Forms.Label label244;
+        private System.Windows.Forms.Label udp_ch5;
+        private System.Windows.Forms.GroupBox groupBox21;
+        private System.Windows.Forms.PictureBox pictureBox13;
+        private System.Windows.Forms.Button HANDiClearAll;
+        private System.Windows.Forms.Button HANDiDisconnect;
+        private System.Windows.Forms.Button HANDiSelectAll;
+        private System.Windows.Forms.ComboBox HANDiCOM;
+        private System.Windows.Forms.CheckedListBox HANDiList;
+        private System.Windows.Forms.Button HANDiConnect;
+        private System.Windows.Forms.Button HANDiRefresh;
+        internal System.Windows.Forms.Label label215;
+        private System.Windows.Forms.TabPage tabHANDi;
+        private System.Windows.Forms.GroupBox HANDiGroupBox;
+        internal System.Windows.Forms.Label label221;
+        private System.Windows.Forms.Button HANDiRun;
+        private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Button button13;
+        private System.Windows.Forms.GroupBox HANDiParamBox;
+        internal System.Windows.Forms.NumericUpDown D5_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D5_wmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D5_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D5_pmax_ctrl;
+        internal System.Windows.Forms.Label label247;
+        internal System.Windows.Forms.NumericUpDown D4_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D4_wmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D4_pmax_ctrl;
+        internal System.Windows.Forms.Label label224;
+        internal System.Windows.Forms.NumericUpDown D2_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D2_wmin_ctrl;
+        internal System.Windows.Forms.Label label225;
+        internal System.Windows.Forms.NumericUpDown D2_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D2_pmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D1_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D1_wmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D1_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D1_pmax_ctrl;
+        internal System.Windows.Forms.Label label226;
+        internal System.Windows.Forms.NumericUpDown D0_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D0_wmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D0_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D0_pmax_ctrl;
+        internal System.Windows.Forms.Label label227;
+        internal System.Windows.Forms.Label label228;
+        internal System.Windows.Forms.NumericUpDown D3_wmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown D3_wmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D3_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown D3_pmax_ctrl;
+        internal System.Windows.Forms.Label label230;
+        internal System.Windows.Forms.Label label243;
+        internal System.Windows.Forms.Label label245;
+        internal System.Windows.Forms.Label label246;
+        private System.Windows.Forms.GroupBox HANDiFeedbackBox;
+        internal System.Windows.Forms.Label label252;
+        internal System.Windows.Forms.Label label265;
+        internal System.Windows.Forms.Label label270;
+        internal System.Windows.Forms.Label label248;
+        internal System.Windows.Forms.Label label250;
+        internal System.Windows.Forms.Label label251;
+        internal System.Windows.Forms.Label label254;
+        internal System.Windows.Forms.Label label256;
+        internal System.Windows.Forms.Label label259;
+        internal System.Windows.Forms.Label label261;
+        internal System.Windows.Forms.Label label262;
+        internal System.Windows.Forms.Label label264;
+        internal System.Windows.Forms.Label label269;
+        internal System.Windows.Forms.Label label271;
+        internal System.Windows.Forms.Label label272;
+        internal System.Windows.Forms.Label label274;
+        internal System.Windows.Forms.Label label275;
+        internal System.Windows.Forms.Label label276;
+        internal System.Windows.Forms.Label label278;
+        internal System.Windows.Forms.Label label279;
+        private System.IO.Ports.SerialPort serialHANDi;
+        internal System.Windows.Forms.NumericUpDown D4_pmin_ctrl;
+        private System.Windows.Forms.Button HANDiSuspend;
+        private System.Windows.Forms.Label udp_ch10;
+        internal System.Windows.Forms.Label label255;
+        internal System.Windows.Forms.Label label260;
+        private System.Windows.Forms.Label udp_ch11;
+        internal System.Windows.Forms.Label TaskTimerStateLabel;
+        internal System.Windows.Forms.Label label249;
+        private System.Windows.Forms.GroupBox TaskTimerGroupBox;
+        internal System.Windows.Forms.Label TaskTimerValue;
+        internal System.Windows.Forms.Label TaskTimerLabel;
+        private System.Windows.Forms.Button TaskTimerReset;
+        private System.Windows.Forms.Button TaskTimerEnable;
+        private System.Windows.Forms.Button demoDelsysButton;
+        private System.Windows.Forms.Label label236;
+        internal System.Windows.Forms.Label label203;
+        internal System.Windows.Forms.Label biopatrecDelay;
+        private System.Windows.Forms.Button demoShutdownButton;
+        private System.Windows.Forms.Button demoMYObutton;
+        private System.Windows.Forms.Button demoXBoxButton;
+        internal System.Windows.Forms.ComboBox InputComboBox;
+        internal System.Windows.Forms.ComboBox OutputComboBox;
+        private System.Windows.Forms.Panel SwitchPanel;
+        private System.Windows.Forms.Panel TaskTimerPanel;
+        private System.Windows.Forms.Button TaskTimerClose;
+        private System.Windows.Forms.Button TaskTimerOpen;
     }
 }
 

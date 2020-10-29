@@ -83,6 +83,16 @@ namespace brachIOplexus.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Handi_Hand_graphic {
+            get {
+                object obj = ResourceManager.GetObject("Handi_Hand_graphic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap img_4816_brachIOplexusE {
             get {
                 object obj = ResourceManager.GetObject("img_4816_brachIOplexusE", resourceCulture);

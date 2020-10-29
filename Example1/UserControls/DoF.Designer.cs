@@ -44,6 +44,7 @@
             this.DoFBox.TabIndex = 0;
             this.DoFBox.TabStop = false;
             this.DoFBox.Text = "Degree of Freedom";
+            this.DoFBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.channel2_MouseClick);     // Delegate mouse click event to hide/show the individual degrees of freedom (DOF)
             // 
             // channel2
             // 
@@ -51,6 +52,8 @@
             this.channel2.Name = "channel2";
             this.channel2.Size = new System.Drawing.Size(640, 39);
             this.channel2.TabIndex = 1;
+            this.channel2.MouseClick += new System.Windows.Forms.MouseEventHandler(this.channel2_MouseClick);   // Delegate mouse click event to hide/show the individual degrees of freedom (DOF)
+
             // 
             // channel1
             // 
@@ -58,6 +61,7 @@
             this.channel1.Name = "channel1";
             this.channel1.Size = new System.Drawing.Size(640, 39);
             this.channel1.TabIndex = 0;
+            this.channel1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.channel1_MouseClick);   // Delegate mouse click event to hide/show the individual degrees of freedom (DOF)
             // 
             // DoF
             // 
@@ -66,6 +70,7 @@
             this.Controls.Add(this.DoFBox);
             this.Name = "DoF";
             this.Size = new System.Drawing.Size(652, 96);
+            this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.DoF_MouseClick);
             this.DoFBox.ResumeLayout(false);
             this.ResumeLayout(false);
 

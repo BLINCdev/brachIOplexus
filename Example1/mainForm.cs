@@ -8,6 +8,7 @@
 '   Updated.... 
 '   Version.... 1.0.0.0
 '
+'   xPC Target (aka Simulink Realtime) .NET API Copyright Mathworks (see matlab R2014a documentation for help)
 
 */
 #endregion
@@ -43,6 +44,26 @@ namespace brachIOplexus
     {
 
         #region "Initialization"
+        // Create xPC Target parameter object for xPC Target/SLRT interface
+        int[] SLRT_ch = new int[8];
+        int SLRTflag = 0;   //  Used to cycle through which channels are being read each time step of the main loop (2 channels/time step), initialize to 0 when connecting to SLRT
+
+        // Create TCP listener/client for biopatrec communication and initalize related variables
+        TcpListener listener;
+        TcpClient client;
+        NetworkStream netStream;
+        Thread t = null;
+        Int32 biopatrec_ID = 0;
+        Int32 biopatrec_vel = 0;
+        const int CLASS_NUM = 25;                        // Number of classes that are available for mapping
+        Stopwatch stopWatch2 = new Stopwatch();
+        long milliSec2;     // the timestep of the biopatrec loop in milliseconds
+
+        // Create thread for UDP client for interactiveMyoControl communication and initalize related variables
+        Thread t2 = null;
+        double[] UDP_ch = new double[11];
+        UdpClient udpClientRX;
+        IPEndPoint ipEndPointRX;
 
         // Create a socket client object for legacy simulator
         System.Net.Sockets.TcpClient socketClient = new System.Net.Sockets.TcpClient();
@@ -95,6 +116,37 @@ namespace brachIOplexus
         Stopwatch stopWatch1 = new Stopwatch();
         long milliSec1;     // the timestep of the main loop in milliseconds -> will vary depending on how many dynamixel servos are connected
 
+        // Quick Profiles - Initialize variables
+        bool QuickProfileFlag = false;
+        int QuickProfileState = 0;
+
+        // Auto-suspend - Initialize variables
+        bool autosuspend_flag = false;
+
+        // serialArduinoInput - initialize variables for reading in strings over serial or bluetooth
+        string RxString;
+        char[] separatingChars = { 'A', 'B', 'C', 'D' };
+        Stopwatch ArduinoStartTimer = new Stopwatch();
+        long ArduinoStartDelay = 1000;     // the timestep of the main loop in milliseconds -> will vary depending on how many dynamixel servos are connected
+
+        // serialHANDi - initialize variables for reading in strings over serial or bluetooth via the arduino connected to the HANDi Hand
+        string RxString2;
+        char[] separatingChars2 = {','};
+        Stopwatch HANDiStartTimer = new Stopwatch();
+        long HANDiStartDelay = 1000;     // the timestep of the main loop in milliseconds -> will vary depending on how many dynamixel servos are connected
+        public const int HANDI_NUM = 6;
+        int[] HANDi_pos = new int[6];   // target positions for the HANDi Hand
+        Thread t3 = null;
+        Stopwatch stopWatch3 = new Stopwatch();
+        long milliSec3;     // the timestep of the biopatrec loop in milliseconds
+
+        // Task Timer - Initialize Variables
+        Stopwatch Task_Timer = new Stopwatch();  // timer for measuring the total amount of elapsed time
+        int TaskTimerState = 0;     // 0 = disabled, 1 = reset(and ready to go), 2 = running, 3 = resetting
+
+        // Usage Log - Initialize Variables
+        DateTime StartTime;
+
         #region "Dynamixel SDK Initilization"
         // DynamixelSDK
         // Control table address
@@ -114,7 +166,7 @@ namespace brachIOplexus
         public const int LEN_MX_GOAL_POSITION = 2;
         public const int LEN_MX_MOVING_SPEED = 2;
         public const int LEN_MX_GOAL_POS_SPEED = 4;
-        public const int LEN_MX_TORQUE_LIMIT= 2;
+        public const int LEN_MX_TORQUE_LIMIT = 2;
         public const int LEN_MX_PRESENT_POSITION = 2;
         public const int LEN_MX_PRESENT_SPEED = 2;
         public const int LEN_MX_PRESENT_LOAD = 2;
@@ -211,7 +263,8 @@ namespace brachIOplexus
         public class DoF_
         {
             public bool Enabled { get; set; }   // Whether the DoF is enabled or not
-            public int flip { get; set; }       // This value is used to keep track of whether the output order for a given DoF has been flipped from how they are ordered by default in the output list 
+            public int flipA { get; set; }       // This value is used to keep track of whether the output order for a given DoF has been flipped from how they are ordered by default in the output list 
+            public int flipB { get; set; }       // This value is used to keep track of whether the output order for a given DoF has been flipped from how they are ordered by default in the output list
             public Ch ChA { get; set; }         // Each DoF has two channels by default. This is the first channel.
             public Ch ChB { get; set; }         // This is the second channel.
 
@@ -233,6 +286,7 @@ namespace brachIOplexus
             public decimal gain { get; set; }     // The gain that is being applied to the signal strength. Can be used to 'zoom' in on the signal
             public decimal smin { get; set; }     // The minimum threshold below which the motor does not move and above which the motor moves
             public decimal smax { get; set; }     // The maximum threshold above which the motor just continues to move at its maximum velocity
+            public bool Enabled { get; set; }   // Whether the channel is enabled or not
 
             public Ch()
             {
@@ -256,9 +310,13 @@ namespace brachIOplexus
             public int input { get; set; }        // The button to use as a trigger if switching mode is set to button press
             public int signal { get; set; }       // The signal strength of the input device on the current time step.
             public decimal gain { get; set; }     // The gain that is being applied to the signal strength. Can be used to 'zoom' in on the signal
-            public decimal smin { get; set; }     // The minimum threshold below which the motor does not move and above which the motor moves
-            public decimal smax { get; set; }     // The maximum threshold above which the motor just continues to move at its maximum velocity
+            public decimal smin1 { get; set; }     // The minimum threshold below which the motor does not move and above which the motor moves
+            public decimal smax1 { get; set; }     // The maximum threshold above which the motor just continues to move at its maximum velocity
             public decimal cctime { get; set; }   // The time lockout where the algorithm neither moves or switches after a signal has crosses threshold
+            public decimal smin2 { get; set; }     // The minimum threshold below which the motor does not move and above which the motor moves
+            public decimal smax2 { get; set; }     // The maximum threshold above which the motor just continues to move at its maximum velocity
+            public bool flag1 { get; set; }        // The flag used to track whether the max threshold of channel 1 was crossed during co-contraction switching (false = not crossed, true = crossed)
+            public bool flag2 { get; set; }        // The flag used to track whether the max threshold of channel 2 was crossed during co-contraction switching (false = not crossed, true = crossed)
             public List[] List = new List[SWITCH_NUM];      // The actual switching list
 
             public Switching()
@@ -286,13 +344,14 @@ namespace brachIOplexus
             public int torque { get; set; }     // Used for turning the torque on/off
             public int suspend { get; set; }    // Used for connecting or disconnecting the input devices from the output joints
             public int counter = 0;             // Used for counting the instances of the class https://stackoverflow.com/questions/12276641/count-instances-of-the-class
-            public Motor[] Motor = new Motor[BENTO_NUM];    // The list of motors
+            public Motor[] Motor = new Motor[BENTO_NUM+HANDI_NUM];    // The list of motors
+            // The indexing starts at 0, but some of the IDs are offset by 1 to reflect their actualy IDs on the dynamixel bus. For example shoulder is indexed at 0 in this object, but its ID on the bus is 1. Hand is indexed at 4, but its ID on the bus is 5.
             public Robot()
             {
                 Interlocked.Increment(ref counter);
 
-                Motor = new Motor[BENTO_NUM];
-                for (int i = 0; i < BENTO_NUM; i++)
+                Motor = new Motor[BENTO_NUM + HANDI_NUM];
+                for (int i = 0; i < BENTO_NUM + HANDI_NUM; i++)
                 {
                     Motor[i] = new Motor();
                 }
@@ -305,15 +364,15 @@ namespace brachIOplexus
         }
 
         // Class Motor stores the properties for each motor
-        public struct Motor
+        public class Motor
         {
             public int pmin { get; set; }       // the CW angle limit of the motor
             public int pmax { get; set; }       // the CCW angle limit of the motor
-            public int p    { get; set; }       // the goal position
+            public int p { get; set; }       // the goal position
             public int p_prev { get; set; }     // the previous position of the motor (used for stopping dynamixel motors)
             public int wmin { get; set; }       // the minimum velocity of the motor
             public int wmax { get; set; }       // the maximum velocity of the motor
-            public int w    { get; set; }       // the goal velocity
+            public int w { get; set; }       // the goal velocity
             public int w_prev { get; set; }     // the previous velocity of the motor (not currently being used)
 
 
@@ -324,18 +383,55 @@ namespace brachIOplexus
             public int dofState { get; set; }       // The state of the DoF from the previous timestep. (not currently being used)
             public int switchState { get; set; }    // The state of the sequential switch (i.e. 0 = below threshold, 1 = above threshold -> switch to next item on list, 2 = Don't allow another switching event until both of the channels drops below threshold)                  
             public int listPos { get; set; }        // The position of the sequential switch in the switching order (i.e. cycles between 0 and 5 as)
-            
+
             public long timer1 { get; set; }        // Counter used for co-contracting switching.
             public long timer2 { get; set; }        // 2nd counter used for co-contracting switching
-            public int[] motorState = new int[BENTO_NUM];   // The state of each motor (i.e. 0 = off, 1 = moving in cw direction, 2 = moving in ccw direction, 3 = hanging until co-contraction is finished)
+            public int[] motorState = new int[BENTO_NUM + HANDI_NUM];   // The state of each motor (i.e. 0 = off, 1 = moving in cw direction, 2 = moving in ccw direction, 3 = hanging until co-contraction is finished).
+            // The indexing starts at 0, but some of the IDs are offset by 1 to reflect their actualy IDs on the dynamixel bus. For example shoulder is indexed at 0 in this object, but its ID on the bus is 1. Hand is indexed at 4, but its ID on the bus is 5.
             public State()
             {
-                motorState = new int[BENTO_NUM];
-                for (int i = 0; i < BENTO_NUM; i++)
+                motorState = new int[BENTO_NUM + HANDI_NUM];
+                for (int i = 0; i < BENTO_NUM + HANDI_NUM; i++)
                 {
                     motorState[i] = new int();
                 }
             }
+        }
+
+        // Class RobotSensors stores the feedback values from a robot's sensors to be used for logging or streaming over UDP to other software
+        public class RobotSensors
+        {
+            public int counter = 0;             // Used for counting the instances of the class https://stackoverflow.com/questions/12276641/count-instances-of-the-class
+            public ID[] ID = new ID[BENTO_NUM];    // The list of motors
+            // The indexing starts at 0, but some of the IDs are offset by 1 to reflect their actualy IDs on the dynamixel bus. For example shoulder is indexed at 0 in this object, but its ID on the bus is 1. Hand is indexed at 4, but its ID on the bus is 5.
+            public RobotSensors()
+            {
+                Interlocked.Increment(ref counter);
+
+                ID = new ID[BENTO_NUM];
+                for (int i = 0; i < BENTO_NUM; i++)
+                {
+                    ID[i] = new ID();
+                }
+            }
+            ~RobotSensors()
+            {
+                Interlocked.Decrement(ref counter);
+            }
+
+        }
+
+        // Class ID stores the sensor values for each motor from the RobotSensors class
+        public class ID
+        {
+            public ushort pos { get; set; }       // the current position of the motor
+            public ushort posf { get; set; }      // the current filtered position of the motor
+            public ushort vel { get; set; }       // the current velocity of the motor
+            public ushort load { get; set; }      // the current load of the motor
+            public ushort loadf { get; set; }      // the current filtered load of the motor
+            public ushort volt { get; set; }      // the voltage of the motor
+            public ushort temp { get; set; }      // the current temperature of the motor
+            public ushort tempf { get; set; }      // the current filtered temperature of the motor
         }
 
         // Initialize state, robot, and switching object
@@ -345,6 +441,9 @@ namespace brachIOplexus
 
         Robot robotObj = new Robot();
         Switching switchObj = new Switching();
+        DoF_[] dofObj = new DoF_[DOF_NUM];
+        int[] dofStop = new int[2] { -1, -1};   // Used to selectively stop a joint on a robot when changing the mapping via the input/output tab. The first indice is for type and the second is for ID and correspond to the values in the outputmap array in the mainloop. If set to -1 no stoppage will occur, but if set to other values then that joint will be stopped.
+        RobotSensors BentoSense = new RobotSensors();
 
         #endregion
 
@@ -355,10 +454,15 @@ namespace brachIOplexus
 
         private void mainForm_Load(object sender, EventArgs e)
         {
+
+            //// Hide the XPC target and HANDi Hand tab
+            //tabControl1.TabPages.Remove(tabXPC);
+            tabControl1.TabPages.Remove(tabHANDi);
+
             // How to find com ports and populate combobox: http://stackoverflow.com/questions/13794376/combo-box-for-serial-port
-            var ports = SerialPort.GetPortNames();
+            string[] ports = SerialPort.GetPortNames();
             cmbSerialPorts.DataSource = ports;
-            
+
             // Audo-detect com port that is connected to the USB2dynamixel
             string auto_com_port = Autodetect_Dyna_Port();
             // How to check index of combobox based on string: http://stackoverflow.com/questions/13459772/how-to-check-index-of-combobox-based-on-string
@@ -371,6 +475,29 @@ namespace brachIOplexus
                 cmbSerialPorts.SelectedIndex = cmbSerialPorts.Items.Count - 1;
             }
 
+            // Auto-detect COM port that is connected to the Arduino/Bluetooth mate
+            // How to sort the COM ports: http://www.prodigyproductionsllc.com/articles/programming/get-and-sort-com-port-names-using-c/
+            // Also need to convert to list: http://stackoverflow.com/questions/9285426/orderby-and-list-vs-iorderedenumerable
+            var sortedList = ports.OrderBy(port => Convert.ToInt32(port.Replace("COM", string.Empty))).ToList();
+            ArduinoInputCOM.DataSource = sortedList;
+            HANDiCOM.DataSource = sortedList;
+
+            // Use this code if you are connecting the arduino via a bluetooth mate
+            if (ArduinoInputCOM.Items.Count < 2)
+            {
+                ArduinoInputCOM.SelectedIndex = ArduinoInputCOM.Items.Count - 1;
+            }
+            else
+            {
+                ArduinoInputCOM.SelectedIndex = ArduinoInputCOM.Items.Count - 2;
+            }
+
+
+            //// Use this code if you are connecting the arduino via a USB cable
+            //// Reference 1: https://stackoverflow.com/questions/3293889/how-to-auto-detect-arduino-com-port
+            //// Reference 2: https://stackoverflow.com/questions/450059/how-do-i-set-the-selected-item-in-a-combobox-to-match-my-string-using-c
+            //ArduinoInputCOM.SelectedIndex = ArduinoInputCOM.FindStringExact(AutodetectArduinoPort());
+
             // Initialize text for degree of freedom comboboxes
             doF1.DoFBox.Text = "Degree of Freedom 1";
             doF2.DoFBox.Text = "Degree of Freedom 2";
@@ -378,6 +505,40 @@ namespace brachIOplexus
             doF4.DoFBox.Text = "Degree of Freedom 4";
             doF5.DoFBox.Text = "Degree of Freedom 5";
             doF6.DoFBox.Text = "Degree of Freedom 6";
+
+            // Initialize mapping objects
+            for (int i = 0; i < DOF_NUM; i++)
+            {
+                dofObj[i] = new DoF_();
+
+            }
+
+            // Used to auto deselect when duplicate input/output values are selected and autofill when paired output values are selected in the mapping tab
+            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+
+            foreach (DoF dof in dof_list)
+            {
+                dof.channel1.OutputIndexChanged += filterOutputComboBox;
+                dof.channel2.OutputIndexChanged += filterOutputComboBox;
+                dof.channel1.InputIndexChanged += filterInputComboBox;
+                dof.channel2.InputIndexChanged += filterInputComboBox;
+                dof.channel1.MappingIndexChanged += filterMappingComboBox;
+                dof.channel2.MappingIndexChanged += filterMappingComboBox;
+                dof.channel1.GainValueChanged += filterGainValue;
+                dof.channel2.GainValueChanged += filterGainValue;
+                dof.channel1.SminValueChanged += filterSminValue;
+                dof.channel2.SminValueChanged += filterSminValue;
+                dof.channel1.SmaxValueChanged += filterSmaxValue;
+                dof.channel2.SmaxValueChanged += filterSmaxValue;
+
+                // Initialize the event handlers, so they are synched with the values on the GUI
+                filterGainValue(dof.channel1, e);
+                filterGainValue(dof.channel2, e);
+                filterSminValue(dof.channel1, e);
+                filterSminValue(dof.channel2, e);
+                filterSmaxValue(dof.channel1, e);
+                filterSmaxValue(dof.channel2, e);
+            }
 
             // Load default parameters
             try
@@ -393,30 +554,17 @@ namespace brachIOplexus
                 MessageBox.Show(ex.Message);
             }
 
+            // Take a timestamp from when the program first loaded to use as part of the usage log
+            StartTime = DateTime.Now;
+
             // Start pollingWorker! This is the main loop for reading in the keyboard/Xbox inputs and sending packets to the output devices.
             pollingWorker.RunWorkerAsync();
-
-            // Used to auto deselect when duplicate input/output values are selected and autofill when paired output values are selected in the mapping tab
-            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
-
-            foreach (DoF dof in dof_list)
-            {
-                dof.channel1.OutputIndexChanged += filterOutputComboBox;
-                dof.channel2.OutputIndexChanged += filterOutputComboBox;
-                dof.channel1.InputIndexChanged += filterInputComboBox;
-                dof.channel2.InputIndexChanged += filterInputComboBox;
-                dof.channel1.InputEnter += autoSuspendInputComboBox;
-                dof.channel2.InputEnter += autoSuspendInputComboBox;
-            }
-
         }
 
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-
             try
             {
-
                 // Close simulator connection
                 socketClient.Close();
 
@@ -424,7 +572,25 @@ namespace brachIOplexus
                 player.Dispose();
 
                 // Turn off serial communication with LED display arduino if it has not been already
-                if (serialPort1.IsOpen) serialPort1.Close();
+                if (serialPort1.IsOpen)
+                {
+                    // need to disable RtsEnable when closing the port otherwise it slows down the Arduino Leonardo/Micro boards. Not necessary for other arduino boards
+                    serialPort1.RtsEnable = false;
+                    serialPort1.Close();
+                }
+
+                // Turn off serial communication with arduino if it has not been already
+                if (serialArduinoInput.IsOpen)
+                {
+                    // need to disable RtsEnable when closing the port otherwise it slows down the Arduino Leonardo/Micro boards. Not necessary for other arduino boards
+                    serialArduinoInput.RtsEnable = false;
+                    serialArduinoInput.Close();
+                }
+
+                // Clean up the UDP objects when the form is closing
+                //t2.Abort();
+                //udpClientTX.Close();
+                //udpClientRX.Close();
 
                 // XInputDotNet - stop pollingWorker
                 pollingWorker.CancelAsync();
@@ -434,12 +600,47 @@ namespace brachIOplexus
                 {
                     dynamixel.closePort(port_num);
                 }
+
+                // Write an entry into the usage log to track how much the program is being used
+                // CSV labels are as follows: StartTime, EndTime, Total Minutes
+                DateTime EndTime = DateTime.Now;
+                string OutputString = StartTime.ToString() + ", " + EndTime.ToString() + ", " + Math.Round((EndTime.Subtract(StartTime).TotalMinutes)).ToString();
+                File.AppendAllText(@"Resources\usage_log.txt", OutputString + Environment.NewLine);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
+
+        // Helper function for figuring out the COM port associated with an Arduino wired to the computer with a USB cable
+        private string AutodetectArduinoPort()
+        {
+            ManagementScope connectionScope = new ManagementScope();
+            SelectQuery serialQuery = new SelectQuery("SELECT * FROM Win32_SerialPort");
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher(connectionScope, serialQuery);
+
+            try
+            {
+                foreach (ManagementObject item in searcher.Get())
+                {
+                    string desc = item["Description"].ToString();
+                    string deviceId = item["DeviceID"].ToString();
+
+                    if (desc.Contains("Arduino") || desc.Contains("Genuino"))
+                    {
+                        return deviceId;
+                    }
+                }
+            }
+            catch (ManagementException e)
+            {
+                /* Do Nothing */
+            }
+
+            return null;
+        }
+
         #endregion
 
         #region "Open/Save Profiles"
@@ -567,6 +768,61 @@ namespace brachIOplexus
 
             KBcheckRamp.Checked = brInput.ReadBoolean();
 
+            biopatrecIPaddr.Text = brInput.ReadString();
+            biopatrecIPport.Text = brInput.ReadString();
+
+            for (int i = 0; i <= (biopatrecList.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    biopatrecList.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    biopatrecList.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
+            for (int i = 0; i <= (ArduinoInputList.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    ArduinoInputList.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    ArduinoInputList.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
+            for (int i = 0; i <= (SLRTlist.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    SLRTlist.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    SLRTlist.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
+            for (int i = 0; i <= (udpList.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    udpList.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    udpList.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
             for (int i = 0; i <= (BentoList.Items.Count - 1); i++)
             {
                 bool m = brInput.ReadBoolean();
@@ -577,6 +833,19 @@ namespace brachIOplexus
                 else
                 {
                     BentoList.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
+            for (int i = 0; i <= (HANDiList.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    HANDiList.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    HANDiList.SetItemCheckState(i, CheckState.Unchecked);
                 }
             }
 
@@ -663,10 +932,12 @@ namespace brachIOplexus
             switchDoFbox.SelectedIndex = brInput.ReadInt32();
             switchModeBox.SelectedIndex = brInput.ReadInt32();
             switchInputBox.SelectedIndex = brInput.ReadInt32();
-            switchGainCtrl.Value = brInput.ReadDecimal();
-            switchSminCtrl.Value = brInput.ReadDecimal();
-            switchSmaxCtrl.Value = brInput.ReadDecimal();
-            switchTimeCtrl.Value = brInput.ReadDecimal();
+            switchGainCtrl1.Value = brInput.ReadDecimal();
+            switchSminCtrl1.Value = brInput.ReadDecimal();
+            switchSmaxCtrl1.Value = brInput.ReadDecimal();
+            switchTimeCtrl1.Value = brInput.ReadDecimal();
+            switchSminCtrl2.Value = brInput.ReadDecimal();
+            switchSmaxCtrl2.Value = brInput.ReadDecimal();
             switch1OutputBox.SelectedIndex = brInput.ReadInt32();
             switch2OutputBox.SelectedIndex = brInput.ReadInt32();
             switch3OutputBox.SelectedIndex = brInput.ReadInt32();
@@ -716,6 +987,36 @@ namespace brachIOplexus
             BentoAdaptGripCheck.Checked = brInput.ReadBoolean();
             BentoAdaptGripCtrl.Value = brInput.ReadDecimal();
 
+            D0_pmin_ctrl.Value = brInput.ReadDecimal();
+            D0_pmax_ctrl.Value = brInput.ReadDecimal();
+            D0_wmin_ctrl.Value = brInput.ReadDecimal();
+            D0_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            D1_pmin_ctrl.Value = brInput.ReadDecimal();
+            D1_pmax_ctrl.Value = brInput.ReadDecimal();
+            D1_wmin_ctrl.Value = brInput.ReadDecimal();
+            D1_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            D2_pmin_ctrl.Value = brInput.ReadDecimal();
+            D2_pmax_ctrl.Value = brInput.ReadDecimal();
+            D2_wmin_ctrl.Value = brInput.ReadDecimal();
+            D2_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            D3_pmin_ctrl.Value = brInput.ReadDecimal();
+            D3_pmax_ctrl.Value = brInput.ReadDecimal();
+            D3_wmin_ctrl.Value = brInput.ReadDecimal();
+            D3_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            D4_pmin_ctrl.Value = brInput.ReadDecimal();
+            D4_pmax_ctrl.Value = brInput.ReadDecimal();
+            D4_wmin_ctrl.Value = brInput.ReadDecimal();
+            D4_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            D5_pmin_ctrl.Value = brInput.ReadDecimal();
+            D5_pmax_ctrl.Value = brInput.ReadDecimal();
+            D5_wmin_ctrl.Value = brInput.ReadDecimal();
+            D5_wmax_ctrl.Value = brInput.ReadDecimal();
+
             //Close and dispose of file writing objects
             brInput.Close();
             fsInput.Close();
@@ -725,20 +1026,33 @@ namespace brachIOplexus
             switchDoFbox_SelectedIndexChanged(null, null);
             switchModeBox_SelectedIndexChanged(null, null);
             switchInputBox_SelectedIndexChanged(null, null);
-            switchGainCtrl_ValueChanged(null, null);
-            switchSminCtrl_ValueChanged(null, null);
-            switchSmaxCtrl_ValueChanged(null, null);
-            switchTimeCtrl_ValueChanged(null, null);
+            switchGainCtrl1_ValueChanged(null, null);
+            switchSminCtrl1_ValueChanged(null, null);
+            switchSmaxCtrl1_ValueChanged(null, null);
+            switchTimeCtrl1_ValueChanged(null, null);
+            switchSminCtrl2_ValueChanged(null, null);
+            switchSmaxCtrl2_ValueChanged(null, null);
             switch1OutputBox_SelectedIndexChanged(null, null);
             switch2OutputBox_SelectedIndexChanged(null, null);
             switch3OutputBox_SelectedIndexChanged(null, null);
             switch4OutputBox_SelectedIndexChanged(null, null);
             switch5OutputBox_SelectedIndexChanged(null, null);
+            switch1MappingBox_SelectedIndexChanged(null, null);
+            switch2MappingBox_SelectedIndexChanged(null, null);
+            switch3MappingBox_SelectedIndexChanged(null, null);
+            switch4MappingBox_SelectedIndexChanged(null, null);
+            switch5MappingBox_SelectedIndexChanged(null, null);
             switch1Flip_CheckedChanged(null, null);
             switch2Flip_CheckedChanged(null, null);
             switch3Flip_CheckedChanged(null, null);
             switch4Flip_CheckedChanged(null, null);
             switch5Flip_CheckedChanged(null, null);
+
+            // Ensure that the active joint does not get stuck in its sequential switching hang state when switching between profiles
+            if ((switchObj.List[stateObj.listPos].output - 1) >= 0)
+            {
+                stateObj.motorState[switchObj.List[stateObj.listPos].output - 1] = 0;
+            }
         }
 
         public void SaveParameters(string strFileName)
@@ -771,9 +1085,38 @@ namespace brachIOplexus
 
             bwOutput.Write(KBcheckRamp.Checked);
 
+            bwOutput.Write(biopatrecIPaddr.Text);
+
+            bwOutput.Write(biopatrecIPport.Text);
+
+            for (int i = 0; i <= (biopatrecList.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(biopatrecList.GetItemCheckState(i)));
+            }
+
+            for (int i = 0; i <= (ArduinoInputList.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(ArduinoInputList.GetItemCheckState(i)));
+            }
+
+            for (int i = 0; i <= (SLRTlist.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(SLRTlist.GetItemCheckState(i)));
+            }
+
+            for (int i = 0; i <= (udpList.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(udpList.GetItemCheckState(i)));
+            }
+
             for (int i = 0; i <= (BentoList.Items.Count - 1); i++)
             {
                 bwOutput.Write(Convert.ToBoolean(BentoList.GetItemCheckState(i)));
+            }
+
+            for (int i = 0; i <= (HANDiList.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(HANDiList.GetItemCheckState(i)));
             }
 
             bwOutput.Write(doF1.channel1.inputBox.SelectedIndex);
@@ -857,10 +1200,12 @@ namespace brachIOplexus
             bwOutput.Write(switchDoFbox.SelectedIndex);
             bwOutput.Write(switchModeBox.SelectedIndex);
             bwOutput.Write(switchInputBox.SelectedIndex);
-            bwOutput.Write(switchGainCtrl.Value);
-            bwOutput.Write(switchSminCtrl.Value);
-            bwOutput.Write(switchSmaxCtrl.Value);
-            bwOutput.Write(switchTimeCtrl.Value);
+            bwOutput.Write(switchGainCtrl1.Value);
+            bwOutput.Write(switchSminCtrl1.Value);
+            bwOutput.Write(switchSmaxCtrl1.Value);
+            bwOutput.Write(switchTimeCtrl1.Value);
+            bwOutput.Write(switchSminCtrl2.Value);
+            bwOutput.Write(switchSmaxCtrl2.Value);
             bwOutput.Write(switch1OutputBox.SelectedIndex);
             bwOutput.Write(switch2OutputBox.SelectedIndex);
             bwOutput.Write(switch3OutputBox.SelectedIndex);
@@ -910,6 +1255,36 @@ namespace brachIOplexus
             bwOutput.Write(BentoAdaptGripCheck.Checked);
             bwOutput.Write(BentoAdaptGripCtrl.Value);
 
+            bwOutput.Write(D0_pmin_ctrl.Value);
+            bwOutput.Write(D0_pmax_ctrl.Value);
+            bwOutput.Write(D0_wmin_ctrl.Value);
+            bwOutput.Write(D0_wmax_ctrl.Value);
+
+            bwOutput.Write(D1_pmin_ctrl.Value);
+            bwOutput.Write(D1_pmax_ctrl.Value);
+            bwOutput.Write(D1_wmin_ctrl.Value);
+            bwOutput.Write(D1_wmax_ctrl.Value);
+
+            bwOutput.Write(D2_pmin_ctrl.Value);
+            bwOutput.Write(D2_pmax_ctrl.Value);
+            bwOutput.Write(D2_wmin_ctrl.Value);
+            bwOutput.Write(D2_wmax_ctrl.Value);
+
+            bwOutput.Write(D3_pmin_ctrl.Value);
+            bwOutput.Write(D3_pmax_ctrl.Value);
+            bwOutput.Write(D3_wmin_ctrl.Value);
+            bwOutput.Write(D3_wmax_ctrl.Value);
+
+            bwOutput.Write(D4_pmin_ctrl.Value);
+            bwOutput.Write(D4_pmax_ctrl.Value);
+            bwOutput.Write(D4_wmin_ctrl.Value);
+            bwOutput.Write(D4_wmax_ctrl.Value);
+
+            bwOutput.Write(D5_pmin_ctrl.Value);
+            bwOutput.Write(D5_pmax_ctrl.Value);
+            bwOutput.Write(D5_wmin_ctrl.Value);
+            bwOutput.Write(D5_wmax_ctrl.Value);
+
             //Close and dispose of file writing objects
             bwOutput.Close();
             fsOutput.Close();
@@ -953,7 +1328,6 @@ namespace brachIOplexus
             for (int i = 0; i < XBoxList.Items.Count; i++)
             {
                 XBoxList.SetItemChecked(i, true);
-
             }
         }
 
@@ -963,7 +1337,6 @@ namespace brachIOplexus
             for (int i = 0; i < XBoxList.Items.Count; i++)
             {
                 XBoxList.SetItemChecked(i, false);
-
             }
         }
 
@@ -973,7 +1346,6 @@ namespace brachIOplexus
 
         private void MYOconnect_Click(object sender, EventArgs e)
         {
-            
             try
             {
                 // Get Reference to the current Process
@@ -1004,7 +1376,7 @@ namespace brachIOplexus
                 }
             }
 
-        
+
             catch (Exception me)
             {
                 MessageBox.Show(me.Message);
@@ -1058,7 +1430,7 @@ namespace brachIOplexus
             e.Myo.SetEmgStreaming(false);
             e.Myo.EmgDataAcquired -= Myo_EmgDataAcquired;
         }
-        
+
         // Event handler for when MYO armband connects 
         private void Hub_MyoConnected(object sender, MyoEventArgs e)
         {
@@ -1198,12 +1570,218 @@ namespace brachIOplexus
 
         #endregion
 
+        #region "Arduino Input Device"
+        private void ArduinoInputConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (ArduinoInputCOM.SelectedIndex > -1)
+                {
+                    // Define the settings for serial communication and open the serial port
+                    // To find the portname search for 'device manager' in windows search and then look under Ports (Com & LPT)
+                    serialArduinoInput.PortName = ArduinoInputCOM.SelectedItem.ToString();
+                    //serialPort1.BaudRate = 9600; default arduino baud rate
+                    serialArduinoInput.BaudRate = 9600; // default bluetooth baud rate
+                    //serialPort1.DataBits = 8;
+                    //serialPort1.Parity = Parity.None; 
+                    //serialPort1.StopBits = StopBits.One;
+                    //serialPort1.Handshake = Handshake.None;
+                    //serialPort1.NewLine = "\r";
+                    // NOTE: for serial communication to work with leonardo or micro over USB to a c# program the RTSenable property for serialport1 needs to be set to "true"
+                    // ref: http://forum.arduino.cc/index.php?topic=119557.0
+                    serialArduinoInput.RtsEnable = true;
+                    serialArduinoInput.Open();
+                    if (serialArduinoInput.IsOpen)
+                    {
+                        // Re-configure the GUI when the arduino is connected
+                        ArduinoInputGroupBox.Enabled = true;
+                        ArduinoInputDisconnect.Enabled = true;
+                        ArduinoInputConnect.Enabled = false;
+                        ArduinoInputList.Enabled = true;
+                        ArduinoInputSelectAll.Enabled = true;
+                        ArduinoInputClearAll.Enabled = true;
+
+                        // Start timer to begin streaming (throw away first second, because it is often garbage data)
+                        ArduinoStartTimer.Restart();
+
+
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a port first");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ArduinoInputDisconnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialArduinoInput.IsOpen)
+                {
+                    // Close the serial port
+                    // need to disable RtsEnable when closing the port otherwise it slows down the Arduino Leonardo/Micro boards. Not necessary for other arduino boards
+                    serialArduinoInput.RtsEnable = false;
+                    serialArduinoInput.Close();
+
+                    // Re-configure the GUI when the arduino is disconnected
+                    ArduinoInputGroupBox.Enabled = false;
+                    ArduinoInputDisconnect.Enabled = false;
+                    ArduinoInputConnect.Enabled = true;
+                    ArduinoInputList.Enabled = false;
+                    ArduinoInputSelectAll.Enabled = false;
+                    ArduinoInputClearAll.Enabled = false;
+                    ArduinoInputConnect.Focus();
+
+                    // Reset the timer start timer
+                    ArduinoStartTimer.Reset();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void ArduinoInputSelectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < ArduinoInputList.Items.Count; i++)
+            {
+                ArduinoInputList.SetItemChecked(i, true);
+
+            }
+        }
+
+        private void ArduinoInputClearAll_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < ArduinoInputList.Items.Count; i++)
+            {
+                ArduinoInputList.SetItemChecked(i, false);
+
+            }
+        }
+
+        // Read in the serial data being sent from the arduino
+        // reference: http://csharp.simpleserial.com/
+        // issue with closing serial port with ReadLine: http://stackoverflow.com/questions/6452330/serialport-in-wpf-threw-i-o-exception
+        private void serialArduinoInput_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                if (serialArduinoInput.IsOpen)
+                {
+                    RxString = serialArduinoInput.ReadLine();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        #endregion
+
+        #region "Simulink Realtime Controller"
+
+        private void SLRTconnect_Click(object sender, EventArgs e)
+        {
+            //try
+            //{
+            //    // only set filename if it has not already been set in the xPC target tab
+            //    if (tg.DLMFileName == "")
+            //    {
+            //        //For testing on white cart at UofA
+            //        //tg.DLMFileName = @"two_state_controller_8ch_PCI6259_BENTO_rev22.dlm";
+
+            //        // For testing at Glenrose with embedeed computer
+            //        tg.DLMFileName = @"two_state_controller_8ch_PC104_BENTO_rev22.dlm";
+            //    }
+
+            //    InvokeOnClick(connectButton, new EventArgs());      // Programatically click the 'Connect' button in the xPC target tab
+
+            //    // Check whether the target has connected
+            //    if (tg.IsConnected == true)
+            //    {
+            //        InvokeOnClick(loadButton, new EventArgs());      // Programatically click the 'Load' button in the xPC target tab
+            //        InvokeOnClick(startButton, new EventArgs());      // Programatically click the 'Start' button in the xPC target tab
+
+            //        // Enable SLRT feedback and reconfigure the GUI
+            //        SLRTgroupBox.Enabled = true;
+            //        SLRTdisconnect.Enabled = true;
+            //        SLRTconnect.Enabled = false;
+            //        SLRTlist.Enabled = true;
+            //        SLRTselectAll.Enabled = true;
+            //        SLRTclearAll.Enabled = true;
+            //    }
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+        }
+
+        private void SLRTdisconnect_Click(object sender, EventArgs e)
+        {
+            //if (tg.IsConnected == true)
+            //{
+            //    InvokeOnClick(stopButton, new EventArgs());      // Programatically click the 'Stop' button in the xPC target tab
+            //    InvokeOnClick(disconnectButton, new EventArgs());      // Programatically click the 'Disconnect' button in the xPC target tab
+
+            //    // Re-configure the GUI when the simulink realtime is disconnected
+            //    SLRTgroupBox.Enabled = false;
+            //    SLRTdisconnect.Enabled = false;
+            //    SLRTconnect.Enabled = true;
+            //    SLRTlist.Enabled = false;
+            //    SLRTselectAll.Enabled = false;
+            //    SLRTclearAll.Enabled = false;
+            //    SLRTconnect.Focus();
+            //}
+        }
+
+        private void SLRTselectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < SLRTlist.Items.Count; i++)
+            {
+                SLRTlist.SetItemChecked(i, true);
+            }
+        }
+
+        private void SLRTclearAll_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < SLRTlist.Items.Count; i++)
+            {
+                SLRTlist.SetItemChecked(i, false);
+            }
+        }
+        #endregion
+
         #region "Dynamixel Controller"
 
         // Connect to the dynamixel bus!
         private void dynaConnect_Click(object sender, EventArgs e)
         {
+
+            // Added this code for the Task timer
+            TaskTimerGroupBox.Enabled = true;
+            for (int i = 0; i <= BENTO_NUM - 1; i++)
+            {
+                BentoSense.ID[i].pos = 2048;
+                BentoSense.ID[i].vel = 1023;    // initialize velocity and load values to 1023, so that unconnected devices appear to have "0" velocity and loads in the GUI and in the surprise demo
+                BentoSense.ID[i].load = 1023;
+            }
             try
+
             {
                 // DynamixelSDK - Initialize PortHandler Structs
                 // Set the port path
@@ -1301,36 +1879,36 @@ namespace brachIOplexus
                 // Initialize Groupbulkread Structs
                 read_group_num = dynamixel.groupBulkRead(port_num, PROTOCOL_VERSION);
 
-                    if (cmbSerialPorts.SelectedIndex > -1)
+                if (cmbSerialPorts.SelectedIndex > -1)
+                {
+                    // MessageBox.Show(String.Format("You selected port '{0}'", cmbSerialPorts.SelectedItem));
+                    // Define the settings for serial communication and open the serial port
+                    // To find the portname search for 'device manager' in windows search and then look under Ports (Com & LPT)
+
+                    try
                     {
-                        // MessageBox.Show(String.Format("You selected port '{0}'", cmbSerialPorts.SelectedItem));
-                        // Define the settings for serial communication and open the serial port
-                        // To find the portname search for 'device manager' in windows search and then look under Ports (Com & LPT)
+                        port_num = dynamixel.portHandler(cmbSerialPorts.SelectedItem.ToString());
+                    }
+                    catch (InvalidCastException ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
 
-                        try
-                        {
-                            port_num = dynamixel.portHandler(cmbSerialPorts.SelectedItem.ToString());
-                        }
-                        catch (InvalidCastException ex)
-                        {
-                            MessageBox.Show(ex.Message);
-                        }
-
-                        // Open port
-                        if (dynamixel.openPort(port_num))
-                        {
-                            dynaStatus.Text = String.Format("Port {0} opened successfully", cmbSerialPorts.SelectedItem.ToString());
-                        }
-                        else
-                        {
-                            dynaStatus.Text = String.Format("Failed to open port {0}", cmbSerialPorts.SelectedItem.ToString());
-                            return;
-                        }
+                    // Open port
+                    if (dynamixel.openPort(port_num))
+                    {
+                        dynaStatus.Text = String.Format("Port {0} opened successfully", cmbSerialPorts.SelectedItem.ToString());
                     }
                     else
                     {
-                        dynaStatus.Text = "Please select a port first";
+                        dynaStatus.Text = String.Format("Failed to open port {0}", cmbSerialPorts.SelectedItem.ToString());
+                        return;
                     }
+                }
+                else
+                {
+                    dynaStatus.Text = "Please select a port first";
+                }
 
                 // Set port baudrate
                 if (dynamixel.setBaudRate(port_num, BAUDRATE))
@@ -1529,8 +2107,12 @@ namespace brachIOplexus
 
         private void dynaDisconnect_Click(object sender, EventArgs e)
         {
+
+            // Added this code for the Task timer
+            TaskTimerGroupBox.Enabled = false;
+
             // Re-configure the GUI when the disconnecting from the dynamixel bus
-            
+
             // Reset the connection state for each motor
             ID1_connected = 0;
             ID2_connected = 0;
@@ -1589,7 +2171,7 @@ namespace brachIOplexus
         {
             // Read feedback values back from the motors
             readDyna();
-            
+
             // initialize dynamixel positions when first turning on the torque
             robotObj.Motor[0].p = robotObj.Motor[0].p_prev;
             robotObj.Motor[1].p = robotObj.Motor[1].p_prev;
@@ -1727,7 +2309,7 @@ namespace brachIOplexus
 
             // Enable/disable relevant controls
             TorqueOn.Enabled = true;
-            TorqueOff.Enabled = false; 
+            TorqueOff.Enabled = false;
             moveCW.Enabled = false;
             moveCCW.Enabled = false;
             TorqueOn.Focus();
@@ -1757,9 +2339,9 @@ namespace brachIOplexus
             // Disconnect inputs from the bento arm
             bentoSuspend = true;
 
-            if (TorqueOn.Enabled == false && BentoGroupBox.Enabled == true)
+            if ((TorqueOn.Enabled == false && BentoGroupBox.Enabled == true) || (HANDiGroupBox.Enabled == true))
             {
-                
+
 
                 BentoRun.Enabled = true;
                 BentoSuspend.Enabled = false;
@@ -1790,6 +2372,135 @@ namespace brachIOplexus
                 BentoSuspend_Click(sender, e);
             }
         }
+
+        #region "Robotic Arm - Parameters"
+            // Control the robotic arm parameter values using the tagged block parameters from the xPC Target model
+            #region "Shoulder"
+            private void shoulder_pmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void shoulder_pmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void shoulder_wmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void shoulder_wmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+            #endregion
+            #region "Elbow"
+            private void elbow_pmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void elbow_pmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void elbow_wmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void elbow_wmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+            #endregion
+            #region "Wrist Rotate"
+            private void wristRot_pmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristRot_pmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristRot_wmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristRot_wmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+            #endregion
+            #region "Wrist Flex"
+            private void wristFlex_pmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristFlex_pmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristFlex_wmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void wristFlex_wmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+            #endregion
+            #region "Hand"
+            private void hand_pmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void hand_pmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void hand_wmin_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            private void hand_wmax_ctrl_ValueChanged(object sender, EventArgs e)
+            {
+                // Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+            #endregion
+            #endregion
 
         private void writeDyna()
         {
@@ -1958,14 +2669,31 @@ namespace brachIOplexus
 
             if (ID1_connected == 1)
             {
-                ID1_present_position = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[0].pos = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION); ;
+                BentoSense.ID[0].vel = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)) + 1023);
+                BentoSense.ID[0].load = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)) + 1023);
+                BentoSense.ID[0].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
+                BentoSense.ID[0].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
+
+                ID1_present_position = BentoSense.ID[0].pos;
                 robotObj.Motor[0].p_prev = ID1_present_position;
-                Pos1.Text = Convert.ToString(ID1_present_position);
-                Vel1.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)));
-                Load1.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)));
-                Volt1.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE) / 10);
-                Temp1.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
-                check_overheat(DXL1_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
+
+                // Filter the position and load values using a filter
+                //ID1_pos_avg.AddSample(BentoSense.ID[0].pos);
+                //ID1_load_avg.AddSample(BentoSense.ID[0].load);
+                //BentoSense.ID[0].posf = (ushort)ID1_pos_avg.Average;
+                //BentoSense.ID[0].loadf = (ushort)ID1_load_avg.Average;
+                //BentoSense.ID[0].posf = FilterSensor(BentoSense.ID[0].pos, BentoSense.ID[0].posf, BentoSense.ID[0].vel);
+                BentoSense.ID[0].posf = FilterSensor2(BentoSense.ID[0].pos, BentoSense.ID[0].posf, 2);
+                BentoSense.ID[0].loadf = FilterSensor2(BentoSense.ID[0].load, BentoSense.ID[0].loadf, 9);
+                BentoSense.ID[0].tempf = FilterSensor2(BentoSense.ID[0].temp, BentoSense.ID[0].tempf, 2);
+
+                Pos1.Text = Convert.ToString(BentoSense.ID[0].posf);
+                Vel1.Text = Convert.ToString(BentoSense.ID[0].vel - 1023);
+                Load1.Text = Convert.ToString(BentoSense.ID[0].loadf - 1023);
+                Volt1.Text = Convert.ToString(BentoSense.ID[0].volt / 10);
+                Temp1.Text = Convert.ToString(BentoSense.ID[0].tempf);
+                check_overheat(DXL1_ID, BentoSense.ID[0].temp);
                 check_overload(DXL1_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
             }
 
@@ -1974,14 +2702,30 @@ namespace brachIOplexus
             // If move in CCW direction velocity value is positive
             if (ID2_connected == 1)
             {
-                ID2_present_position = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[1].pos = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION); ;
+                BentoSense.ID[1].vel = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)) + 1023);
+                BentoSense.ID[1].load = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)) + 1023);
+                BentoSense.ID[1].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
+                BentoSense.ID[1].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
+
+                ID2_present_position = BentoSense.ID[1].pos;
                 robotObj.Motor[1].p_prev = ID2_present_position;
-                Pos2.Text = Convert.ToString(ID2_present_position);
-                Vel2.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)));
-                Load2.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)));
-                Volt2.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE) / 10);
-                Temp2.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
-                check_overheat(DXL2_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
+
+                // Filter the position and load values using a filter
+                //ID2_pos_avg.AddSample(BentoSense.ID[1].pos);
+                //ID2_load_avg.AddSample(BentoSense.ID[1].load);
+                //BentoSense.ID[1].posf = (ushort)ID2_pos_avg.Average;
+                //BentoSense.ID[1].loadf = (ushort)ID2_load_avg.Average;
+                BentoSense.ID[1].posf = FilterSensor2(BentoSense.ID[1].pos, BentoSense.ID[1].posf, 2);
+                BentoSense.ID[1].loadf = FilterSensor2(BentoSense.ID[1].load, BentoSense.ID[1].loadf, 9);
+                BentoSense.ID[1].tempf = FilterSensor2(BentoSense.ID[1].temp, BentoSense.ID[1].tempf, 2);
+
+                Pos2.Text = Convert.ToString(BentoSense.ID[1].posf);
+                Vel2.Text = Convert.ToString(BentoSense.ID[1].vel - 1023);
+                Load2.Text = Convert.ToString(BentoSense.ID[1].loadf - 1023);
+                Volt2.Text = Convert.ToString(BentoSense.ID[1].volt / 10);
+                Temp2.Text = Convert.ToString(BentoSense.ID[1].tempf);
+                check_overheat(DXL2_ID, BentoSense.ID[1].temp);
                 check_overload(DXL2_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
             }
 
@@ -1990,14 +2734,30 @@ namespace brachIOplexus
             // If move in CCW direction velocity value is positive
             if (ID3_connected == 1)
             {
-                ID3_present_position = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[2].pos = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION); ;
+                BentoSense.ID[2].vel = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)) + 1023);
+                BentoSense.ID[2].load = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)) + 1023);
+                BentoSense.ID[2].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
+                BentoSense.ID[2].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
+
+                ID3_present_position = BentoSense.ID[2].pos;
                 robotObj.Motor[2].p_prev = ID3_present_position;
-                Pos3.Text = Convert.ToString(ID3_present_position);
-                Vel3.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)));
-                Load3.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)));
-                Volt3.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE) / 10);
-                Temp3.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
-                check_overheat(DXL3_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
+
+                // Filter the position and load values using a filter
+                //ID3_pos_avg.AddSample(BentoSense.ID[2].pos);
+                //ID3_load_avg.AddSample(BentoSense.ID[2].load);
+                //BentoSense.ID[2].posf = (ushort)ID3_pos_avg.Average;
+                //BentoSense.ID[2].loadf = (ushort)ID3_load_avg.Average;
+                BentoSense.ID[2].posf = FilterSensor2(BentoSense.ID[2].pos, BentoSense.ID[2].posf, 2);
+                BentoSense.ID[2].loadf = FilterSensor2(BentoSense.ID[2].load, BentoSense.ID[2].loadf, 9);
+                BentoSense.ID[2].tempf = FilterSensor2(BentoSense.ID[2].temp, BentoSense.ID[2].tempf, 2);
+
+                Pos3.Text = Convert.ToString(BentoSense.ID[2].posf);
+                Vel3.Text = Convert.ToString(BentoSense.ID[2].vel - 1023);
+                Load3.Text = Convert.ToString(BentoSense.ID[2].loadf - 1023);
+                Volt3.Text = Convert.ToString(BentoSense.ID[2].volt / 10);
+                Temp3.Text = Convert.ToString(BentoSense.ID[2].tempf);
+                check_overheat(DXL3_ID, BentoSense.ID[2].temp);
                 check_overload(DXL3_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
             }
 
@@ -2006,14 +2766,30 @@ namespace brachIOplexus
             // If move in CCW direction velocity value is positive
             if (ID4_connected == 1)
             {
-                ID4_present_position = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[3].pos = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION); ;
+                BentoSense.ID[3].vel = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)) + 1023);
+                BentoSense.ID[3].load = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)) + 1023);
+                BentoSense.ID[3].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
+                BentoSense.ID[3].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
+
+                ID4_present_position = BentoSense.ID[3].pos;
                 robotObj.Motor[3].p_prev = ID4_present_position;
-                Pos4.Text = Convert.ToString(ID4_present_position);
-                Vel4.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)));
-                Load4.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)));
-                Volt4.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE) / 10);
-                Temp4.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
-                check_overheat(DXL4_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
+
+                // Filter the position and load values using a filter
+                //ID4_pos_avg.AddSample(BentoSense.ID[3].pos);
+                //ID4_load_avg.AddSample(BentoSense.ID[3].load);
+                //BentoSense.ID[3].posf = (ushort)ID4_pos_avg.Average;
+                //BentoSense.ID[3].loadf = (ushort)ID4_load_avg.Average;
+                BentoSense.ID[3].posf = FilterSensor2(BentoSense.ID[3].pos, BentoSense.ID[3].posf, 2);
+                BentoSense.ID[3].loadf = FilterSensor2(BentoSense.ID[3].load, BentoSense.ID[3].loadf, 9);
+                BentoSense.ID[3].tempf = FilterSensor2(BentoSense.ID[3].temp, BentoSense.ID[3].tempf, 2);
+
+                Pos4.Text = Convert.ToString(BentoSense.ID[3].posf);
+                Vel4.Text = Convert.ToString(BentoSense.ID[3].vel - 1023);
+                Load4.Text = Convert.ToString(BentoSense.ID[3].loadf - 1023);
+                Volt4.Text = Convert.ToString(BentoSense.ID[3].volt / 10);
+                Temp4.Text = Convert.ToString(BentoSense.ID[3].tempf);
+                check_overheat(DXL4_ID, BentoSense.ID[3].temp);
                 check_overload(DXL4_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
             }
             // Get Dynamixel#5 present position value
@@ -2021,24 +2797,40 @@ namespace brachIOplexus
             // If move in CCW direction velocity value is positive
             if (ID5_connected == 1)
             {
-                ID5_present_position = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[4].pos = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_POSITION, LEN_MX_PRESENT_POSITION);
+                BentoSense.ID[4].vel = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)) + 1023);
+                BentoSense.ID[4].load = (ushort)(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD)) + 1023);
+                BentoSense.ID[4].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
+                BentoSense.ID[4].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
+
+                ID5_present_load = BentoSense.ID[4].load - 1023;
+                ID5_present_position = BentoSense.ID[4].pos;
                 robotObj.Motor[4].p_prev = ID5_present_position;
-                Pos5.Text = Convert.ToString(ID5_present_position);
-                Vel5.Text = Convert.ToString(parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_SPEED, LEN_MX_PRESENT_SPEED)));
-                ID5_present_load = parse_load((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_LOAD, LEN_MX_PRESENT_LOAD));
-                //Load5.Text = Convert.ToString(parse_load(ID5_present_load));
-                Load5.Text = Convert.ToString(ID5_present_load);
-                Volt5.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE) / 10);
-                Temp5.Text = Convert.ToString((UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
-                check_overheat(DXL5_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP));
+
+                // Filter the position and load values using a filter
+                //ID5_pos_avg.AddSample(BentoSense.ID[4].pos);
+                //ID5_load_avg.AddSample(BentoSense.ID[4].load);
+                //BentoSense.ID[4].posf = (ushort)ID5_pos_avg.Average;
+                //BentoSense.ID[4].loadf = (ushort)ID5_load_avg.Average;
+                BentoSense.ID[4].posf = FilterSensor2(BentoSense.ID[4].pos, BentoSense.ID[4].posf, 2);
+                BentoSense.ID[4].loadf = FilterSensor2(BentoSense.ID[4].load, BentoSense.ID[4].loadf, 9);
+                BentoSense.ID[4].tempf = FilterSensor2(BentoSense.ID[4].temp, BentoSense.ID[4].tempf, 2);
+
+                Pos5.Text = Convert.ToString(BentoSense.ID[4].posf);
+                Vel5.Text = Convert.ToString(BentoSense.ID[4].vel - 1023);
+                Load5.Text = Convert.ToString(BentoSense.ID[4].loadf - 1023);
+                Volt5.Text = Convert.ToString(BentoSense.ID[4].volt / 10);
+                Temp5.Text = Convert.ToString(BentoSense.ID[4].tempf);
+                check_overheat(DXL5_ID, BentoSense.ID[4].temp);
                 check_overload(DXL5_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
+
             }
 
             if (BentoOverloadError == 0 && BentoOverheatError == 0)
             {
                 BentoErrorColor.Text = "";
                 BentoErrorText.Text = "";
-            } 
+            }
         }
 
         // Check whether a dynamixel servo has overloaded
@@ -2077,6 +2869,34 @@ namespace brachIOplexus
             else
             {
                 BentoOverheatError = 0;
+            }
+        }
+
+        // Filter that only changes the value of the sensor reading if the velocity is not zero (i.e. zero velocity is vel = 2013)
+        private ushort FilterSensor(ushort raw, ushort filt, ushort vel)
+        {
+            if (vel == 1023)
+            {
+                return filt;
+            }
+            else
+            {
+                filt = raw;
+                return raw;
+            }
+        }
+
+        // Filter that only changes the value of the sensor reading if it changes by more than 2 values
+        private ushort FilterSensor2(ushort raw, ushort filt, ushort tolerance)
+        {
+            if (Math.Abs(raw - filt) <= tolerance)
+            {
+                return filt;
+            }
+            else
+            {
+                filt = raw;
+                return raw;
             }
         }
 
@@ -2143,7 +2963,351 @@ namespace brachIOplexus
             return null;
         }
 
+        #region "Bento Joint Limit Profiles"
+        private void BentoProfileSave_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (BentoProfileBox.SelectedIndex > -1)
+                {
+                    String saveString = String.Format(@"Resources\Profiles\BentoProfiles\profile{0}.dat", BentoProfileBox.SelectedIndex);
+                    SaveParameters2(saveString);
+                    BentoProfileBox.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
 
+        private void BentoProfileOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (BentoProfileBox.SelectedIndex > -1)
+                {
+                    String loadString = String.Format(@"Resources\Profiles\BentoProfiles\profile{0}.dat", BentoProfileBox.SelectedIndex);
+                    LoadParameters2(loadString);
+                    BentoProfileBox.Focus();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void SaveParameters2(string strFileName)
+        {
+            //Save parameters to selected profile
+            //Set the output variables to the controls in the GUI
+
+            //Create a filestream object
+            FileStream fsOutput = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None);
+
+            //Create a binary writer object
+            BinaryWriter bwOutput = new BinaryWriter(fsOutput);
+
+            //Write the profile settings
+            bwOutput.Write(shoulder_pmin_ctrl.Value);
+            bwOutput.Write(shoulder_pmax_ctrl.Value);
+            bwOutput.Write(shoulder_wmin_ctrl.Value);
+            bwOutput.Write(shoulder_wmax_ctrl.Value);
+
+            bwOutput.Write(elbow_pmin_ctrl.Value);
+            bwOutput.Write(elbow_pmax_ctrl.Value);
+            bwOutput.Write(elbow_wmin_ctrl.Value);
+            bwOutput.Write(elbow_wmax_ctrl.Value);
+
+            bwOutput.Write(wristRot_pmin_ctrl.Value);
+            bwOutput.Write(wristRot_pmax_ctrl.Value);
+            bwOutput.Write(wristRot_wmin_ctrl.Value);
+            bwOutput.Write(wristRot_wmax_ctrl.Value);
+
+            bwOutput.Write(wristFlex_pmin_ctrl.Value);
+            bwOutput.Write(wristFlex_pmax_ctrl.Value);
+            bwOutput.Write(wristFlex_wmin_ctrl.Value);
+            bwOutput.Write(wristFlex_wmax_ctrl.Value);
+
+            bwOutput.Write(hand_pmin_ctrl.Value);
+            bwOutput.Write(hand_pmax_ctrl.Value);
+            bwOutput.Write(hand_wmin_ctrl.Value);
+            bwOutput.Write(hand_wmax_ctrl.Value);
+
+            bwOutput.Write(BentoAdaptGripCheck.Checked);
+            bwOutput.Write(BentoAdaptGripCtrl.Value);
+
+            //Close and dispose of file writing objects
+            bwOutput.Close();
+            fsOutput.Close();
+            fsOutput.Dispose();
+
+        }
+
+        public void LoadParameters2(string strFileName)
+        {
+            //Open parameters from selected profile
+            //Create a filestream object
+            FileStream fsInput = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.None);
+
+            //Create a binary reader object
+            BinaryReader brInput = new BinaryReader(fsInput);
+
+            //Read the profile settings from the input stream
+            shoulder_pmin_ctrl.Value = brInput.ReadDecimal();
+            shoulder_pmax_ctrl.Value = brInput.ReadDecimal();
+            shoulder_wmin_ctrl.Value = brInput.ReadDecimal();
+            shoulder_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            elbow_pmin_ctrl.Value = brInput.ReadDecimal();
+            elbow_pmax_ctrl.Value = brInput.ReadDecimal();
+            elbow_wmin_ctrl.Value = brInput.ReadDecimal();
+            elbow_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            wristRot_pmin_ctrl.Value = brInput.ReadDecimal();
+            wristRot_pmax_ctrl.Value = brInput.ReadDecimal();
+            wristRot_wmin_ctrl.Value = brInput.ReadDecimal();
+            wristRot_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            wristFlex_pmin_ctrl.Value = brInput.ReadDecimal();
+            wristFlex_pmax_ctrl.Value = brInput.ReadDecimal();
+            wristFlex_wmin_ctrl.Value = brInput.ReadDecimal();
+            wristFlex_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            hand_pmin_ctrl.Value = brInput.ReadDecimal();
+            hand_pmax_ctrl.Value = brInput.ReadDecimal();
+            hand_wmin_ctrl.Value = brInput.ReadDecimal();
+            hand_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            BentoAdaptGripCheck.Checked = brInput.ReadBoolean();
+            BentoAdaptGripCtrl.Value = brInput.ReadDecimal();
+
+            //Close and dispose of file writing objects
+            brInput.Close();
+            fsInput.Close();
+            fsInput.Dispose();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region "HANDi Hand"
+
+        private void HANDiConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (HANDiCOM.SelectedIndex > -1)
+                {
+                    // Define the settings for serial communication and open the serial port
+                    // To find the portname search for 'device manager' in windows search and then look under Ports (Com & LPT)
+                    serialHANDi.PortName = HANDiCOM.SelectedItem.ToString();
+                    //serialPort1.BaudRate = 9600; default arduino baud rate
+                    serialHANDi.BaudRate = 9600; // default bluetooth baud rate
+                    //serialPort1.DataBits = 8;
+                    //serialPort1.Parity = Parity.None; 
+                    //serialPort1.StopBits = StopBits.One;
+                    //serialPort1.Handshake = Handshake.None;
+                    //serialPort1.NewLine = "\r";
+                    // NOTE: for serial communication to work with leonardo or micro over USB to a c# program the RTSenable property for serialport1 needs to be set to "true"
+                    // ref: http://forum.arduino.cc/index.php?topic=119557.0
+                    serialHANDi.RtsEnable = true;
+                    serialHANDi.Open();
+                    if (serialHANDi.IsOpen)
+                    {
+                        // Re-configure the GUI when the arduino is connected
+                        HANDiDisconnect.Enabled = true;
+                        HANDiConnect.Enabled = false;
+                        HANDiList.Enabled = true;
+                        HANDiSelectAll.Enabled = true;
+                        HANDiClearAll.Enabled = true;
+                        HANDiGroupBox.Enabled = true;
+                        HANDiParamBox.Enabled = true;
+                        HANDiFeedbackBox.Enabled = true;
+
+                        // Programatically click the 'BentoRun' button
+                        //BentoRun.Enabled = true;
+                        //BentoSuspend.Enabled = false;
+                        HANDiRun.Enabled = false;
+                        HANDiSuspend.Enabled = true;
+                        BentoRun_Click(sender, e);
+                        BentoRunStatus.Enabled = true;
+
+                        // Start timer to begin streaming (throw away first second, because it is often garbage data)
+                        HANDiStartTimer.Restart();
+
+                        // Start the thread that will send the serial packets out to the arduino
+                        t3 = new Thread(DoWork3);
+                        t3.Start();
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please select a port first");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void HANDiDisconnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialHANDi.IsOpen)
+                {
+                    // Close the serial port
+                    // need to disable RtsEnable when closing the port otherwise it slows down the Arduino Leonardo/Micro boards. Not necessary for other arduino boards
+                    serialHANDi.RtsEnable = false;
+                    serialHANDi.Close();
+
+                    // Re-configure the GUI when the arduino is disconnected
+                    HANDiDisconnect.Enabled = false;
+                    HANDiConnect.Enabled = true;
+                    HANDiList.Enabled = false;
+                    HANDiSelectAll.Enabled = false;
+                    HANDiClearAll.Enabled = false;
+                    HANDiGroupBox.Enabled = false;
+                    HANDiParamBox.Enabled = false;
+                    HANDiFeedbackBox.Enabled = false;
+                    HANDiConnect.Focus();
+
+                    // Programatically click the 'BentoSuspend' button
+                    //BentoRun.Enabled = false;
+                    //BentoSuspend.Enabled = true;
+                    HANDiRun.Enabled = true;
+                    HANDiSuspend.Enabled = false;
+                    BentoSuspend_Click(sender, e);
+                    BentoRunStatus.Enabled = false;
+
+                    // Reset the timer start timer
+                    HANDiStartTimer.Reset();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void HANDiSelectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < HANDiList.Items.Count; i++)
+            {
+                HANDiList.SetItemChecked(i, true);
+
+            }
+        }
+
+        private void HANDiClearAll_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < HANDiList.Items.Count; i++)
+            {
+                HANDiList.SetItemChecked(i, false);
+
+            }
+        }
+
+        private void serialHANDi_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                if (serialHANDi.IsOpen)
+                {
+                    RxString2 = serialHANDi.ReadLine();
+                }
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+        private void HANDiRefresh_Click(object sender, EventArgs e)
+        {
+            // Auto-detect COM port that is connected to the Arduino/Bluetooth mate
+            // How to sort the COM ports: http://www.prodigyproductionsllc.com/articles/programming/get-and-sort-com-port-names-using-c/
+            // Also need to convert to list: http://stackoverflow.com/questions/9285426/orderby-and-list-vs-iorderedenumerable
+            var ports = SerialPort.GetPortNames();
+            var sortedList = ports.OrderBy(port => Convert.ToInt32(port.Replace("COM", string.Empty))).ToList();
+            HANDiCOM.DataSource = sortedList;
+
+            // Use this code if you are connecting the arduino via a USB cable
+            // Reference 1: https://stackoverflow.com/questions/3293889/how-to-auto-detect-arduino-com-port
+            // Reference 2: https://stackoverflow.com/questions/450059/how-do-i-set-the-selected-item-in-a-combobox-to-match-my-string-using-c
+            ArduinoInputCOM.SelectedIndex = ArduinoInputCOM.FindStringExact(AutodetectArduinoPort());
+        }
+
+        private void HANDiRun_Click(object sender, EventArgs e)
+        {
+            // Programatically click the 'BentoRun' button
+            //BentoRun.Enabled = true;
+            //BentoSuspend.Enabled = false;
+            HANDiRun.Enabled = false;
+            HANDiSuspend.Enabled = true;
+            BentoRun_Click(sender, e);
+        }
+
+        private void HANDiSuspend_Click(object sender, EventArgs e)
+        {
+            // Programatically click the 'BentoSuspend' button
+            //BentoRun.Enabled = false;
+            //BentoSuspend.Enabled = true;
+            HANDiRun.Enabled = true;
+            HANDiSuspend.Enabled = false;
+            BentoSuspend_Click(sender, e);
+        }
+
+        // This is a separate thread that is used for communicating with the client
+        public void DoWork3()
+        {
+            try
+            {
+                stopWatch3.Start();         // start the stop watch
+                long HANDi_timestep = 20;     // this is how often in (ms) that brachIOplexus will send a command to the arduino
+                while (HANDiGroupBox.Enabled)
+                {
+                    if (stopWatch3.ElapsedMilliseconds >= HANDi_timestep)
+                    {
+                        // Stop stopwatch and record how long everything in the main loop took to execute as well as how long it took to retrigger the main loop
+                        stopWatch3.Stop();
+                        milliSec3 = stopWatch3.ElapsedMilliseconds;
+                        //HANDiDelay.Text = Convert.ToString(milliSec3);
+
+                        //if (HANDiDelay.InvokeRequired)
+                        //{
+                        //    HANDiDelay.Invoke(new MethodInvoker(delegate { HANDiDelay.Text = Convert.ToString(milliSec3); }));
+                        //}
+
+                        // Send the target positions to the servo
+                        if (serialHANDi.IsOpen)
+                        {
+                            // Define the message for serial output
+                            string message = HANDi_pos[0] + "," + HANDi_pos[1] + "," + HANDi_pos[2] + "," + HANDi_pos[3] + "," + HANDi_pos[4] + "," + HANDi_pos[5] + ".";
+
+                            // Send the string
+                            serialHANDi.Write(message);
+                        }
+
+                        // Reset and start the stop watch
+                        stopWatch3.Restart();
+                    }
+                }
+                
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         #endregion
 
         #region "Main LOOP"
@@ -2164,7 +3328,7 @@ namespace brachIOplexus
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                //MessageBox.Show(ex.Message);
             }
         }
 
@@ -2189,24 +3353,42 @@ namespace brachIOplexus
 
                 #region "Initialize Input/Output Arrays"
                 // Initialize input mapping array
-                int[,] InputMap = new int[3, 25];
+                int[,] InputMap = new int[7, 25];
 
                 // Define output mapping array
                 int[,] OutputMap = new int[3, 15];
-                OutputMap[0, 0] = 0;
-                OutputMap[0, 1] = 0;
-                OutputMap[0, 2] = 1;
-                OutputMap[0, 3] = 1;
-                OutputMap[0, 4] = 2;
-                OutputMap[0, 5] = 2;
-                OutputMap[0, 6] = 3;
-                OutputMap[0, 7] = 3;
-                OutputMap[0, 8] = 4;
-                OutputMap[0, 9] = 4;
-                OutputMap[0, 10] = -1;
-                OutputMap[0, 11] = -2;
-                OutputMap[0, 12] = 6;
-                OutputMap[0, 13] = 7;
+
+                // Bento Arm
+                OutputMap[0, 0] = 0;        // Map to Shoulder Rotation (ID:1)
+                OutputMap[0, 1] = 0;        // Map to Shoulder Rotation (ID:1)
+                OutputMap[0, 2] = 1;        // Map to Elbow Flexion (ID:2)
+                OutputMap[0, 3] = 1;        // Map to Elbow Flexion (ID:2)
+                OutputMap[0, 4] = 2;        // Map to Wrist Rotate (ID:3)
+                OutputMap[0, 5] = 2;        // Map to Wrist Rotate (ID:3)
+                OutputMap[0, 6] = 3;        // Map to Wrist Flexion (ID:4)
+                OutputMap[0, 7] = 3;        // Map to Wrist Flexion (ID:5)
+                OutputMap[0, 8] = 4;        // Map to Hand (ID:5)
+                OutputMap[0, 9] = 4;        // Map to Hand (ID:5)
+                OutputMap[0, 10] = -2;      // Map to torque on/off
+                OutputMap[0, 11] = -3;      // Map to toggle suspend/run state
+                OutputMap[0, 12] = 6;       // Reserved for future use (i.e. multi-servo grippers)
+                OutputMap[0, 13] = 7;       // Reserved for future use (i.e. multi-servo grippers)
+
+                // HANDi Hand
+                OutputMap[1, 0] = 5;
+                OutputMap[1, 1] = 5;
+                OutputMap[1, 2] = 6;
+                OutputMap[1, 3] = 6;
+                OutputMap[1, 4] = 7;
+                OutputMap[1, 5] = 7;
+                OutputMap[1, 6] = 8;
+                OutputMap[1, 7] = 8;
+                OutputMap[1, 8] = 9;
+                OutputMap[1, 9] = 9;
+                OutputMap[1, 10] = 10;
+                OutputMap[1, 11] = 10;
+                OutputMap[1, 12] = -3;
+
                 #endregion
 
                 #region "Update Input Signals"
@@ -2216,14 +3398,14 @@ namespace brachIOplexus
                 {
                     int preGain = 500;
 
-                    InputMap[0, 0] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Left.X * preGain),true);
+                    InputMap[0, 0] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Left.X * preGain), true);
                     InputMap[0, 1] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Left.X * preGain), false);
                     InputMap[0, 2] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Left.Y * preGain), true);
                     InputMap[0, 3] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Left.Y * preGain), false);
                     InputMap[0, 4] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Right.X * preGain), true);
                     InputMap[0, 5] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Right.X * preGain), false);
                     InputMap[0, 6] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Right.Y * preGain), true);
-                    InputMap[0, 7] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Right.Y * preGain), false); 
+                    InputMap[0, 7] = splitAxis(Convert.ToInt32(reporterState.LastActiveState.ThumbSticks.Right.Y * preGain), false);
 
                     InputMap[0, 8] = Convert.ToInt32(reporterState.LastActiveState.Triggers.Left * preGain);
                     InputMap[0, 9] = Convert.ToInt32(reporterState.LastActiveState.Triggers.Right * preGain);
@@ -2286,6 +3468,29 @@ namespace brachIOplexus
                         reporterState.ActivateVibration = false;
                     }
 
+                    // Allows for using a button on the joystick to access quick profile switching
+                    //if (reporterState.LastActiveState.Buttons.Start == XInputDotNetPure.ButtonState.Pressed && QuickProfileFlag == false)
+                    //{
+                    //    // QuickProfileState = 0 (Xbox profile), 1 (MYO profile)
+                    //    // QuickProfileFlag = false (waiting for trigger), true (triggered and need to release the button before it can be triggered again) 
+
+                    //    if (QuickProfileState == 0)
+                    //    {
+                    //        InvokeOnClick(demoMYObutton, new EventArgs());
+                    //        QuickProfileState = 1;
+                    //    }
+                    //    else if (QuickProfileState == 1)
+                    //    {
+                    //        InvokeOnClick(demoXBoxButton, new EventArgs());
+                    //        QuickProfileState = 0;
+                    //    }
+                    //    QuickProfileFlag = true;
+                    //}
+                    //else if (reporterState.LastActiveState.Buttons.Start == XInputDotNetPure.ButtonState.Released)
+                    //{
+                    //    QuickProfileFlag = false;
+                    //}
+
                 }
                 // Update MYO EMG values
                 if (MYOgroupBox.Enabled == true)
@@ -2315,7 +3520,7 @@ namespace brachIOplexus
                     double ramp_delay = 264;      // the time in milliseconds that it takes for the keyboard to ramp up from stopped (0) to full speed (1).
                     int preGain = 500;
 
-                    InputMap[2, 0] = velocity_ramp(ref KBvel[0], Keyboard.IsKeyDown(Key.W), KBcheckRamp.Checked, preGain /( ramp_delay / milliSec1), preGain);
+                    InputMap[2, 0] = velocity_ramp(ref KBvel[0], Keyboard.IsKeyDown(Key.W), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
                     InputMap[2, 1] = velocity_ramp(ref KBvel[1], Keyboard.IsKeyDown(Key.A), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
                     InputMap[2, 2] = velocity_ramp(ref KBvel[2], Keyboard.IsKeyDown(Key.S), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
                     InputMap[2, 3] = velocity_ramp(ref KBvel[3], Keyboard.IsKeyDown(Key.D), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
@@ -2359,21 +3564,127 @@ namespace brachIOplexus
                     KBrampD.Text = Convert.ToString(InputMap[2, 3]);
                 }
 
+                // Update BioPatRec values
+                if (biopatrecGroupBox.Enabled == true)
+                {
+                    // Scale factor so that progress bar control can show a finer resolution
+                    Int32 scale_factor = 1;
 
+                    for (int i = 0; i < CLASS_NUM; i++)
+                    {
+                        InputMap[3, i] = 0;
+                    }
 
+                    InputMap[3, biopatrec_ID] = biopatrec_vel * scale_factor;
+
+                    BPRclass0.Checked = greaterThanZero(InputMap[3, 0]);
+                    BPRclass1.Checked = greaterThanZero(InputMap[3, 1]);
+                    BPRclass2.Checked = greaterThanZero(InputMap[3, 2]);
+                    BPRclass3.Checked = greaterThanZero(InputMap[3, 3]);
+                    BPRclass4.Checked = greaterThanZero(InputMap[3, 4]);
+                    BPRclass5.Checked = greaterThanZero(InputMap[3, 5]);
+                    BPRclass6.Checked = greaterThanZero(InputMap[3, 6]);
+                    BPRclass7.Checked = greaterThanZero(InputMap[3, 7]);
+                    BPRclass8.Checked = greaterThanZero(InputMap[3, 8]);
+                    BPRclass9.Checked = greaterThanZero(InputMap[3, 9]);
+                    BPRclass10.Checked = greaterThanZero(InputMap[3, 10]);
+                    BPRclass11.Checked = greaterThanZero(InputMap[3, 11]);
+                    BPRclass12.Checked = greaterThanZero(InputMap[3, 12]);
+                    BPRclass13.Checked = greaterThanZero(InputMap[3, 13]);
+                    BPRclass14.Checked = greaterThanZero(InputMap[3, 14]);
+                    BPRclass15.Checked = greaterThanZero(InputMap[3, 15]);
+                    BPRclass16.Checked = greaterThanZero(InputMap[3, 16]);
+                    BPRclass17.Checked = greaterThanZero(InputMap[3, 17]);
+                    BPRclass18.Checked = greaterThanZero(InputMap[3, 18]);
+                    BPRclass19.Checked = greaterThanZero(InputMap[3, 19]);
+                    BPRclass20.Checked = greaterThanZero(InputMap[3, 20]);
+                    BPRclass21.Checked = greaterThanZero(InputMap[3, 21]);
+                    BPRclass22.Checked = greaterThanZero(InputMap[3, 22]);
+                    BPRclass23.Checked = greaterThanZero(InputMap[3, 23]);
+                    BPRclass24.Checked = greaterThanZero(InputMap[3, 24]);
+
+                }
+
+                // Update Arduino Analog Input Values
+                if (ArduinoInputGroupBox.Enabled == true)
+                {
+                    // Scale factor so that progress bar control can show a finer resolution
+                    Int32 scale_factor = 2;
+
+                    try
+                    {
+                        if (serialArduinoInput.IsOpen && ArduinoStartTimer.ElapsedMilliseconds > ArduinoStartDelay)
+                        {
+                            // Stop the start timer if it is running
+                            if (ArduinoStartTimer.IsRunning == true)
+                            {
+                                ArduinoStartTimer.Stop();
+                            }
+                            // how to separate string into individual words using predefined separatingChars: https://msdn.microsoft.com/en-ca/library/ms228388.aspx
+                            // how to remove leading zeros: http://stackoverflow.com/questions/7010702/how-to-remove-leading-zeros
+                            // only channels A0-A3 are enabled for now. The rest are set to 0
+                            string RxString_local = RxString.TrimEnd('\r', '\n');    // remove carriage return as it messes up the TrimStart when the last channel is set to 0
+                            string[] words = RxString_local.Split(separatingChars);
+
+                            InputMap[4, 0] = Convert.ToInt32(words[1].TrimStart('0').Length > 0 ? words[1].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 1] = Convert.ToInt32(words[2].TrimStart('0').Length > 0 ? words[2].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 2] = Convert.ToInt32(words[3].TrimStart('0').Length > 0 ? words[3].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 3] = Convert.ToInt32(words[4].TrimStart('0').Length > 0 ? words[4].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 4] = Convert.ToInt32(words[5].TrimStart('0').Length > 0 ? words[5].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 5] = Convert.ToInt32(words[6].TrimStart('0').Length > 0 ? words[6].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 6] = Convert.ToInt32(words[7].TrimStart('0').Length > 0 ? words[7].TrimStart('0') : "0") / scale_factor;
+                            InputMap[4, 7] = Convert.ToInt32(words[8].TrimStart('0').Length > 0 ? words[8].TrimStart('0') : "0") / scale_factor;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+
+                    arduino_A0.Text = Convert.ToString(InputMap[4, 0]);
+                    arduino_A1.Text = Convert.ToString(InputMap[4, 1]);
+                    arduino_A2.Text = Convert.ToString(InputMap[4, 2]);
+                    arduino_A3.Text = Convert.ToString(InputMap[4, 3]);
+                    arduino_A4.Text = Convert.ToString(InputMap[4, 4]);
+                    arduino_A5.Text = Convert.ToString(InputMap[4, 5]);
+                    arduino_A6.Text = Convert.ToString(InputMap[4, 6]);
+                    arduino_A7.Text = Convert.ToString(InputMap[4, 7]);
+                }
+
+                // Update UDP values
+                if (udpGroupBox.Enabled == true)
+                {
+                    // Scale factor so that progress bar control can show a finer resolution
+                    Int32 scale_factor = 2;
+
+                    InputMap[6, 0] = Convert.ToInt32(UDP_ch[0] * scale_factor);
+                    InputMap[6, 1] = Convert.ToInt32(UDP_ch[1] * scale_factor);
+                    InputMap[6, 2] = Convert.ToInt32(UDP_ch[2] * scale_factor);
+                    InputMap[6, 3] = Convert.ToInt32(UDP_ch[3] * scale_factor);
+                    InputMap[6, 4] = Convert.ToInt32(UDP_ch[4] * scale_factor);
+                    InputMap[6, 5] = Convert.ToInt32(UDP_ch[5] * scale_factor);
+                    InputMap[6, 6] = Convert.ToInt32(UDP_ch[6] * scale_factor);
+                    InputMap[6, 7] = Convert.ToInt32(UDP_ch[7] * scale_factor);
+                    InputMap[6, 8] = Convert.ToInt32(UDP_ch[8] * scale_factor);
+                    InputMap[6, 9] = Convert.ToInt32(UDP_ch[9] * scale_factor);
+                    InputMap[6, 10] = Convert.ToInt32(UDP_ch[10] * scale_factor);
+
+                    udp_ch1.Text = Convert.ToString(InputMap[6, 0]);
+                    udp_ch2.Text = Convert.ToString(InputMap[6, 1]);
+                    udp_ch3.Text = Convert.ToString(InputMap[6, 2]);
+                    udp_ch4.Text = Convert.ToString(InputMap[6, 3]);
+                    udp_ch5.Text = Convert.ToString(InputMap[6, 4]);
+                    udp_ch6.Text = Convert.ToString(InputMap[6, 5]);
+                    udp_ch7.Text = Convert.ToString(InputMap[6, 6]);
+                    udp_ch8.Text = Convert.ToString(InputMap[6, 7]);
+                    udp_ch9.Text = Convert.ToString(InputMap[6, 8]);
+                    udp_ch10.Text = Convert.ToString(InputMap[6, 9]);
+                    udp_ch11.Text = Convert.ToString(InputMap[6, 10]);
+                }
                 #endregion 
 
                 #region "Update DoF Parameters"
                 // Update the mapping parameters
-
-                // Initialize objects
-                DoF_[] dofObj = new DoF_[DOF_NUM];
-                for (int i = 0; i < DOF_NUM; i++)
-                {
-                    dofObj[i] = new DoF_();
-
-                }
-
                 // Update DoFObj with latest values
                 UpdateDoF(dofObj[0], doF1, InputMap, 0);
                 UpdateDoF(dofObj[1], doF2, InputMap, 1);
@@ -2382,9 +3693,16 @@ namespace brachIOplexus
                 UpdateDoF(dofObj[4], doF5, InputMap, 4);
                 UpdateDoF(dofObj[5], doF6, InputMap, 5);
 
+                // Reset Auto-suspend flag
+                if (autosuspend_flag == true)
+                {
+                    autosuspend_flag = false;
+                }
+
                 #endregion
 
                 #region "Update Robot Parameters"
+                // Bento Arm
                 robotObj.type = 0;
 
                 robotObj.Motor[0].pmin = Convert.ToInt32(shoulder_pmin_ctrl.Value);
@@ -2412,14 +3730,64 @@ namespace brachIOplexus
                 robotObj.Motor[4].wmin = Convert.ToInt32(hand_wmin_ctrl.Value);
                 robotObj.Motor[4].wmax = Convert.ToInt32(hand_wmax_ctrl.Value);
 
+                //// HANDi HAnd -> smushed into bento robotObj
+                robotObj.Motor[5].pmin = Convert.ToInt32(D0_pmin_ctrl.Value);
+                robotObj.Motor[5].pmax = Convert.ToInt32(D0_pmax_ctrl.Value);
+                robotObj.Motor[5].wmin = Convert.ToInt32(D0_wmin_ctrl.Value);
+                robotObj.Motor[5].wmax = Convert.ToInt32(D0_wmax_ctrl.Value);
+
+                robotObj.Motor[6].pmin = Convert.ToInt32(D1_pmin_ctrl.Value);
+                robotObj.Motor[6].pmax = Convert.ToInt32(D1_pmax_ctrl.Value);
+                robotObj.Motor[6].wmin = Convert.ToInt32(D1_wmin_ctrl.Value);
+                robotObj.Motor[6].wmax = Convert.ToInt32(D1_wmax_ctrl.Value);
+
+                robotObj.Motor[7].pmin = Convert.ToInt32(D2_pmin_ctrl.Value);
+                robotObj.Motor[7].pmax = Convert.ToInt32(D2_pmax_ctrl.Value);
+                robotObj.Motor[7].wmin = Convert.ToInt32(D2_wmin_ctrl.Value);
+                robotObj.Motor[7].wmax = Convert.ToInt32(D2_wmax_ctrl.Value);
+
+                robotObj.Motor[8].pmin = Convert.ToInt32(D3_pmin_ctrl.Value);
+                robotObj.Motor[8].pmax = Convert.ToInt32(D3_pmax_ctrl.Value);
+                robotObj.Motor[8].wmin = Convert.ToInt32(D3_wmin_ctrl.Value);
+                robotObj.Motor[8].wmax = Convert.ToInt32(D3_wmax_ctrl.Value);
+
+                robotObj.Motor[9].pmin = Convert.ToInt32(D4_pmin_ctrl.Value);
+                robotObj.Motor[9].pmax = Convert.ToInt32(D4_pmax_ctrl.Value);
+                robotObj.Motor[9].wmin = Convert.ToInt32(D4_wmin_ctrl.Value);
+                robotObj.Motor[9].wmax = Convert.ToInt32(D4_wmax_ctrl.Value);
+
+                robotObj.Motor[10].pmin = Convert.ToInt32(D5_pmin_ctrl.Value);
+                robotObj.Motor[10].pmax = Convert.ToInt32(D5_pmax_ctrl.Value);
+                robotObj.Motor[10].wmin = Convert.ToInt32(D5_wmin_ctrl.Value);
+                robotObj.Motor[10].wmax = Convert.ToInt32(D5_wmax_ctrl.Value);
+
                 #endregion
 
+                #region "Update Sequential Switch Parameters
                 // Update the signal information for the sequential switch
-                if (switchInputBox.SelectedIndex > 0)
+                if (switchModeBox.SelectedIndex == 0 && switchInputBox.SelectedIndex > 0)
                 {
+                    // If switch mode is set to button press map the first signal bar to the value of the assigned button
                     switchObj.signal = InputMap[(switchInputBox.SelectedItem as ComboboxItem).Type, (switchInputBox.SelectedItem as ComboboxItem).ID] * Convert.ToInt32(switchObj.gain);
-                    switchSignalBar.Value = signalRail(switchObj.signal, switchSignalBar);
+                    switchSignalBar1.Value = signalRail(switchObj.signal, switchSignalBar1);
                 }
+                else if (switchModeBox.SelectedIndex == 1 && switchDoFbox.SelectedIndex > 0)
+                {
+                    // If switch mode is set to co-contraction then map the signal bars to the DoF that sequential switching is set to such that they mirror that channel pair
+                    switchSignalBar1.Value = signalRail(dofObj[switchDoFbox.SelectedIndex - 1].ChA.signal, switchSignalBar1);
+                    switchSignalBar2.Value = signalRail(dofObj[switchDoFbox.SelectedIndex - 1].ChB.signal, switchSignalBar2);
+
+                    // Do not allow smin in sequential switching be  greater than smin in dof section
+                    if ((switchSminCtrl1.Value * 100) > dofObj[switchDoFbox.SelectedIndex - 1].ChA.smin)
+                    {
+                        switchSminCtrl1.Value = dofObj[switchDoFbox.SelectedIndex - 1].ChA.smin / 100;
+                    }
+                    if ((switchSminCtrl2.Value * 100) > dofObj[switchDoFbox.SelectedIndex - 1].ChB.smin)
+                    {
+                        switchSminCtrl2.Value = dofObj[switchDoFbox.SelectedIndex - 1].ChB.smin / 100;
+                    }
+                }
+                #endregion
 
                 //// for debugging state variables
                 //ID2_state.Text = Convert.ToString(switchObj.List[stateObj.listPos].output - 1); //Convert.ToString(stateObj.motorState[1]);
@@ -2432,7 +3800,7 @@ namespace brachIOplexus
                     // update k and m if they haven't already been assigned on a previous iteration through this loop
                     int k = OutputMap[dofObj[i].ChA.output.Type, dofObj[i].ChA.output.ID];
                     int m = OutputMap[dofObj[i].ChB.output.Type, dofObj[i].ChB.output.ID];
-                    
+
                     #region "Sequential Switch"
 
                     if (i == switchObj.DoF - 1)
@@ -2446,7 +3814,7 @@ namespace brachIOplexus
                         {
                             // Use button press
                             case 0:
-                                if (switchObj.signal > switchObj.smin && stateObj.switchState == 0)
+                                if (switchObj.signal > switchObj.smin1 && stateObj.switchState == 0)
                                 {
                                     // Grab last position feedback and STOP! (added in to prevent state variable from staying high if active during a switching event)
                                     if (k >= 0)
@@ -2459,7 +3827,7 @@ namespace brachIOplexus
                                     // Update list position
                                     stateObj.listPos = updateList(stateObj.listPos);
 
-                                    if (k >= 0)
+                                    if (k >= -1)
                                     {
                                         while (switchObj.List[stateObj.listPos].output <= 0)
                                         {
@@ -2477,14 +3845,14 @@ namespace brachIOplexus
                                     myoBuzzFlag = true;
                                     XboxBuzzFlag = true;
                                 }
-                                else if (switchObj.signal < switchObj.smin)
+                                else if (switchObj.signal < switchObj.smin1)
                                 {
                                     stateObj.switchState = 0;
                                 }
                                 break;
                             // Use co-contraction switching
                             case 1:
-                                if ((dofObj[i].ChA.signal >= dofObj[i].ChA.smin || dofObj[i].ChB.signal >= dofObj[i].ChB.smin) && stateObj.switchState == 0)
+                                if ((dofObj[i].ChA.signal >= switchObj.smin1 || dofObj[i].ChB.signal >= switchObj.smin2) && stateObj.switchState == 0)
                                 {
                                     // Start the co-contraction timer
                                     stateObj.timer1 = 0;
@@ -2495,75 +3863,94 @@ namespace brachIOplexus
                                     // Increment the timer
                                     stateObj.timer1 = stateObj.timer1 + milliSec1;
 
-                                    // Turn off the dof while checking that the co-contraction persists for the duration of cctimer
+                                    // Turn off the dof while checking that the co-contraction were met for the duration of cctimer
                                     if (k >= 0)
                                     {
                                         stateObj.motorState[k] = 3;
                                     }
 
                                     // Check to see if signals are co-contracted above threshold
-                                    if (dofObj[i].ChA.signal >= dofObj[i].ChA.smin && dofObj[i].ChB.signal >= dofObj[i].ChB.smin)
+                                    if (dofObj[i].ChA.signal >= switchObj.smax1)
                                     {
-                                        stateObj.timer2 = stateObj.timer2 + milliSec1;
+                                        switchObj.flag1 = true;
                                     }
 
-                                    if (stateObj.timer1 >= switchObj.cctime)
+                                    if (dofObj[i].ChB.signal >= switchObj.smax2)
                                     {
-                                        if (Convert.ToDouble(stateObj.timer2) >= Convert.ToDouble(switchObj.cctime) * 0.25)
+                                        switchObj.flag2 = true;
+                                    }
+
+                                    if (switchObj.flag1 == true && switchObj.flag2 == true)
+                                    {
+                                        // Co-contract conditions were met, so initiate switching event. 
+
+                                        // Reset previous joint so it can't move anymore
+                                        if (k >= 0)
                                         {
-                                            // Co-contract conditions were met, so initiate switching event, but don't allow the arm to move until both signals have dropped below threshold
-                                            
-                                            // Reset previous joint so it can't move anymore
-                                            if (k >= 0)
-                                            {
-                                                stateObj.motorState[k] = 0;
-                                            }
-
-                                            // Update list position
-                                            stateObj.listPos = updateList(stateObj.listPos);
-
-                                            if (k >= 0)
-                                            {
-                                                while (switchObj.List[stateObj.listPos].output <= 0)
-                                                {
-                                                    stateObj.listPos = updateList(stateObj.listPos);
-                                                }
-                                            }
-
-                                            k = switchObj.List[stateObj.listPos].output - 1;
-                                            dofObj[i].ChA.mapping = switchObj.List[stateObj.listPos].mapping;
-
-                                            // Set switched to joint so it can't move until drop below threshold
-                                            if (k >= 0)
-                                            {
-                                                stateObj.motorState[k] = 3;
-                                            }
-
-                                            // Update switch feedback with current item in switching list
-                                            updateSwitchFeedback();
-                                            myoBuzzFlag = true;
-                                            XboxBuzzFlag = true;
+                                            stateObj.motorState[k] = 0;
                                         }
-                                        else
+
+                                        // Update list position
+                                        stateObj.listPos = updateList(stateObj.listPos);
+
+                                        if (k >= -1)
                                         {
-                                            // Co-contract conditions were not met, so allow the arm to move
-                                            k = switchObj.List[stateObj.listPos].output - 1;
-                                            dofObj[i].ChA.mapping = switchObj.List[stateObj.listPos].mapping;
-                                            if (k >= 0)
+                                            while (switchObj.List[stateObj.listPos].output <= 0)
                                             {
-                                                stateObj.motorState[k] = 0;
+                                                stateObj.listPos = updateList(stateObj.listPos);
                                             }
+
                                         }
+
+                                        k = switchObj.List[stateObj.listPos].output - 1;
+                                        dofObj[i].ChA.mapping = switchObj.List[stateObj.listPos].mapping;
+
+                                        // Set switched to joint so it can't move until drop below threshold
+                                        if (k >= 0)
+                                        {
+                                            stateObj.motorState[k] = 3;
+                                        }
+
+                                        // Reset co-contraction flags for each channel
+                                        switchObj.flag1 = false;
+                                        switchObj.flag2 = false;
+
+                                        // Update switch feedback with current item in switching list
+                                        updateSwitchFeedback();
+                                        myoBuzzFlag = true;
+                                        XboxBuzzFlag = true;
+
+                                        // Do not allow the arm to move until both signals have dropped below threshold
+                                        stateObj.switchState = 2;
+                                    }
+                                    else if (stateObj.timer1 >= switchObj.cctime)
+                                    {
+                                        // Co-contract conditions were not met, so allow the arm to move
+                                        k = switchObj.List[stateObj.listPos].output - 1;
+                                        dofObj[i].ChA.mapping = switchObj.List[stateObj.listPos].mapping;
+                                        if (k >= 0)
+                                        {
+                                            stateObj.motorState[k] = 0;
+                                        }
+
+                                        // Reset co-contraction flags for each channel
+                                        switchObj.flag1 = false;
+                                        switchObj.flag2 = false;
+
                                         // Don't allow another switching event until both of the channels drops below threshold
                                         stateObj.switchState = 2;
                                     }
 
                                 }
-                                else if (dofObj[i].ChA.signal < dofObj[i].ChA.smin && dofObj[i].ChB.signal < dofObj[i].ChB.smin)
+                                else if (dofObj[i].ChA.signal < switchObj.smin1 && dofObj[i].ChB.signal < switchObj.smin2)
                                 {
+                                    // reset the co-contraction state variable and timer
                                     stateObj.switchState = 0;
                                     stateObj.timer1 = 0;
-                                    stateObj.timer2 = 0;
+
+                                    // Reset co-contraction flags for each channel
+                                    switchObj.flag1 = false;
+                                    switchObj.flag2 = false;
 
                                     // Allow the arm to move
                                     k = switchObj.List[stateObj.listPos].output - 1;
@@ -2582,9 +3969,16 @@ namespace brachIOplexus
                     }
                     #endregion
 
+                    // Test output for co-contraction debugging
+                    timer1_label.Text = Convert.ToString(stateObj.timer1);
+                    flag1_label.Text = Convert.ToString(switchObj.flag1);
+                    flag2_label.Text = Convert.ToString(switchObj.flag2);
+                    switchState_label.Text = Convert.ToString(stateObj.switchState);
+
                     if (dofObj[i].Enabled)
                     {
-                        if (bentoSuspend == false)  // only connect inputs to outputs if Bento is in 'Run' mode
+                        if (bentoSuspend == false || biopatrecMode.SelectedIndex == 1)  // only connect inputs to outputs if Bento is in 'Run' mode
+                        //if (true)  // for testing with HANDi hand
                         {
                             switch (dofObj[i].ChA.mapping)
                             {
@@ -2595,44 +3989,106 @@ namespace brachIOplexus
                                         post(dofObj[i], k, i);
                                     }
                                     break;
+                                // Use greatest signal wins mapping
+                                case 1:
+
+                                    if (k >= 0)
+                                    {
+                                        wins(dofObj[i], k, i);
+                                    }
+                                    break;
+                                // Use Single Site - Voluntary Open/Close Automatic Return Mapping (2 state)
+                                case 2:
+
+                                    if (k >= 0)
+                                    {
+                                        single2(dofObj[i], k, i);
+                                    }
+                                    break;
+                                // Use Joint Position2 Mapping (map from the analog signals of two channels to the position of one of the joints on the robot)
+                                case 3:
+
+                                    if (k >= 0)
+                                    {
+                                        joint_position2(dofObj[i], k, i);
+                                    }
+                                    break;
+                                // Use Joint Position1 Mapping (map from the analog signal of a single channel to the position of one of the joints on the robot)
+                                case 4:
+
+                                    if (k >= 0 && dofObj[i].ChA.Enabled)
+                                    {
+                                        joint_position1(dofObj[i].ChA, k, check_flip(i, dofObj[i].flipA));
+                                    }
+                                    break;
+                            }
+
+                            // Process second channel if using mappings that only use 1 channel (i.e. so you could control a DoF with each channel)
+                            if (dofObj[i].ChA.mapping == 4 || k < -1 || m < -1)
+                            {
+                                switch (dofObj[i].ChB.mapping)
+                                {
+                                    // Use Joint Position1 Mapping (map from the analog signal of a single channel to the position of one of the joints on the robot)
+                                    case 2:
+                                        if (m >= 0 && dofObj[i].ChB.Enabled)
+                                        {
+                                            joint_position1(dofObj[i].ChB, m, check_flip(i, dofObj[i].flipB));
+                                        }
+                                        break;
+                                }
+                            }
+
+                            // Stop the joint that was previously assigned in order to prevent it from continuing to move
+                            if (dofStop[0] > -1)
+                            {
+                                StopVelocity(OutputMap[dofStop[0], dofStop[1]]);
+                                dofStop[0] = -1;    // Reset dofStop to -1, so that it only stops the joint once
+                                dofStop[1] = -1;
                             }
                         }
-                        
+
                         // Check if additional Bento functions such as torque on/off or suspend/run are selected
-                        if (k < 0)
+                        if (k < -1)
                         {
                             switch (k)
                             {
-                                case -1:
+                                case -2:
                                     robotObj.torque = toggle(dofObj[i].ChA, robotObj.torque, TorqueOn, TorqueOff);
                                     break;
-                                case -2:
+                                case -3:
                                     robotObj.suspend = toggle(dofObj[i].ChA, robotObj.suspend, BentoRun, BentoSuspend);
                                     break;
                             }
                         }
-                        if (m < 0)
+                        if (m < -1)
                         {
                             switch (m)
                             {
-                                case -1:
+                                case -2:
                                     robotObj.torque = toggle(dofObj[i].ChB, robotObj.torque, TorqueOn, TorqueOff);
                                     break;
-                                case -2:
+                                case -3:
                                     robotObj.suspend = toggle(dofObj[i].ChB, robotObj.suspend, BentoRun, BentoSuspend);
                                     break;
                             }
                         }
                     }
                 }
-                
+
                 if (BentoGroupBox.Enabled == true)
                 {
                     // Update feedback
                     readDyna();
 
+                    // Only run the task timer code if it is enabled in the GUI
+                    //TaskTimerStateLabel.Text = Convert.ToString(TaskTimerState);
+                    if (TaskTimerState != 0)
+                    {
+                        UpdateTaskTimer();
+                    }
+
                     // Move dynamixel motors
-                    if (TorqueOn.Enabled == false)
+                    if (TorqueOn.Enabled == false && biopatrecMode.SelectedIndex != 1)
                     {
                         // Write goal position and moving speeds to each servo on bus using syncwrite command
                         writeDyna();
@@ -2643,6 +4099,16 @@ namespace brachIOplexus
                     // Add delay on background thread so that timers work properly even if not sending out commands or reading from dynamixels
                     // This is needed because without the delay the time reported by the stopwatch is 0 which means we can't update our timers properly
                     System.Threading.Thread.Sleep(2);
+                }
+
+                if (HANDiGroupBox.Enabled == true)
+                {
+                    HANDi_pos[0] = robotObj.Motor[5].p;
+                    HANDi_pos[1] = robotObj.Motor[6].p;
+                    HANDi_pos[2] = robotObj.Motor[7].p;
+                    HANDi_pos[3] = robotObj.Motor[8].p;
+                    HANDi_pos[4] = robotObj.Motor[9].p;
+                    HANDi_pos[5] = robotObj.Motor[10].p;
                 }
 
             }
@@ -2660,44 +4126,34 @@ namespace brachIOplexus
 
             if (dofA.channel1.inputBox.SelectedIndex > 0)
             {
-                dofObj.ChA.input.Type = (dofA.channel1.inputBox.SelectedItem as ComboboxItem).Type;
-                dofObj.ChA.input.ID = (dofA.channel1.inputBox.SelectedItem as ComboboxItem).ID;
-                if (dofA.channel1.outputBox.SelectedIndex > 0)
-                {
-                    dofObj.ChA.output.Type = (dofA.channel1.outputBox.SelectedItem as ComboboxItem).Type;
-                    dofObj.ChA.output.ID = (dofA.channel1.outputBox.SelectedItem as ComboboxItem).ID;
-                    dofObj.flip = (dofA.channel1.outputBox.SelectedItem as ComboboxItem).ID % 2;     // checks whether it is even or odd (!= 0 means its odd, == 0 means its even)
-                }
-
-                dofObj.ChA.mapping = Convert.ToInt32(dofA.channel1.mappingBox.SelectedIndex);
-                dofObj.ChA.gain = dofA.channel1.gainCtrl.Value;
-                dofObj.ChA.smin = dofA.channel1.sminCtrl.Value * 100;
-                dofObj.ChA.smax = dofA.channel1.smaxCtrl.Value * 100;
                 dofObj.ChA.signal = InputMap[dofObj.ChA.input.Type, dofObj.ChA.input.ID] * Convert.ToInt32(dofObj.ChA.gain);
                 dofA.channel1.signalBar.Value = signalRail(dofObj.ChA.signal, dofA.channel1.signalBar);
             }
 
             if (dofA.channel2.inputBox.SelectedIndex > 0)
             {
-                dofObj.ChB.input.Type = (dofA.channel2.inputBox.SelectedItem as ComboboxItem).Type;
-                dofObj.ChB.input.ID = (dofA.channel2.inputBox.SelectedItem as ComboboxItem).ID;
-                if (dofA.channel2.outputBox.SelectedIndex > 0)
-                {
-                    dofObj.ChB.output.Type = (dofA.channel2.outputBox.SelectedItem as ComboboxItem).Type;
-                    dofObj.ChB.output.ID = (dofA.channel2.outputBox.SelectedItem as ComboboxItem).ID;
-                }
-                dofObj.ChB.mapping = Convert.ToInt32(dofA.channel2.mappingBox.SelectedIndex);
-                dofObj.ChB.gain = dofA.channel2.gainCtrl.Value;
-                dofObj.ChB.smin = dofA.channel2.sminCtrl.Value * 100;
-                dofObj.ChB.smax = dofA.channel2.smaxCtrl.Value * 100;
                 dofObj.ChB.signal = InputMap[dofObj.ChB.input.Type, dofObj.ChB.input.ID] * Convert.ToInt32(dofObj.ChB.gain);
                 dofA.channel2.signalBar.Value = signalRail(dofObj.ChB.signal, dofA.channel2.signalBar);
             }
 
             // Check whether the dof is enabled
-            if ((dofA.channel1.inputBox.SelectedIndex > 0 && dofA.channel1.outputBox.SelectedIndex > 0) || (dofA.channel2.inputBox.SelectedIndex > 0 && dofA.channel2.outputBox.SelectedIndex > 0) || (i == switchObj.DoF - 1 && dofA.channel1.inputBox.SelectedIndex > 0 && dofA.channel2.inputBox.SelectedIndex > 0))
+            if ((dofObj.ChA.Enabled == true) || (dofObj.ChB.Enabled == true) || (i == switchObj.DoF - 1 && dofA.channel1.inputBox.SelectedIndex > 0 && dofA.channel2.inputBox.SelectedIndex > 0))
             {
                 dofObj.Enabled = true;
+            }
+            else
+            {
+                dofObj.Enabled = false;
+            }
+
+            // Auto-suspend functionality
+            if (autosuspend_flag == true)
+            {
+                if ((dofObj.ChA.signal >= dofObj.ChA.smin || dofObj.ChB.signal >= dofObj.ChB.smin) && dofObj.ChB.smin != 0)
+                {
+                    InvokeOnClick(BentoSuspend, new EventArgs());
+                    autosuspend_flag = false;
+                }
             }
 
         }
@@ -2721,7 +4177,11 @@ namespace brachIOplexus
 
             // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
             int global_flip = 1;
-            if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
+            //if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
+            //{
+            //    global_flip = -1;
+            //}
+            if ((switchObj.List[stateObj.listPos].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flipA != 0 && i != switchObj.DoF - 1))
             {
                 global_flip = -1;
             }
@@ -2731,9 +4191,9 @@ namespace brachIOplexus
             {
                 // Move CW 
                 stateObj.motorState[k] = 1;
-                robotObj.Motor[k].w = linear_mapping(dofObj.ChA, k);
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChA, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
 
-                // Use fake velocity method if grip force lmit is enabled
+                // Use fake velocity method if grip force limit is enabled
                 if (k == 4 && BentoAdaptGripCheck.Checked == true)
                 {
                     MoveFakeVelocity(k, global_flip, stateObj.motorState[k]);
@@ -2748,7 +4208,7 @@ namespace brachIOplexus
             {
                 // Move CCW 
                 stateObj.motorState[k] = 2;
-                robotObj.Motor[k].w = linear_mapping(dofObj.ChB, k);
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChB, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
 
                 if (k == 4 && BentoAdaptGripCheck.Checked == true)
                 {
@@ -2774,12 +4234,12 @@ namespace brachIOplexus
             // Bound the position values
             robotObj.Motor[k].p = bound(robotObj.Motor[k].p, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
 
-            // Bound the velocity values if not using grip force lmit
+            // Bound the velocity values if not using grip force limit
             if (k != 4 || BentoAdaptGripCheck.Checked == false)
             {
                 robotObj.Motor[k].w = bound(robotObj.Motor[k].w, robotObj.Motor[k].wmin, robotObj.Motor[k].wmax);
             }
-            // Elsewise use the following code to help grip force lmit work a bit better
+            // Elsewise use the following code to help grip force limit work a bit better
             else
             {
                 if (ID5_present_load > BentoAdaptGripCtrl.Value)
@@ -2793,7 +4253,332 @@ namespace brachIOplexus
             }
         }
 
-        private int toggle(Ch channel,int statePressed, Button state1, Button state2)
+        private void wins(DoF_ dofObj, int k, int i)
+        {
+            // This function acts as the greatest signal wins control option which
+            // operates as follows:
+
+            // let ch1 be an EMG sensor placed over a flexor muscle
+            // let ch2 be an EMG sensor placed over an extensor muscle
+
+            // 1)  If the signal strength of ch1 and ch2 are below threshold output
+            // zero velocity(i.e.the robotic arm does not move)
+            // 2)  If the signal strength of ch1 or ch2 has just increased past the
+            // threshold then the channel with the highest signal strength is
+            // the winner and the corresponding movement is performed with
+            // proportional velocity.
+            //
+            // Definitions:
+            // w = angular velocity
+            // p = goal position(controls the direction of rotation)
+            // state 0 = off
+            // state 1 = open or cw
+            // state 2 = closed or cww
+            // state 3 = hanging until co-contraction is finished
+
+
+            // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
+            int global_flip = 1;
+            //if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
+            //{
+            //    global_flip = -1;
+            //}
+            if ((switchObj.List[stateObj.listPos].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flipA != 0 && i != switchObj.DoF - 1))
+            {
+                global_flip = -1;
+            }
+
+            // Apply the greatest signal wins algorithm
+            if (dofObj.ChA.signal >= dofObj.ChA.smin && dofObj.ChA.signal >= dofObj.ChB.signal && stateObj.motorState[k] != 3)
+            {
+                // Move CW 
+                stateObj.motorState[k] = 1;
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChA, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
+
+                // Use fake velocity method if grip force limit is enabled
+                if (k == 4 && BentoAdaptGripCheck.Checked == true)
+                {
+                    MoveFakeVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+                // Elsewise use regular velocity method
+                else
+                {
+                    MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+            }
+            else if (dofObj.ChB.signal >= dofObj.ChB.smin && dofObj.ChB.signal > dofObj.ChA.signal && stateObj.motorState[k] != 3)
+            {
+                // Move CCW 
+                stateObj.motorState[k] = 2;
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChB, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
+
+                if (k == 4 && BentoAdaptGripCheck.Checked == true)
+                {
+                    MoveFakeVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+                // Elsewise use regular velocity method
+                else
+                {
+                    MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+            }
+            else if ((dofObj.ChA.signal < dofObj.ChA.smin && stateObj.motorState[k] == 1) || (dofObj.ChB.signal < dofObj.ChB.smin && stateObj.motorState[k] == 2))
+            {
+                // Stop the motor
+                stateObj.motorState[k] = 0;
+
+                if (k != 4 || BentoAdaptGripCheck.Checked == false)
+                {
+                    StopVelocity(k);
+                }
+            }
+
+            // Bound the position values
+            robotObj.Motor[k].p = bound(robotObj.Motor[k].p, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
+
+            // Bound the velocity values if not using grip force limit
+            if (k != 4 || BentoAdaptGripCheck.Checked == false)
+            {
+                robotObj.Motor[k].w = bound(robotObj.Motor[k].w, robotObj.Motor[k].wmin, robotObj.Motor[k].wmax);
+            }
+            // Elsewise use the following code to help grip force limit work a bit better
+            else
+            {
+                if (ID5_present_load > BentoAdaptGripCtrl.Value)
+                {
+                    robotObj.Motor[k].p = robotObj.Motor[k].p + 1;
+                }
+                else if (ID5_present_load < -BentoAdaptGripCtrl.Value)
+                {
+                    robotObj.Motor[k].p = robotObj.Motor[k].p - 1;
+                }
+            }
+        }
+
+        private void single2(DoF_ dofObj, int k, int i)
+        {
+            // This function acts as the single state control option where
+            // a single EMG channel is used to voluntarily control one joint
+            // while otherwise the opposite joint direction will be on all the time. 
+            // i.e.If MAV1 = hand open and MAV2 = hand closed then if MAV1 reaches
+            // threshold the hand will start opening and if MAV1 drops below threshold
+            // the hand will start closing.
+            //
+            // Definitions:
+            // w = angular velocity
+            // p = goal position(controls the direction of rotation)
+            // state 0 = off
+            // state 1 = open or cw
+            // state 2 = closed or cww
+            // state 3 = hanging until co-contraction is finished
+
+
+            // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
+            int global_flip = 1;
+            //if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
+            //{
+            //    global_flip = -1;
+            //}
+            if ((switchObj.List[stateObj.listPos].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flipA != 0 && i != switchObj.DoF - 1))
+            {
+                global_flip = -1;
+            }
+
+            // Apply the greatest signal wins algorithm
+            if (dofObj.ChA.signal >= dofObj.ChA.smin && stateObj.motorState[k] != 3)
+            {
+                // Move CW 
+                stateObj.motorState[k] = 1;
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChA, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
+
+                // Use fake velocity method if grip force limit is enabled
+                if (k == 4 && BentoAdaptGripCheck.Checked == true)
+                {
+                    MoveFakeVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+                // Elsewise use regular velocity method
+                else
+                {
+                    MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+            }
+            else if (dofObj.ChB.signal >= dofObj.ChB.smin && stateObj.motorState[k] != 3)
+            {
+                // Move CCW 
+                stateObj.motorState[k] = 2;
+                robotObj.Motor[k].w = linear_mapping(dofObj.ChB, robotObj.Motor[k].wmax, robotObj.Motor[k].wmin);
+
+                if (k == 4 && BentoAdaptGripCheck.Checked == true)
+                {
+                    MoveFakeVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+                // Elsewise use regular velocity method
+                else
+                {
+                    MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                }
+            }
+            else if (dofObj.ChA.signal < dofObj.ChA.smin && stateObj.motorState[k] == 1)
+            {
+                // Send the joint back to its default position
+                stateObj.motorState[k] = 2;
+                robotObj.Motor[k].w = robotObj.Motor[k].wmax;
+                MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                stateObj.motorState[k] = 4;
+            }
+            else if (dofObj.ChB.signal < dofObj.ChB.smin && stateObj.motorState[k] == 2)
+            {
+                // Send the joint back to its default position
+                stateObj.motorState[k] = 1;
+                robotObj.Motor[k].w = robotObj.Motor[k].wmax;
+                MoveVelocity(k, global_flip, stateObj.motorState[k]);
+                stateObj.motorState[k] = 4;
+            }
+
+            // Bound the position values
+                robotObj.Motor[k].p = bound(robotObj.Motor[k].p, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
+
+            // Bound the velocity values if not using grip force limit
+            if (k != 4 || BentoAdaptGripCheck.Checked == false)
+            {
+                robotObj.Motor[k].w = bound(robotObj.Motor[k].w, robotObj.Motor[k].wmin, robotObj.Motor[k].wmax);
+            }
+            // Elsewise use the following code to help grip force limit work a bit better
+            else
+            {
+                if (ID5_present_load > BentoAdaptGripCtrl.Value)
+                {
+                    robotObj.Motor[k].p = robotObj.Motor[k].p + 1;
+                }
+                else if (ID5_present_load < -BentoAdaptGripCtrl.Value)
+                {
+                    robotObj.Motor[k].p = robotObj.Motor[k].p - 1;
+                }
+            }
+        }
+
+        private void joint_position2(DoF_ dofObj, int k, int i)
+        {
+            // This function acts as a joint position mapping option where the analog
+            // signal from a two paired channels are mapped to the joint position of a given 
+            // degree of freedom. The output device defines the direction of movement
+            // i.e. if you reach smax you will be at the maximum range of motion of the
+            // degree of freedom/direction defined in the output dropdown box. If you
+            // reach smin then you will be at the maximum range of motion in the opposite
+            // direction as the one defined in the output dropdown box.
+            //  
+            // Definitions:
+            // w = angular velocity
+            // p = goal position(controls the direction of rotation)
+            // state 0 = off
+            // state 1 = open or cw
+            // state 2 = closed or cww
+            // state 3 = hanging until co-contraction is finished
+
+            // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
+            int global_flip = 1;
+            int midpoint = ((robotObj.Motor[k].pmax - robotObj.Motor[k].pmin) / 2) + robotObj.Motor[k].pmin;
+            //if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
+            //{
+            //    global_flip = -1;
+            //}
+            if ((switchObj.List[stateObj.listPos].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flipA != 0 && i != switchObj.DoF - 1))
+            {
+                global_flip = -1;
+            }
+
+            // Apply the first past the post algorithm
+            if (dofObj.ChA.signal >= dofObj.ChA.smin && stateObj.motorState[k] != 2 && stateObj.motorState[k] != 3)
+            {
+                // Move CW 
+                stateObj.motorState[k] = 1;
+                if (global_flip == 1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(dofObj.ChA, robotObj.Motor[k].pmin, midpoint);
+                }
+                else if (global_flip == -1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(dofObj.ChA, robotObj.Motor[k].pmax, midpoint);
+                }
+                robotObj.Motor[k].w = 1023;
+            }
+            else if (dofObj.ChB.signal >= dofObj.ChB.smin && stateObj.motorState[k] != 1 && stateObj.motorState[k] != 3)
+            {
+                // Move CCW 
+                stateObj.motorState[k] = 2;
+                if (global_flip == 1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(dofObj.ChB, robotObj.Motor[k].pmax, midpoint);
+                }
+                else if (global_flip == -1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(dofObj.ChB, robotObj.Motor[k].pmin, midpoint);
+                }
+                robotObj.Motor[k].w = 1023;
+            }
+            else if ((dofObj.ChA.signal < dofObj.ChA.smin && stateObj.motorState[k] == 1) || (dofObj.ChB.signal < dofObj.ChB.smin && stateObj.motorState[k] == 2))
+            {
+                // Stop the motor
+                stateObj.motorState[k] = 0;
+                robotObj.Motor[k].p = midpoint;
+                robotObj.Motor[k].w = 1023;
+
+            }
+
+            // Bound the position values
+            robotObj.Motor[k].p = bound(robotObj.Motor[k].p, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
+        }
+
+        private void joint_position1(Ch channel, int k, int flip)
+        {
+            // This function acts as a joint position mapping option where the analog
+            // signal from a single channel is mapped to the joint position of a given 
+            // degree of freedom. The output device defines the direction of movement
+            // i.e. if you reach smax you will be at the maximum range of motion of the
+            // degree of freedom/direction defined in the output dropdown box. If you
+            // reach smin then you will be at the maximum range of motion in the opposite
+            // direction as the one defined in the output dropdown box.
+            //  
+            // Definitions:
+            // w = angular velocity
+            // p = goal position(controls the direction of rotation)
+            // state 0 = off
+            // state 1 = open or cw
+            // state 2 = closed or cww
+            // state 3 = hanging until co-contraction is finished
+
+            // Bound the signal values
+            //channel.signal = bound(channel.signal, Convert.ToInt32(channel.smin), Convert.ToInt32(channel.smax)); 
+
+            // Apply the joint position1 algorithm
+            if (stateObj.motorState[k] != 3)
+            {
+                // Move CW 
+                //stateObj.motorState[k] = 1;
+
+                if (flip == 1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(channel, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
+                }
+                else if (flip == -1)
+                {
+                    robotObj.Motor[k].p = linear_mapping(channel, robotObj.Motor[k].pmax, robotObj.Motor[k].pmin);
+                }
+                robotObj.Motor[k].w = 400;
+
+            }
+
+            // Bound the position values
+            robotObj.Motor[k].p = bound(robotObj.Motor[k].p, robotObj.Motor[k].pmin, robotObj.Motor[k].pmax);
+
+            //// Bound the velocity values if not using grip force lmit
+            //if (k != 4 || BentoAdaptGripCheck.Checked == false)
+            //{
+            //    robotObj.Motor[k].w = bound(robotObj.Motor[k].w, robotObj.Motor[k].wmin, robotObj.Motor[k].wmax);
+            //}
+        }
+
+        private int toggle(Ch channel, int statePressed, Button state1, Button state2)
         {
             // This function acts as a momentary switch that allows for toggling between
             // two states on the robot such as torque on/off and run/suspend.
@@ -2823,7 +4608,7 @@ namespace brachIOplexus
                 statePressed = 1;
                 return statePressed;
             }
-            else if(channel.signal < channel.smin)
+            else if (channel.signal < channel.smin)
             {
                 // Reset the momentary button when it falls below threshold
                 statePressed = 0;
@@ -2833,18 +4618,42 @@ namespace brachIOplexus
             return statePressed;
         }
 
-        private int linear_mapping(Ch channel, int k)
+        //private int linear_mapping(Ch channel, int k)
+        //{
+        //    // Cap the maximum EMG signal at smax
+        //    if (channel.signal >= channel.smax)
+        //    {
+        //        channel.signal = Convert.ToInt32(channel.smax);
+        //    }
+
+        //    // Linear proportional mapping between signal strength and angular velocity of motor
+        //    return Convert.ToInt32((robotObj.Motor[k].wmax - robotObj.Motor[k].wmin) / (channel.smax - channel.smin) * (channel.signal - channel.smin) + robotObj.Motor[k].wmin);
+        //}
+
+        private int linear_mapping(Ch channel, int motor_max, int motor_min)
         {
             // Cap the maximum EMG signal at smax
             if (channel.signal >= channel.smax)
             {
                 channel.signal = Convert.ToInt32(channel.smax);
             }
-            
-            // Linear proportional mapping between signal strength and angular velocity of motor
-            return Convert.ToInt32((robotObj.Motor[k].wmax - robotObj.Motor[k].wmin) / (channel.smax - channel.smin) * (channel.signal - channel.smin) + robotObj.Motor[k].wmin);
+
+            // Linear proportional mapping between signal strength and angular velocity/position of motor
+            return Convert.ToInt32((motor_max - motor_min) / (channel.smax - channel.smin) * (channel.signal - channel.smin) + motor_min);
         }
 
+        private int check_flip(int val, int dof_flip)
+        {
+            // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
+            if ((switchObj.List[stateObj.listPos].flip == 1 && val == switchObj.DoF - 1) || (dof_flip != 0 && val != switchObj.DoF - 1))
+            {
+                return -1;
+            }
+            else
+            {
+                return 1;
+            }
+        }
         private void StopVelocity(int j)
         {
             // Grab last position feedback and STOP!
@@ -2961,6 +4770,19 @@ namespace brachIOplexus
 
         }
 
+        // Helper function that filters values to see if they are greater than 0
+        private bool greaterThanZero(int value)
+        {
+            if (value > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         // Helper function to convert floats to strings
         private static string FormatFloat(float v)
         {
@@ -2970,7 +4792,7 @@ namespace brachIOplexus
         // Helper function to update the switching list
         private int updateList(int listPos)
         {
-            if (listPos == SWITCH_NUM-1)
+            if (listPos == SWITCH_NUM - 1)
             {
                 return 0;
             }
@@ -2978,7 +4800,7 @@ namespace brachIOplexus
             {
                 return listPos + 1;
             }
-        
+
         }
 
         //Helper function to cap the MAV display at the rail
@@ -3025,7 +4847,7 @@ namespace brachIOplexus
                 }
             }
 
-            return Convert.ToInt32(IsKeyDown)*max;
+            return Convert.ToInt32(IsKeyDown) * max;
         }
 
         // bound the value between its min and max values
@@ -3043,6 +4865,29 @@ namespace brachIOplexus
             {
                 return value;
             }
+        }
+
+        void update_SLRT()
+        {
+            //try
+            //{
+            //    // Scale factor so that progress bar control can show a finer resolution
+            //    double scale_factor = 100;
+
+            //    SLRT_ch[0] = Convert.ToInt32(tg.Application.Signals["MAV/s1"].GetValue() * scale_factor);
+            //    SLRT_ch[1] = Convert.ToInt32(tg.Application.Signals["MAV/s2"].GetValue() * scale_factor);
+            //    SLRT_ch[2] = Convert.ToInt32(tg.Application.Signals["MAV/s3"].GetValue() * scale_factor);
+            //    SLRT_ch[3] = Convert.ToInt32(tg.Application.Signals["MAV/s4"].GetValue() * scale_factor);
+            //    SLRT_ch[4] = Convert.ToInt32(tg.Application.Signals["MAV/s5"].GetValue() * scale_factor);
+            //    SLRT_ch[5] = Convert.ToInt32(tg.Application.Signals["MAV/s6"].GetValue() * scale_factor);
+            //    SLRT_ch[6] = Convert.ToInt32(tg.Application.Signals["MAV/s7"].GetValue() * scale_factor);
+            //    SLRT_ch[7] = Convert.ToInt32(tg.Application.Signals["MAV/s8"].GetValue() * scale_factor);
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show(ex.Message);
+            //}
+
         }
 
         #endregion
@@ -3157,6 +5002,12 @@ namespace brachIOplexus
             }
         }
 
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Manually calling the Refresh() command on mainForm causes the tabs to redraw significantly faster when changing from one tab to another
+            this.Refresh();
+        }
+
         private void updateCheckedLists()
         {
             //// Add selected items to combobox
@@ -3176,6 +5027,10 @@ namespace brachIOplexus
             comboBox_AddItems(0, InputComboBox, XBoxList);
             comboBox_AddItems(1, InputComboBox, MYOlist);
             comboBox_AddItems(2, InputComboBox, KBlist);
+            comboBox_AddItems(3, InputComboBox, biopatrecList);
+            comboBox_AddItems(4, InputComboBox, ArduinoInputList);
+            comboBox_AddItems(5, InputComboBox, SLRTlist);
+            comboBox_AddItems(6, InputComboBox, udpList);
             InputComboBox.SelectedIndex = InputComboBox.FindStringExact(InputBoxText); // Keep selected item persistant when the list changes
 
 
@@ -3187,6 +5042,7 @@ namespace brachIOplexus
             OutputComboBox.Items.Add(item);
 
             comboBox_AddItems(0, OutputComboBox, BentoList);
+            comboBox_AddItems(1, OutputComboBox, HANDiList);
             OutputComboBox.SelectedIndex = OutputComboBox.FindStringExact(OutputBoxText); // Keep selected item persistant when the list changes 
 
             // Copy list to the other input device comboboxes on the mapping tab
@@ -3250,13 +5106,53 @@ namespace brachIOplexus
         {
             Channel changed = (Channel)sender;
             List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
 
-
+            int index = 0;
             foreach (DoF dof in dof_list)
             {
-                autoFill(dof.channel1.outputBox, dof.channel2.outputBox, changed.outputBox, 10);
-                autoOff(dof.channel1.outputBox, dof.channel2.outputBox, changed.outputBox, 10);
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    if (dof.channel1.outputBox.SelectedIndex > 0)
+                    {
+                        // Stop the joint that was previously assigned in order to prevent it from continuing to move
+                        if (dofObj[index].ChA.signal >= dofObj[index].ChA.smin)
+                        {
+                            dofStop[0] = dofObj[index].ChA.output.Type;
+                            dofStop[1] = dofObj[index].ChA.output.ID;
+                        }
+                        dofObj[index].ChA.output.Type = (changed.outputBox.SelectedItem as ComboboxItem).Type;
+                        dofObj[index].ChA.output.ID = (changed.outputBox.SelectedItem as ComboboxItem).ID;
+                        dofObj[index].flipA = (changed.outputBox.SelectedItem as ComboboxItem).ID % 2;     // checks whether it is even or odd (!= 0 means its odd, == 0 means its even)
+                    }
+                    dofObj[index].ChA.Enabled = setEnabled(dof.channel1.inputBox.SelectedIndex, dof.channel1.outputBox.SelectedIndex);
+                }
+                else if (dof.channel2 == changed)
+                {
+                    if (dof.channel2.outputBox.SelectedIndex > 0)
+                    {
+                        // Stop the joint that was previously assigned in order to prevent it from continuing to move
+                        if (dofObj[index].ChB.signal >= dofObj[index].ChB.smin)
+                        {
+                            dofStop[0] = dofObj[index].ChB.output.Type;
+                            dofStop[1] = dofObj[index].ChB.output.ID;
+                        }
+                        dofObj[index].ChB.output.Type = (changed.outputBox.SelectedItem as ComboboxItem).Type;
+                        dofObj[index].ChB.output.ID = (changed.outputBox.SelectedItem as ComboboxItem).ID;
+                        dofObj[index].flipB = (changed.outputBox.SelectedItem as ComboboxItem).ID % 2;     // checks whether it is even or odd (!= 0 means its odd, == 0 means its even)
+                    }
+                    dofObj[index].ChB.Enabled = setEnabled(dof.channel2.inputBox.SelectedIndex, dof.channel2.outputBox.SelectedIndex);
+                }
+
+                // Only apply these automations if two channel mappings are selected. Otherwise ignore them
+                if (changed.mappingBox.SelectedIndex <= 3)
+                {
+                    autoFill(dof.channel1.outputBox, dof.channel2.outputBox, changed.outputBox, 10);
+                    autoOff(dof.channel1.outputBox, dof.channel2.outputBox, changed.outputBox, 10);
+                }
                 autoDeselect(dof.channel1.outputBox, dof.channel2.outputBox, changed.outputBox);
+                index++;
             }
         }
 
@@ -3264,21 +5160,150 @@ namespace brachIOplexus
         private void filterInputComboBox(object sender, EventArgs e)
         {
             // Auto-suspend when input device is changed in mapping tab
-            InvokeOnClick(BentoSuspend, new EventArgs());
+            //InvokeOnClick(BentoSuspend, new EventArgs());
+            autosuspend_flag = true;
 
             Channel changed = (Channel)sender;
             List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
 
+            int index = 0;
             foreach (DoF dof in dof_list)
             {
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    if (dof.channel1.inputBox.SelectedIndex > 0)
+                    {
+                        dofObj[index].ChA.input.Type = (changed.inputBox.SelectedItem as ComboboxItem).Type;
+                        dofObj[index].ChA.input.ID = (changed.inputBox.SelectedItem as ComboboxItem).ID;
+                    }
+                    dofObj[index].ChA.Enabled = setEnabled(dof.channel1.inputBox.SelectedIndex, dof.channel1.outputBox.SelectedIndex);
+                }
+                else if (dof.channel2 == changed)
+                {
+                    if (dof.channel2.inputBox.SelectedIndex > 0)
+                    {
+                        dofObj[index].ChB.input.Type = (changed.inputBox.SelectedItem as ComboboxItem).Type;
+                        dofObj[index].ChB.input.ID = (changed.inputBox.SelectedItem as ComboboxItem).ID;
+                    }
+                    dofObj[index].ChB.Enabled = setEnabled(dof.channel2.inputBox.SelectedIndex, dof.channel2.outputBox.SelectedIndex);
+                }
                 autoFill(dof.channel1.inputBox, dof.channel2.inputBox, changed.inputBox, 8);
+                index++;
             }
         }
 
-        private void autoSuspendInputComboBox(object sender, EventArgs e)
+        // filter the values from the mapping combobox
+        private void filterMappingComboBox(object sender, EventArgs e)
         {
-            // Auto-suspend when input device is changed in mapping tab
-            InvokeOnClick(BentoSuspend, new EventArgs());
+            Channel changed = (Channel)sender;
+            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
+
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (changed.mappingBox.SelectedIndex == 4)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            int index = 0;
+            foreach (DoF dof in dof_list)
+            {
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    dofObj[index].ChA.mapping = Convert.ToInt32(changed.mappingBox.SelectedIndex);
+                }
+                else if (dof.channel2 == changed)
+                {
+                    dofObj[index].ChB.mapping = Convert.ToInt32(changed.mappingBox.SelectedIndex);
+                }
+                autoFillMapping(dof.channel1.mappingBox, dof.channel2.mappingBox, changed.mappingBox, 3);
+                index++;
+            }
+        }
+
+        // filter the values from the Gain control
+        private void filterGainValue(object sender, EventArgs e)
+        {
+            Channel changed = (Channel)sender;
+            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
+
+            int index = 0;
+            foreach (DoF dof in dof_list)
+            {
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    dofObj[index].ChA.gain = changed.gainCtrl.Value;
+                }
+                else if (dof.channel2 == changed)
+                {
+                    dofObj[index].ChB.gain = changed.gainCtrl.Value;
+                }
+                index++;
+            }
+        }
+
+        // filter the values from the Smin control
+        private void filterSminValue(object sender, EventArgs e)
+        {
+            Channel changed = (Channel)sender;
+            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
+
+            int index = 0;
+            foreach (DoF dof in dof_list)
+            {
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    dofObj[index].ChA.smin = changed.sminCtrl.Value * 100;
+                }
+                else if (dof.channel2 == changed)
+                {
+                    dofObj[index].ChB.smin = changed.sminCtrl.Value * 100;
+                }
+                index++;
+            }
+        }
+
+        // filter the values from the Smin control
+        private void filterSmaxValue(object sender, EventArgs e)
+        {
+            Channel changed = (Channel)sender;
+            List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
+            dof_list.Reverse();
+
+            int index = 0;
+            foreach (DoF dof in dof_list)
+            {
+                // Assign the new values to the appropriate channel NOTE: The list needed to be reversed in order for this to work properly with the index starting at 0 and incrementing.
+                if (dof.channel1 == changed)
+                {
+                    dofObj[index].ChA.smax = changed.smaxCtrl.Value * 100;
+                }
+                else if (dof.channel2 == changed)
+                {
+                    dofObj[index].ChB.smax = changed.smaxCtrl.Value * 100;
+                }
+                index++;
+            }
+        }
+
+        // Used to set whether a channel is enabled or not. The enabled state is used in the main loop to determine whether a given DoF is enabled or not.
+        private bool setEnabled(int valueA, int valueB)
+        {
+            if (valueA > 0 && valueB > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         // used to auto deselect when duplicate values are selected
@@ -3333,6 +5358,20 @@ namespace brachIOplexus
             }
         }
 
+        // used to autofill entries into mapping combobox if a two channel mapping is selected. If a one channel mapping is selected nothing will happen.
+        private void autoFillMapping(ComboBox comboBox1, ComboBox comboBox2, ComboBox changed, int index)
+        {
+
+            if (comboBox1 == changed && changed.SelectedIndex <= index)
+            {
+                comboBox2.SelectedIndex = changed.SelectedIndex;
+            }
+            else if (comboBox2 == changed && changed.SelectedIndex <= index)
+            {
+                comboBox1.SelectedIndex = changed.SelectedIndex;
+            }
+        }
+
         // auto fill both channels with "off" if one of them is assigned to a DoF. This will need to be changed when implementing position control, so that it does not autofill in that case.
         private void autoOff(ComboBox comboBox1, ComboBox comboBox2, ComboBox changed, int index)
         {
@@ -3366,7 +5405,7 @@ namespace brachIOplexus
                 double_check(BentoList, 9, e);
             });
         }
-  
+
         private void XBoxList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             this.BeginInvoke((MethodInvoker)delegate
@@ -3474,7 +5513,7 @@ namespace brachIOplexus
         }
         #endregion
 
-        #region "Sequential Switch
+        #region "Sequential Switch"
         // Do the following when the DoF is changed in the sequential switching groupbox
         private void switchDoFbox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3487,7 +5526,7 @@ namespace brachIOplexus
                 }
             }
 
-            // Used to grey out output device selectoin when the sequential switch is assigned to a dof
+            // Used to grey out output device selection when the sequential switch is assigned to a dof
             // reference: https://stackoverflow.com/questions/43021/how-do-you-get-the-index-of-the-current-iteration-of-a-foreach-loop
             List<DoF> dof_list = this.tabControl1.TabPages[1].Controls.OfType<DoF>().ToList<DoF>();
             dof_list.Reverse(); // Need to do this because for some reason the list enumerates backwards
@@ -3501,11 +5540,15 @@ namespace brachIOplexus
                 {
                     dof.channel1.outputBox.Enabled = false;
                     dof.channel2.outputBox.Enabled = false;
+                    dof.channel1.mappingBox.Enabled = false;
+                    dof.channel2.mappingBox.Enabled = false;
                 }
                 else
                 {
                     dof.channel1.outputBox.Enabled = true;
                     dof.channel2.outputBox.Enabled = true;
+                    dof.channel1.mappingBox.Enabled = true;
+                    dof.channel2.mappingBox.Enabled = true;
                 }
 
             }
@@ -3515,7 +5558,8 @@ namespace brachIOplexus
         private void switchDoFbox_Enter(object sender, EventArgs e)
         {
             // Auto-suspend the Bento Arm as soon as the control enters focus
-            InvokeOnClick(BentoSuspend, new EventArgs());
+            //InvokeOnClick(BentoSuspend, new EventArgs());
+            autosuspend_flag = true;
         }
 
         // Update the switching mode when the index is changed
@@ -3528,10 +5572,14 @@ namespace brachIOplexus
             if (switchModeBox.SelectedIndex == 1)
             {
                 switchInputBox.Enabled = false;
+                switchSminCtrl2.Enabled = true;
+                switchSmaxCtrl2.Enabled = true;
             }
             else
             {
                 switchInputBox.Enabled = true;
+                switchSminCtrl2.Enabled = false;
+                switchSmaxCtrl2.Enabled = false;
             }
         }
 
@@ -3542,39 +5590,55 @@ namespace brachIOplexus
         }
 
         // Update the gain for the switching channel
-        private void switchGainCtrl_ValueChanged(object sender, EventArgs e)
+        private void switchGainCtrl1_ValueChanged(object sender, EventArgs e)
         {
-            switchObj.gain = switchGainCtrl.Value;
+            switchObj.gain = switchGainCtrl1.Value;
         }
 
         // Update the minimum threshold for the switching channel
-        private void switchSminCtrl_ValueChanged(object sender, EventArgs e)
+        private void switchSminCtrl1_ValueChanged(object sender, EventArgs e)
         {
-            switchObj.smin = switchSminCtrl.Value*100;
+            switchObj.smin1 = switchSminCtrl1.Value * 100;
             // Adjust the position of the smin tick and label to reflect changes to the smin value
-            switchSminTick.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl.Value)), switchSminTick.Location.Y);
-            switchSminLabel.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl.Value)) - switchSminLabel.Width / 2 + switchSminTick.Width / 2, switchSminLabel.Location.Y);
+            switchSminTick1.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl1.Value)), switchSminTick1.Location.Y);
+            switchSminLabel1.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl1.Value)) - switchSminLabel1.Width / 2 + switchSminTick1.Width / 2, switchSminLabel1.Location.Y);
         }
 
         // Update the maximum threshold for the switching channel
-        private void switchSmaxCtrl_ValueChanged(object sender, EventArgs e)
+        private void switchSmaxCtrl1_ValueChanged(object sender, EventArgs e)
         {
-            switchObj.smax = switchSmaxCtrl.Value*100;
+            switchObj.smax1 = switchSmaxCtrl1.Value * 100;
             // Adjust the position of the smin tick and label to reflect changes to the smin value
-            switchSmaxTick.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl.Value)), switchSmaxTick.Location.Y);
-            switchSmaxLabel.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl.Value)) - switchSmaxLabel.Width / 2 + switchSmaxTick.Width / 2, switchSmaxLabel.Location.Y);
+            switchSmaxTick1.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl1.Value)), switchSmaxTick1.Location.Y);
+            switchSmaxLabel1.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl1.Value)) - switchSmaxLabel1.Width / 2 + switchSmaxTick1.Width / 2, switchSmaxLabel1.Location.Y);
+        }
+
+        private void switchSminCtrl2_ValueChanged(object sender, EventArgs e)
+        {
+            switchObj.smin2 = switchSminCtrl2.Value * 100;
+            // Adjust the position of the smin tick and label to reflect changes to the smin value
+            switchSminTick2.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl2.Value)), switchSminTick2.Location.Y);
+            switchSminLabel2.Location = new Point(switch_tick_position(Convert.ToDouble(switchSminCtrl2.Value)) - switchSminLabel2.Width / 2 + switchSminTick2.Width / 2, switchSminLabel2.Location.Y);
+        }
+
+        private void switchSmaxCtrl2_ValueChanged(object sender, EventArgs e)
+        {
+            switchObj.smax2 = switchSmaxCtrl2.Value * 100;
+            // Adjust the position of the smin tick and label to reflect changes to the smin value
+            switchSmaxTick2.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl2.Value)), switchSmaxTick2.Location.Y);
+            switchSmaxLabel2.Location = new Point(switch_tick_position(Convert.ToDouble(switchSmaxCtrl2.Value)) - switchSmaxLabel2.Width / 2 + switchSmaxTick2.Width / 2, switchSmaxLabel2.Location.Y);
         }
 
         //Helper function to control position of threshold ticks and labels
         public int switch_tick_position(double x)
         {
             //return Convert.ToInt32(35.4 * voltage + 52);
-            return Convert.ToInt32(switchSignalBar.Width / Convert.ToDouble(switchSminCtrl.Maximum) * x + switchSignalBar.Location.X);
+            return Convert.ToInt32(switchSignalBar1.Width / Convert.ToDouble(switchSminCtrl1.Maximum) * x + switchSignalBar1.Location.X);
         }
 
-        private void switchTimeCtrl_ValueChanged(object sender, EventArgs e)
+        private void switchTimeCtrl1_ValueChanged(object sender, EventArgs e)
         {
-            switchObj.cctime = switchTimeCtrl.Value;
+            switchObj.cctime = switchTimeCtrl1.Value;
         }
 
         private void switch1OutputBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -3602,9 +5666,64 @@ namespace brachIOplexus
             switchObj.List[4].output = switch5OutputBox.SelectedIndex;
         }
 
+        private void switch1MappingBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (switch1MappingBox.SelectedIndex == 2)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            switchObj.List[0].mapping = switch1MappingBox.SelectedIndex;
+        }
+
+        private void switch2MappingBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (switch2MappingBox.SelectedIndex == 2)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            switchObj.List[1].mapping = switch2MappingBox.SelectedIndex;
+        }
+
+        private void switch3MappingBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (switch3MappingBox.SelectedIndex == 2)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            switchObj.List[2].mapping = switch3MappingBox.SelectedIndex;
+        }
+
+        private void switch4MappingBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (switch4MappingBox.SelectedIndex == 2)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            switchObj.List[3].mapping = switch4MappingBox.SelectedIndex;
+        }
+
+        private void switch5MappingBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // Auto-suspend the arm if the mapping is set to Joint Velocity 1
+            if (switch5MappingBox.SelectedIndex == 2)
+            {
+                InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            switchObj.List[4].mapping = switch5MappingBox.SelectedIndex;
+        }
+
         private void switch1Flip_CheckedChanged(object sender, EventArgs e)
         {
-            switchObj.List[0].flip = Convert.ToInt32(switch1Flip.Checked); 
+            switchObj.List[0].flip = Convert.ToInt32(switch1Flip.Checked);
         }
 
         private void switch2Flip_CheckedChanged(object sender, EventArgs e)
@@ -3682,8 +5801,633 @@ namespace brachIOplexus
                 }
             }
         }
+
+        // Check mouse click events to hide/show the sequential switching groupbox
+        // Any mouse click will make the group box visible and a right click will hide the group box
+        private void switchSignalBar1_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && groupBox16.Visible == true)
+            {
+                groupBox16.Visible = false;
+            }
+            else if (groupBox16.Visible == false)
+            {
+                groupBox16.Visible = true;
+            }
+        }
+
+        // Only allow one of the two auditory feedback methods for sequential switching to be active at a time
+        private void dingBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (dingBox.Checked == true && vocalBox.Checked == true)
+            {
+                vocalBox.Checked = false;
+            }
+        }
+
+        private void vocalBox_CheckedChanged(object sender, EventArgs e)
+        {
+            if (dingBox.Checked == true && vocalBox.Checked == true)
+            {
+                dingBox.Checked = false;
+            }
+        }
+
+        #endregion
+
+        #region "BioPatRec Communication"
+
+        private void biopatrecConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Set port and address for the TcpListener
+                Int32 port = Convert.ToInt32(biopatrecIPport.Text);
+                //IPAddress localAddr = IPAddress.Parse("127.0.0.1");     // address for localhost
+                //IPAddress localAddr = IPAddress.Any;                    // listen for client activity on all network interfaces (equivalent to 0.0.0.0)
+                IPAddress localAddr = IPAddress.Parse(biopatrecIPaddr.Text);                     // listen for client activity on all network interfaces (equivalent to 0.0.0.0)
+
+                // Initialize the server object and wait for client to connect
+                listener = new TcpListener(localAddr, port);
+                listener.Start();
+                client = listener.AcceptTcpClient();
+                netStream = client.GetStream();
+                t = new Thread(DoWork);
+                t.Start();
+
+                // Re-configure the GUI when BioPatRec is connected
+                biopatrecGroupBox.Enabled = true;
+                biopatrecDisconnect.Enabled = true;
+                biopatrecConnect.Enabled = false;
+                biopatrecList.Enabled = true;
+                biopatrecSelectAll.Enabled = true;
+                biopatrecClearAll.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+        }
+
+        private void biopatrecDisconnect_Click(object sender, EventArgs e)
+        {
+            // Re-configure the GUI when BioPatRec is disconnected
+            biopatrecGroupBox.Enabled = false;
+            biopatrecDisconnect.Enabled = false;
+            biopatrecConnect.Enabled = true;
+            biopatrecList.Enabled = false;
+            biopatrecSelectAll.Enabled = false;
+            biopatrecClearAll.Enabled = false;
+            biopatrecConnect.Focus();
+        }
+
+        private void biopatrecSelectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < biopatrecList.Items.Count; i++)
+            {
+                biopatrecList.SetItemChecked(i, true);
+            }
+        }
+
+        private void biopatrecClearall_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < biopatrecList.Items.Count; i++)
+            {
+                biopatrecList.SetItemChecked(i, false);
+            }
+        }
+
+        // This is a separate thread that is used for communicating with the client
+        public void DoWork()
+        {
+            try
+            {
+                byte[] bytes = new byte[1024];
+
+                // need to do some invoking in order to avoi invalid cross-thread operation
+                // https://stackoverflow.com/questions/142003/cross-thread-operation-not-valid-control-accessed-from-a-thread-other-than-the
+                int mode = 0;
+                if (biopatrecMode.InvokeRequired)
+                {
+                    biopatrecMode.Invoke(new MethodInvoker(delegate { mode = biopatrecMode.SelectedIndex; }));
+                }
+
+                // Output - TAC mode -> use conventional EMG outputs from brachI/Oplexus to drive the simulator in biopatrec
+                if (mode == 1)
+                {
+                    stopWatch2.Start();         // start the stop watch
+                    long TAC_timestep = 30;     // this is how often in (ms) that biopatrec will send a command to biopatrec if one of the joints is active
+                    while (true)
+                    {
+                        if (stopWatch2.ElapsedMilliseconds >= TAC_timestep)
+                        {
+                            // Stop stopwatch and record how long everything in the main loop took to execute as well as how long it took to retrigger the main loop
+                            stopWatch2.Stop();
+                            milliSec2 = stopWatch2.ElapsedMilliseconds;
+                            //biopatrecDelay.Text = Convert.ToString(milliSec2);
+
+                            if (biopatrecDelay.InvokeRequired)
+                            {
+                                biopatrecDelay.Invoke(new MethodInvoker(delegate { biopatrecDelay.Text = Convert.ToString(milliSec2); }));
+                            }
+
+                            // Send the class ID and velocity command to biopatrec
+                            // Elbow
+                            if (stateObj.motorState[1] == 1)
+                            {
+                                bytes[0] = 20;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[1].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            else if (stateObj.motorState[1] == 2)
+                            {
+                                bytes[0] = 21;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[1].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            // Wrist rotation
+                            else if (stateObj.motorState[2] == 1)
+                            {
+                                bytes[0] = 5;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[2].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            else if (stateObj.motorState[2] == 2)
+                            {
+                                bytes[0] = 6;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[2].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            // Wrist flexion
+                            else if (stateObj.motorState[3] == 1)
+                            {
+                                bytes[0] = 3;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[3].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            else if (stateObj.motorState[3] == 2)
+                            {
+                                bytes[0] = 4;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[3].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            // Hand Open/Close
+                            else if (stateObj.motorState[4] == 1)
+                            {
+                                bytes[0] = 1;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[4].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+                            else if (stateObj.motorState[4] == 2)
+                            {
+                                bytes[0] = 2;
+                                bytes[1] = Convert.ToByte(robotObj.Motor[4].w);
+                                netStream.Write(bytes, 0, 2);
+                            }
+
+                            // Used for testing/troubleshooting
+                            //bytes[0] = 15;
+                            //bytes[1] = 80;
+                            //if (ID2_state.InvokeRequired)
+                            //{
+                            //    ID2_state.Invoke(new MethodInvoker(delegate { ID2_state.Text = Convert.ToString(bytes[1]); }));
+                            //}
+
+                            // Reset and start the stop watch
+                            stopWatch2.Restart();
+                        }
+                    }
+                }
+                // Input mode -> use class outputs from biopatrec to drive the bento arm
+                else
+                {
+                    //byte[] bytes = new byte[1024];
+                    while (true)
+                    {
+                        int bytesRead = netStream.Read(bytes, 0, bytes.Length);
+                        //this.SetText(Encoding.ASCII.GetString(bytes, 0, bytesRead));
+                        //this.SetText(Convert.ToString(bytes[0]));
+                        //string received_msg = "";
+                        for (int i = 0; i < bytesRead; i++)
+                        {
+                            if (bytes[i] <= 24)
+                            {
+                                //received_msg = received_msg + "ID:" + Convert.ToString(bytes[i]) + " ";
+                                biopatrec_vel = 0;
+                                biopatrec_ID = bytes[i];
+                                netStream.Write(bytes, i, 1);
+                            }
+                            if (bytes[i] > 24)
+                            {
+                                biopatrec_vel = bytes[i] - 25;
+                                //received_msg = received_msg + "Speed:" + Convert.ToString(bytes[i]) + " ";
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region "UDP Communication"
+        private void udpConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                // Initialize the server object and wait for client to connect
+                t2 = new Thread(DoWork2);
+                t2.IsBackground = true;
+                Int32 portRX = Convert.ToInt32(udpIPport.Text);
+                IPAddress localAddr = IPAddress.Parse(udpIPaddr.Text);                     // listen for client activity on all network interfaces (equivalent to 0.0.0.0)
+                udpClientRX = new UdpClient(portRX);
+                ipEndPointRX = new IPEndPoint(localAddr, portRX);
+                t2.Start();
+
+                // Re-configure the GUI when DUP is connected
+                udpGroupBox.Enabled = true;
+                udpDisconnect.Enabled = true;
+                udpConnect.Enabled = false;
+                udpList.Enabled = true;
+                udpSelectAll.Enabled = true;
+                udpClearAll.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void udpDisconnect_Click(object sender, EventArgs e)
+        {
+            // Clean up the UDP client objects
+            t2.Abort();
+            udpClientRX.Close();     // Close the UDP client    
+
+            // Re-configure the GUI when UDP is disconnected
+            udpGroupBox.Enabled = false;
+            udpDisconnect.Enabled = false;
+            udpConnect.Enabled = true;
+            udpList.Enabled = false;
+            udpSelectAll.Enabled = false;
+            udpClearAll.Enabled = false;
+            udpConnect.Focus();
+        }
+
+        private void udpSelectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < udpList.Items.Count; i++)
+            {
+                udpList.SetItemChecked(i, true);
+            }
+        }
+
+        private void udpClearAll_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < udpList.Items.Count; i++)
+            {
+                udpList.SetItemChecked(i, false);
+            }
+        }
+        // This is a separate thread that is used for communicating with the client
+        public void DoWork2()
+        {
+            while (true)
+            {
+
+                byte[] bytes = udpClientRX.Receive(ref ipEndPointRX);
+
+                try
+                {
+                    // Decode packets from UNB ACE using packet structure from UDP_Comm_Protocol_IBT_150917
+                    // Calculate the checksum for the packet
+                    int checksum = 0;
+                    for (int p = 2; p < bytes.Length - 1; p++)
+                    {
+                        checksum = checksum + bytes[p];     // Add up all the bytes in the LENGTH and DATA section of hte packet
+                    }
+
+                    checksum = (byte)~checksum;     // return the bitwise complement which is equivalent to the NOT operator
+
+                    // Only update the input values if the packet is valid
+                    if (checksum == bytes[bytes.Length - 1] && bytes[0] == 255 && bytes[1] == 255)
+                    {
+                        for (int m = 3; m < bytes.Length - 1; m = m + 2)
+                        {
+                            UDP_ch[bytes[m]] = bytes[m + 1];
+                        }
+                    }
+
+                    //// This is stuff for decoding packets from interactiveMyocontrol
+                    //string text = Encoding.ASCII.GetString(bytes).Trim(new Char[] { '[', ']' });
+                    //// Instructions how to parse strings: https://docs.microsoft.com/en-us/dotnet/csharp/how-to/parse-strings-using-split
+                    //// Trim can remove the starting and ending [,] characters and split can remove the commas and split into individual strings
+                    //char[] delimiterChars = { ',' };
+                    //string[] words = text.Split(delimiterChars);
+                    //int i = 0;
+                    //foreach (var word in words)
+                    //{
+                    //    if (word != "")
+                    //    {
+                    //        UDP_ch[i] = Convert.ToDouble(word);
+                    //        i++;
+                    //    }
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+                //this.SetText2(Encoding.ASCII.GetString(bytes));
+            }
+        }
+
+        // Used for testing purposes
+        //private void SetText2(string text)
+        //{
+        //    // InvokeRequired required compares the thread ID of the
+        //    // calling thread to the thread ID of the creating thread.
+        //    // If these threads are different, it returns true.
+        //    if (this.label236.InvokeRequired)
+        //    {
+        //        SetTextCallback d = new SetTextCallback(SetText2);
+        //        this.Invoke(d, new object[] { text });
+        //    }
+        //    else
+        //    {
+        //        this.label236.Text = text;    
+        //    }
+        //}
+        #endregion
+
+        #region "Task Timer"
+        // Create a Task Timer for tracking how long it takes to do tasks with the Bento Arm
+        // The timer is triggered when the arm first detects movement and stops when it moves back to the reset position
+        // The rest of the code for this is in the main loop
+        private void TaskTimerEnable_Click(object sender, EventArgs e)
+        {
+            if (TaskTimerEnable.Text == "Enable\r\nTimer")
+            {
+                TaskTimerState = 5;     // 0 = disabled, 1 = reset(and waiting for trigger), 2 = running (before movement threshold), 3 = running (after movement threshold), 4 = task completed (timer stopped, waiting for reset),  5 = resetting
+                TaskTimerReset.Enabled = true;
+                TaskTimerLabel.Enabled = true;
+                TaskTimerValue.Enabled = true;
+                TaskTimerEnable.Text = "Disable\r\nTimer";
+
+            }
+            else if (TaskTimerEnable.Text == "Disable\r\nTimer")
+            {
+                TaskTimerState = 0;     // 0 = disabled, 1 = reset(and waiting for trigger), 2 = running (before movement threshold), 3 = running (after movement threshold), 4 = task completed (timer stopped and waiting for reset),  5 = resetting
+                TaskTimerReset.Enabled = false;
+                TaskTimerLabel.Enabled = false;
+                TaskTimerValue.Enabled = false;
+                TaskTimerEnable.Text = "Enable\r\nTimer";
+            }
+        }
+
+        // Reset the position of the arm to the reset position
+        private void TaskTimerReset_Click(object sender, EventArgs e)
+        {
+            TaskTimerState = 5;
+        }
+
+        // Update the states of the Task Timer in the main loop
+        private void UpdateTaskTimer()
+        {
+            if (TaskTimerState == 1 && (Math.Abs(BentoSense.ID[0].vel - 1023) > 5 || Math.Abs(BentoSense.ID[1].vel - 1023) > 5 || Math.Abs(BentoSense.ID[2].vel - 1023) > 5 || Math.Abs(BentoSense.ID[3].vel - 1023) > 5 || Math.Abs(BentoSense.ID[4].vel - 1023) > 5))
+            {
+                Task_Timer.Restart();
+                TaskTimerState = 2;     // 0 = disabled, 1 = reset(and waiting for trigger), 2 = running (before movement threshold), 3 = running (after movement threshold), 4 = task completed (stop timer and wait for reset),  5 = resetting
+                TaskTimerValue.Text = string.Format("{0:0.00}", Convert.ToDouble(Task_Timer.ElapsedMilliseconds) / 1000);
+            }
+            // Timer is triggered so update the label on the GUI (not yet reached the movement threshold)
+            else if (TaskTimerState == 2)
+            {
+                TaskTimerValue.Text = string.Format("{0:0.00}", Convert.ToDouble(Task_Timer.ElapsedMilliseconds) / 1000);
+                // Since stopping the timer is triggered by a position threshold (i.e. returning to the starting position) we change the state befor eand after the threshold to prevent accidental triggers
+                if (BentoSense.ID[0].pos >= 1724 && BentoSense.ID[1].pos <= 2530)
+                {
+                    TaskTimerState = 3;
+                }
+            }
+            // Timer is triggered so update the label on the GUI (reached the movement threshold, so if they go back to reset location then the timer will stop)
+            else if (TaskTimerState == 3)
+            {
+                TaskTimerValue.Text = string.Format("{0:0.00}", Convert.ToDouble(Task_Timer.ElapsedMilliseconds) / 1000);
+                if (BentoSense.ID[0].pos <= 1704 && BentoSense.ID[1].pos >= 2550)
+                {
+                    Task_Timer.Stop();
+                    TaskTimerValue.Text = string.Format("{0:0.00}", Convert.ToDouble(Task_Timer.ElapsedMilliseconds) / 1000);
+                    TaskTimerState = 4;     // User has returned to reset position, so stop the timer
+                }
+            }
+            // The reset button has been triggered, so move the arm back to it's reset position. Make sure it keeps moving until it has reached the threshold
+            else if (TaskTimerState == 5)
+            {
+
+                // Set the Timer back to the ready state once it has finished moving to the reset position and stopped moving
+                //if (BentoSense.ID[0].pos <= 1704 && BentoSense.ID[1].pos >= 2550)
+                if (BentoSense.ID[0].pos <= 1704 && BentoSense.ID[1].pos >= 2550 && Math.Abs(BentoSense.ID[2].pos - 2048) < 20 && Math.Abs(BentoSense.ID[3].pos - 2048) < 20 && Math.Abs(BentoSense.ID[4].pos - 2048) < 20 && BentoSense.ID[0].vel == 1023 && BentoSense.ID[1].vel == 1023 && BentoSense.ID[2].vel == 1023 && BentoSense.ID[3].vel == 1023 && BentoSense.ID[4].vel == 1023)
+                {
+                    TaskTimerValue.Text = "Ready";
+                    TaskTimerState = 1;
+                }
+                else
+                {
+                    robotObj.Motor[0].p = 1684;
+                    robotObj.Motor[0].w = 50;
+                    robotObj.Motor[1].p = 2570;
+                    robotObj.Motor[1].w = 50;
+                    robotObj.Motor[2].p = 2048;
+                    robotObj.Motor[2].w = 50;
+                    robotObj.Motor[3].p = 2048;
+                    robotObj.Motor[3].w = 50;
+                    robotObj.Motor[4].p = 2048;
+                    robotObj.Motor[4].w = 50;
+                    TaskTimerValue.Text = "Resetting";
+                }
+            }
+        }
+
+        // Check mouse click events to hide/show the task timer groupbox
+        // Any mouse click will make the group box visible and a right click will hide the group box
+        private void TaskTimerValue_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && TaskTimerGroupBox.Visible == true)
+            {
+                TaskTimerGroupBox.Visible = false;
+            }
+            else if (TaskTimerGroupBox.Visible == false)
+            {
+                TaskTimerGroupBox.Visible = true;
+            }
+        }
+
+        // Add in buttons to allow clinician or user to move the gripper positions to fully opened or fully closed
+        private void TaskTimerOpen_Click(object sender, EventArgs e)
+        {
+            robotObj.Motor[4].p = Convert.ToInt16(hand_pmax_ctrl.Value);
+            robotObj.Motor[4].w = 70;
+        }
+
+        private void TaskTimerClose_Click(object sender, EventArgs e)
+        {
+            robotObj.Motor[4].p = Convert.ToInt16(hand_pmin_ctrl.Value);
+            robotObj.Motor[4].w = 70;
+        }
+
+        #endregion
+
+        #region "Quick Profiles"
+        private void demoDelsysButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dynaConnect.Enabled == true)
+                {
+                    InvokeOnClick(dynaConnect, new EventArgs());
+                    if (dynaConnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to the Bento Arm. Please make sure the USB2dynamixel is plugged in and the correct comm port is selected and try again");
+                    }
+                    else
+                    {
+                        InvokeOnClick(TorqueOn, new EventArgs());
+                         
+                    }
+                }
+
+                InvokeOnClick(SLRTconnect, new EventArgs());
+                InvokeOnClick(XboxConnect, new EventArgs());
+                InvokeOnClick(BentoSuspend, new EventArgs());
+                if (SLRTconnect.Enabled == true)
+                {
+                    MessageBox.Show("Could not connect to the SLRT computer. Please make sure the SLRT computer is turned on and that you have waited at least 60 seconds for it to boot up.");
+                }
+                else
+                {
+                    LoadParameters(@"Resources\Profiles\SLRT_multi.dat");
+                    QuickProfileState = 0;
+                    tabControl1.SelectedIndex = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private void demoXBoxButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dynaConnect.Enabled == true)
+                {
+                    InvokeOnClick(dynaConnect, new EventArgs());
+                    if (dynaConnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to the Bento Arm. Please make sure the USB2dynamixel is plugged in and the correct comm port is selected and try again");
+                    }
+                    else
+                    {
+                        InvokeOnClick(TorqueOn, new EventArgs());
+                        InvokeOnClick(BentoRun, new EventArgs());
+                    }
+                }
+
+                InvokeOnClick(XboxConnect, new EventArgs());
+                if (XboxConnect.Enabled == true)
+                {
+                    MessageBox.Show("Could not connect to Xbox Controller. Please make sure the controller is plugged in and try again");
+                }
+                else
+                {
+                    LoadParameters(@"Resources\Profiles\xbox_multi.dat");
+                    QuickProfileState = 0;
+                    tabControl1.SelectedIndex = 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void demoMYObutton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (dynaConnect.Enabled == true)
+                {
+                    InvokeOnClick(dynaConnect, new EventArgs());
+                    if (dynaConnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to the Bento Arm. Please make sure the USB2dynamixel is plugged in and the correct comm port is selected and try again");
+                    }
+                    else
+                    {
+                        InvokeOnClick(TorqueOn, new EventArgs());
+                        InvokeOnClick(BentoRun, new EventArgs());
+                    }
+                }
+                if (MYOconnect.Enabled == true)
+                {
+                    InvokeOnClick(MYOconnect, new EventArgs());
+                    if (MYOconnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to MYO armband. Please make sure that the wireless dongle is plugged in and that the MYO armband is turned on and connected in the MYO connect software.");
+                    }
+                }
+                LoadParameters(@"Resources\Profiles\MYO_sequential_left.dat");
+                QuickProfileState = 1;
+                tabControl1.SelectedIndex = 1;
+                InvokeOnClick(XboxConnect, new EventArgs());        // Connect to xbox, so that quick profile changing can be triggered with start button on xbox
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void demoShutdownButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                DialogResult result1 = MessageBox.Show("Please support the Bento Arm under the wrist connector to prevent it from falling. Click OK to finish shutting down the program", "Important Reminder", MessageBoxButtons.OKCancel);
+                if (result1 == DialogResult.OK)
+                {
+                    if (dynaConnect.Enabled == false)
+                    {
+                        InvokeOnClick(TorqueOff, new EventArgs());
+                    }
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
         #endregion
 
     }
-    
 }
