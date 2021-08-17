@@ -1,5 +1,5 @@
 # brachI/Oplexus
-The brachI/Oplexus software is a digital nerve center for connecting human interfaces to robotic arms. The latest release of this software includes support for controlling our open source robotic platform - [The Bento Arm](https://github.com/blincdev/Bento-Arm-Hardware) – with an Xbox 360 controller, Myo Armband, or keyboard. Future releases will include additional human interfaces and robotic arms.
+The brachI/Oplexus software is a digital nerve center for connecting human interfaces to robotic arms. The latest release of this software includes support for controlling the [physical](https://github.com/blincdev/Bento-Arm-Hardware) or [virtual](https://github.com/blincdev/Virtual-Bento) version of our open source robotic platform - The Bento Arm - with an Xbox 360 controller, Myo Armband, or keyboard. Future releases will include additional human interfaces and robotic arms.
 
 NOTE: brachI/Oplexus is pronounced 'brack-I-O-plexus' and is inspired by the anatomical term 'brachial plexus' which is the main network of nerves that connects the brain and spinal cord to your arm.
 
@@ -24,6 +24,5 @@ The following open source libraries and interfaces were used in this project. Th
 * [DynamixelSDK](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with Dynamixel Actuators in The Bento Arm
 * [MyoSharp](https://github.com/ROBOTIS-GIT/DynamixelSDK): used to communicate with the Myo Armband
 * [Simple Moving Average Algorithm](https://www.codeproject.com/Articles/17860/A-Simple-Moving-Average-Algorithm): used to smooth the muscle signals from the Myo Armband
-
 
  

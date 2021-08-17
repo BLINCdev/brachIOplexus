@@ -16,3 +16,12 @@ C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev48d\MyoSharp\obj\Releas
 C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev48d\MyoSharp\obj\Release\MyoSharp.rewritten
 C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev48d\MyoSharp\obj\Release\MyoSharp.dll
 C:\Users\SlashC\Desktop\Bento GUI\GUI_DOF6_12ch_BENTO_rev48d\MyoSharp\obj\Release\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\bin\Release\x64\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\bin\Release\x86\myo.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\bin\Release\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\bin\Release\MyoSharp.pdb
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\bin\Release\Microsoft.Contracts.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\obj\Release\MyoSharp.csprojResolveAssemblyReference.cache
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\obj\Release\MyoSharp.rewritten
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\obj\Release\MyoSharp.dll
+C:\Users\SlashC\Desktop\Bento GUI\brachIOplexus_rev50\MyoSharp\obj\Release\MyoSharp.pdb

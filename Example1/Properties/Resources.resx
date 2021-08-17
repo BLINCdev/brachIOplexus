@@ -145,4 +145,7 @@
   <data name="Handi_Hand_graphic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Handi_Hand_graphic.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="virtual_bento_rev2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\virtual_bento_rev2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

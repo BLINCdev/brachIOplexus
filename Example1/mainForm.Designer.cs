@@ -30,6 +30,9 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mainForm));
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.MenuStrip1 = new System.Windows.Forms.MenuStrip();
             this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -274,6 +277,10 @@
             this.label135 = new System.Windows.Forms.Label();
             this.label137 = new System.Windows.Forms.Label();
             this.KBgroupBox = new System.Windows.Forms.GroupBox();
+            this.KBcheckRightShift = new System.Windows.Forms.CheckBox();
+            this.KBcheckLeftShift = new System.Windows.Forms.CheckBox();
+            this.label266 = new System.Windows.Forms.Label();
+            this.label267 = new System.Windows.Forms.Label();
             this.KBrampS = new System.Windows.Forms.Label();
             this.KBrampD = new System.Windows.Forms.Label();
             this.KBrampW = new System.Windows.Forms.Label();
@@ -310,6 +317,7 @@
             this.label125 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabIO = new System.Windows.Forms.TabPage();
+            this.demoVirtualBentoButton = new System.Windows.Forms.Button();
             this.demoDelsysButton = new System.Windows.Forms.Button();
             this.label236 = new System.Windows.Forms.Label();
             this.label203 = new System.Windows.Forms.Label();
@@ -326,6 +334,21 @@
             this.labelID = new System.Windows.Forms.Label();
             this.labelText = new System.Windows.Forms.Label();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.groupBoxVRBentoArmSetup = new System.Windows.Forms.GroupBox();
+            this.VirtualBentoDisplay = new System.Windows.Forms.ComboBox();
+            this.label263 = new System.Windows.Forms.Label();
+            this.VirtualBentoClearAll = new System.Windows.Forms.Button();
+            this.VirtualBentoSelectAll = new System.Windows.Forms.Button();
+            this.textVRBentoRXPort = new System.Windows.Forms.TextBox();
+            this.unityRXPort = new System.Windows.Forms.Label();
+            this.unityTXPort = new System.Windows.Forms.Label();
+            this.unityIPaddr = new System.Windows.Forms.Label();
+            this.textVRBentoTXPort = new System.Windows.Forms.TextBox();
+            this.textVRBentoIPAddress = new System.Windows.Forms.TextBox();
+            this.pictureBox14 = new System.Windows.Forms.PictureBox();
+            this.VirtualBentoDisconnect = new System.Windows.Forms.Button();
+            this.VirtualBentoConnect = new System.Windows.Forms.Button();
+            this.VirtualBentoList = new System.Windows.Forms.CheckedListBox();
             this.groupBox21 = new System.Windows.Forms.GroupBox();
             this.pictureBox13 = new System.Windows.Forms.PictureBox();
             this.HANDiClearAll = new System.Windows.Forms.Button();
@@ -348,7 +371,7 @@
             this.TaskTimerEnable = new System.Windows.Forms.Button();
             this.ID2_state = new System.Windows.Forms.Label();
             this.label148 = new System.Windows.Forms.Label();
-            this.groupBox16 = new System.Windows.Forms.GroupBox();
+            this.SequentialSwitchGroupBox = new System.Windows.Forms.GroupBox();
             this.switchState_label = new System.Windows.Forms.Label();
             this.switchSmaxLabel2 = new System.Windows.Forms.Label();
             this.label213 = new System.Windows.Forms.Label();
@@ -430,6 +453,12 @@
             this.label156 = new System.Windows.Forms.Label();
             this.SwitchPanel = new System.Windows.Forms.Panel();
             this.TaskTimerPanel = new System.Windows.Forms.Panel();
+            this.doF6 = new brachIOplexus.DoF();
+            this.doF5 = new brachIOplexus.DoF();
+            this.doF4 = new brachIOplexus.DoF();
+            this.doF3 = new brachIOplexus.DoF();
+            this.doF2 = new brachIOplexus.DoF();
+            this.doF1 = new brachIOplexus.DoF();
             this.tabBento = new System.Windows.Forms.TabPage();
             this.groupBox19 = new System.Windows.Forms.GroupBox();
             this.BentoProfileOpen = new System.Windows.Forms.Button();
@@ -448,6 +477,78 @@
             this.label152 = new System.Windows.Forms.Label();
             this.BentoAdaptGripCtrl = new System.Windows.Forms.NumericUpDown();
             this.label151 = new System.Windows.Forms.Label();
+            this.tabVirtualBento = new System.Windows.Forms.TabPage();
+            this.groupBoxSimulationSettings = new System.Windows.Forms.GroupBox();
+            this.VirtualBentoRun = new System.Windows.Forms.Button();
+            this.VirtualBentoSuspend = new System.Windows.Forms.Button();
+            this.labelSimulationSettingsInstructions = new System.Windows.Forms.Label();
+            this.comboBoxSelectTask = new System.Windows.Forms.ComboBox();
+            this.labelSelectTask = new System.Windows.Forms.Label();
+            this.labelSelectEndEffector = new System.Windows.Forms.Label();
+            this.comboBoxSelectEndEffector = new System.Windows.Forms.ComboBox();
+            this.buttonStartTask = new System.Windows.Forms.Button();
+            this.groupBoxVRJointLimits = new System.Windows.Forms.GroupBox();
+            this.VR_hand_vmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_hand_vmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_hand_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_hand_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.labelHand = new System.Windows.Forms.Label();
+            this.VR_wristRotation_vmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_wristRotation_vmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.labelWristRotation = new System.Windows.Forms.Label();
+            this.VR_wristRotation_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_wristRotation_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_elbow_vmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_elbow_vmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_elbow_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_elbow_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.labelElbow = new System.Windows.Forms.Label();
+            this.VR_shoulder_vmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_shoulder_vmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_shoulder_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_shoulder_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.labelShoulderRotation = new System.Windows.Forms.Label();
+            this.labelWrist = new System.Windows.Forms.Label();
+            this.VR_wristFlex_vmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_wristFlex_vmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_wristFlex_pmin_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.VR_wristFlex_pmax_ctrl = new System.Windows.Forms.NumericUpDown();
+            this.labelPmin = new System.Windows.Forms.Label();
+            this.labelPmax = new System.Windows.Forms.Label();
+            this.labelVmin = new System.Windows.Forms.Label();
+            this.labelVmax = new System.Windows.Forms.Label();
+            this.groupBoxVRSimulationFeedback = new System.Windows.Forms.GroupBox();
+            this.labelVRHandLoad = new System.Windows.Forms.Label();
+            this.labelVRHandVelocity = new System.Windows.Forms.Label();
+            this.labelVRHandPosition = new System.Windows.Forms.Label();
+            this.labelVRWristRotateLoad = new System.Windows.Forms.Label();
+            this.labelVRWristRotateVelocity = new System.Windows.Forms.Label();
+            this.labelVRWristRotatePosition = new System.Windows.Forms.Label();
+            this.labelVRElbowLoad = new System.Windows.Forms.Label();
+            this.labelVRElbowVelocity = new System.Windows.Forms.Label();
+            this.labelVRElbowPosition = new System.Windows.Forms.Label();
+            this.labelVRShoulderLoad = new System.Windows.Forms.Label();
+            this.labelVRShoulderVelocity = new System.Windows.Forms.Label();
+            this.labelVRShoulderPosition = new System.Windows.Forms.Label();
+            this.labelVRArmLoadFeedback = new System.Windows.Forms.Label();
+            this.labelVRArmVelocityFeedback = new System.Windows.Forms.Label();
+            this.labelVRArmPositionFeedback = new System.Windows.Forms.Label();
+            this.labelVRWristFlexLoad = new System.Windows.Forms.Label();
+            this.labelVRWristFlexVelocity = new System.Windows.Forms.Label();
+            this.labelVRWristFlexPosition = new System.Windows.Forms.Label();
+            this.numericFrameRate = new System.Windows.Forms.NumericUpDown();
+            this.groupBoxTaskSettings = new System.Windows.Forms.GroupBox();
+            this.buttonDeleteCameraView = new System.Windows.Forms.Button();
+            this.buttonSaveCameraView = new System.Windows.Forms.Button();
+            this.buttonAddCameraView = new System.Windows.Forms.Button();
+            this.listBoxSelectCameraView = new System.Windows.Forms.ListBox();
+            this.groupBoxVRHeadsetSettings = new System.Windows.Forms.GroupBox();
+            this.labelSelectHeadset = new System.Windows.Forms.Label();
+            this.checkBoxUseVRHeadset = new System.Windows.Forms.CheckBox();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.buttonApplyChangesToTask = new System.Windows.Forms.Button();
+            this.buttonLaunchVRSimulation = new System.Windows.Forms.Button();
+            this.labelFrameRate = new System.Windows.Forms.Label();
             this.tabHANDi = new System.Windows.Forms.TabPage();
             this.HANDiGroupBox = new System.Windows.Forms.GroupBox();
             this.label221 = new System.Windows.Forms.Label();
@@ -511,6 +612,37 @@
             this.label276 = new System.Windows.Forms.Label();
             this.label278 = new System.Windows.Forms.Label();
             this.label279 = new System.Windows.Forms.Label();
+            this.tabSequencer = new System.Windows.Forms.TabPage();
+            this.groupBoxSequencer = new System.Windows.Forms.GroupBox();
+            this.buttonEnableSequencer = new System.Windows.Forms.Button();
+            this.buttonStopSequencer = new System.Windows.Forms.Button();
+            this.buttonPlaySequencer = new System.Windows.Forms.Button();
+            this.panelSequencerControls = new System.Windows.Forms.Panel();
+            this.numericIterationsSequencer = new System.Windows.Forms.NumericUpDown();
+            this.labelCount = new System.Windows.Forms.Label();
+            this.labelSwitchingDelay = new System.Windows.Forms.Label();
+            this.labelIterationCount = new System.Windows.Forms.Label();
+            this.buttonClearSequencer = new System.Windows.Forms.Button();
+            this.SwitchingDelaySequencer = new System.Windows.Forms.TextBox();
+            this.buttonMoveDownSequencer = new System.Windows.Forms.Button();
+            this.checkboxRepeat = new System.Windows.Forms.CheckBox();
+            this.buttonMoveUpSequencer = new System.Windows.Forms.Button();
+            this.checkBoxLogData = new System.Windows.Forms.CheckBox();
+            this.buttonDelMovement = new System.Windows.Forms.Button();
+            this.checkBoxRepeatForever = new System.Windows.Forms.CheckBox();
+            this.buttonAddMovement = new System.Windows.Forms.Button();
+            this.labelIterations = new System.Windows.Forms.Label();
+            this.labelFilePath = new System.Windows.Forms.Label();
+            this.buttonSelectPathSequencer = new System.Windows.Forms.Button();
+            this.dataSequencer = new System.Windows.Forms.DataGridView();
+            this.Joint = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.motionType = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.GoalPos = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Vel = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Tol = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.motionDelay = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.buttonLoadSeq = new System.Windows.Forms.Button();
+            this.buttonSaveSeq = new System.Windows.Forms.Button();
             this.tabViz = new System.Windows.Forms.TabPage();
             this.udpGroupBox = new System.Windows.Forms.GroupBox();
             this.udp_ch10 = new System.Windows.Forms.Label();
@@ -631,12 +763,6 @@
             this.label149 = new System.Windows.Forms.Label();
             this.serialArduinoInput = new System.IO.Ports.SerialPort(this.components);
             this.serialHANDi = new System.IO.Ports.SerialPort(this.components);
-            this.doF6 = new brachIOplexus.DoF();
-            this.doF5 = new brachIOplexus.DoF();
-            this.doF4 = new brachIOplexus.DoF();
-            this.doF3 = new brachIOplexus.DoF();
-            this.doF2 = new brachIOplexus.DoF();
-            this.doF1 = new brachIOplexus.DoF();
             this.MenuStrip1.SuspendLayout();
             this.RobotFeedbackBox.SuspendLayout();
             this.RobotParamBox.SuspendLayout();
@@ -680,11 +806,13 @@
             this.tabControl1.SuspendLayout();
             this.tabIO.SuspendLayout();
             this.groupBox9.SuspendLayout();
+            this.groupBoxVRBentoArmSetup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
             this.groupBox21.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).BeginInit();
             this.tabMapping.SuspendLayout();
             this.TaskTimerGroupBox.SuspendLayout();
-            this.groupBox16.SuspendLayout();
+            this.SequentialSwitchGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl2)).BeginInit();
@@ -705,6 +833,33 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.BentoAdaptGripBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BentoAdaptGripCtrl)).BeginInit();
+            this.tabVirtualBento.SuspendLayout();
+            this.groupBoxSimulationSettings.SuspendLayout();
+            this.groupBoxVRJointLimits.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_vmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_vmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_vmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_vmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_vmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_vmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_vmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_vmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_pmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_vmax_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_vmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_pmin_ctrl)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_pmax_ctrl)).BeginInit();
+            this.groupBoxVRSimulationFeedback.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericFrameRate)).BeginInit();
+            this.groupBoxTaskSettings.SuspendLayout();
+            this.groupBoxVRHeadsetSettings.SuspendLayout();
             this.tabHANDi.SuspendLayout();
             this.HANDiGroupBox.SuspendLayout();
             this.HANDiParamBox.SuspendLayout();
@@ -733,6 +888,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.D3_pmin_ctrl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.D3_pmax_ctrl)).BeginInit();
             this.HANDiFeedbackBox.SuspendLayout();
+            this.tabSequencer.SuspendLayout();
+            this.groupBoxSequencer.SuspendLayout();
+            this.panelSequencerControls.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericIterationsSequencer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataSequencer)).BeginInit();
             this.tabViz.SuspendLayout();
             this.udpGroupBox.SuspendLayout();
             this.ArduinoInputGroupBox.SuspendLayout();
@@ -1318,14 +1478,14 @@
             0,
             0,
             0});
-            this.hand_wmax_ctrl.ValueChanged += new System.EventHandler(this.hand_wmax_ctrl_ValueChanged);
+            this.hand_wmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // hand_wmin_ctrl
             // 
             this.hand_wmin_ctrl.Location = new System.Drawing.Point(258, 124);
             this.hand_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.hand_wmin_ctrl.Maximum = new decimal(new int[] {
-            1023,
+            255,
             0,
             0,
             0});
@@ -1342,14 +1502,19 @@
             0,
             0,
             0});
-            this.hand_wmin_ctrl.ValueChanged += new System.EventHandler(this.hand_wmin_ctrl_ValueChanged);
+            this.hand_wmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // hand_pmin_ctrl
             // 
             this.hand_pmin_ctrl.Location = new System.Drawing.Point(148, 124);
             this.hand_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.hand_pmin_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            2800,
+            0,
+            0,
+            0});
+            this.hand_pmin_ctrl.Minimum = new decimal(new int[] {
+            1928,
             0,
             0,
             0});
@@ -1361,14 +1526,19 @@
             0,
             0,
             0});
-            this.hand_pmin_ctrl.ValueChanged += new System.EventHandler(this.hand_pmin_ctrl_ValueChanged);
+            this.hand_pmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // hand_pmax_ctrl
             // 
             this.hand_pmax_ctrl.Location = new System.Drawing.Point(203, 124);
             this.hand_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.hand_pmax_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            2800,
+            0,
+            0,
+            0});
+            this.hand_pmax_ctrl.Minimum = new decimal(new int[] {
+            1928,
             0,
             0,
             0});
@@ -1380,7 +1550,7 @@
             0,
             0,
             0});
-            this.hand_pmax_ctrl.ValueChanged += new System.EventHandler(this.hand_pmax_ctrl_ValueChanged);
+            this.hand_pmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // label7
             // 
@@ -1390,14 +1560,14 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(100, 15);
             this.label7.TabIndex = 145;
-            this.label7.Text = "Hand Open/Close:";
+            this.label7.Text = "Hand Close/Open:";
             // 
             // wristRot_wmax_ctrl
             // 
             this.wristRot_wmax_ctrl.Location = new System.Drawing.Point(314, 77);
             this.wristRot_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristRot_wmax_ctrl.Maximum = new decimal(new int[] {
-            255,
+            150,
             0,
             0,
             0});
@@ -1414,14 +1584,14 @@
             0,
             0,
             0});
-            this.wristRot_wmax_ctrl.ValueChanged += new System.EventHandler(this.wristRot_wmax_ctrl_ValueChanged);
+            this.wristRot_wmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // wristRot_wmin_ctrl
             // 
             this.wristRot_wmin_ctrl.Location = new System.Drawing.Point(258, 77);
             this.wristRot_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristRot_wmin_ctrl.Maximum = new decimal(new int[] {
-            1023,
+            255,
             0,
             0,
             0});
@@ -1438,7 +1608,7 @@
             0,
             0,
             0});
-            this.wristRot_wmin_ctrl.ValueChanged += new System.EventHandler(this.wristRot_wmin_ctrl_ValueChanged);
+            this.wristRot_wmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // Label18
             // 
@@ -1455,7 +1625,12 @@
             this.wristRot_pmin_ctrl.Location = new System.Drawing.Point(148, 77);
             this.wristRot_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristRot_pmin_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3073,
+            0,
+            0,
+            0});
+            this.wristRot_pmin_ctrl.Minimum = new decimal(new int[] {
+            1028,
             0,
             0,
             0});
@@ -1467,14 +1642,19 @@
             0,
             0,
             0});
-            this.wristRot_pmin_ctrl.ValueChanged += new System.EventHandler(this.wristRot_pmin_ctrl_ValueChanged);
+            this.wristRot_pmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // wristRot_pmax_ctrl
             // 
             this.wristRot_pmax_ctrl.Location = new System.Drawing.Point(203, 77);
             this.wristRot_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristRot_pmax_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3073,
+            0,
+            0,
+            0});
+            this.wristRot_pmax_ctrl.Minimum = new decimal(new int[] {
+            1028,
             0,
             0,
             0});
@@ -1486,14 +1666,14 @@
             0,
             0,
             0});
-            this.wristRot_pmax_ctrl.ValueChanged += new System.EventHandler(this.wristRot_pmax_ctrl_ValueChanged);
+            this.wristRot_pmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // elbow_wmax_ctrl
             // 
             this.elbow_wmax_ctrl.Location = new System.Drawing.Point(314, 52);
             this.elbow_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.elbow_wmax_ctrl.Maximum = new decimal(new int[] {
-            255,
+            150,
             0,
             0,
             0});
@@ -1510,14 +1690,14 @@
             0,
             0,
             0});
-            this.elbow_wmax_ctrl.ValueChanged += new System.EventHandler(this.elbow_wmax_ctrl_ValueChanged);
+            this.elbow_wmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // elbow_wmin_ctrl
             // 
             this.elbow_wmin_ctrl.Location = new System.Drawing.Point(258, 53);
             this.elbow_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.elbow_wmin_ctrl.Maximum = new decimal(new int[] {
-            1023,
+            255,
             0,
             0,
             0});
@@ -1534,14 +1714,19 @@
             0,
             0,
             0});
-            this.elbow_wmin_ctrl.ValueChanged += new System.EventHandler(this.elbow_wmin_ctrl_ValueChanged);
+            this.elbow_wmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // elbow_pmin_ctrl
             // 
             this.elbow_pmin_ctrl.Location = new System.Drawing.Point(148, 54);
             this.elbow_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.elbow_pmin_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            2570,
+            0,
+            0,
+            0});
+            this.elbow_pmin_ctrl.Minimum = new decimal(new int[] {
+            1784,
             0,
             0,
             0});
@@ -1553,14 +1738,19 @@
             0,
             0,
             0});
-            this.elbow_pmin_ctrl.ValueChanged += new System.EventHandler(this.elbow_pmin_ctrl_ValueChanged);
+            this.elbow_pmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // elbow_pmax_ctrl
             // 
             this.elbow_pmax_ctrl.Location = new System.Drawing.Point(203, 54);
             this.elbow_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.elbow_pmax_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            2570,
+            0,
+            0,
+            0});
+            this.elbow_pmax_ctrl.Minimum = new decimal(new int[] {
+            1784,
             0,
             0,
             0});
@@ -1572,7 +1762,7 @@
             0,
             0,
             0});
-            this.elbow_pmax_ctrl.ValueChanged += new System.EventHandler(this.elbow_pmax_ctrl_ValueChanged);
+            this.elbow_pmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // Label20
             // 
@@ -1589,7 +1779,7 @@
             this.shoulder_wmax_ctrl.Location = new System.Drawing.Point(314, 30);
             this.shoulder_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.shoulder_wmax_ctrl.Maximum = new decimal(new int[] {
-            255,
+            150,
             0,
             0,
             0});
@@ -1606,14 +1796,14 @@
             0,
             0,
             0});
-            this.shoulder_wmax_ctrl.ValueChanged += new System.EventHandler(this.shoulder_wmax_ctrl_ValueChanged);
+            this.shoulder_wmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // shoulder_wmin_ctrl
             // 
             this.shoulder_wmin_ctrl.Location = new System.Drawing.Point(258, 30);
             this.shoulder_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.shoulder_wmin_ctrl.Maximum = new decimal(new int[] {
-            1023,
+            255,
             0,
             0,
             0});
@@ -1630,14 +1820,19 @@
             0,
             0,
             0});
-            this.shoulder_wmin_ctrl.ValueChanged += new System.EventHandler(this.shoulder_wmin_ctrl_ValueChanged);
+            this.shoulder_wmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // shoulder_pmin_ctrl
             // 
             this.shoulder_pmin_ctrl.Location = new System.Drawing.Point(148, 30);
             this.shoulder_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.shoulder_pmin_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3073,
+            0,
+            0,
+            0});
+            this.shoulder_pmin_ctrl.Minimum = new decimal(new int[] {
+            1028,
             0,
             0,
             0});
@@ -1649,14 +1844,19 @@
             0,
             0,
             0});
-            this.shoulder_pmin_ctrl.ValueChanged += new System.EventHandler(this.shoulder_pmin_ctrl_ValueChanged);
+            this.shoulder_pmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // shoulder_pmax_ctrl
             // 
             this.shoulder_pmax_ctrl.Location = new System.Drawing.Point(203, 30);
             this.shoulder_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.shoulder_pmax_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3073,
+            0,
+            0,
+            0});
+            this.shoulder_pmax_ctrl.Minimum = new decimal(new int[] {
+            1028,
             0,
             0,
             0});
@@ -1668,7 +1868,7 @@
             0,
             0,
             0});
-            this.shoulder_pmax_ctrl.ValueChanged += new System.EventHandler(this.shoulder_pmax_ctrl_ValueChanged);
+            this.shoulder_pmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // Label21
             // 
@@ -1695,7 +1895,7 @@
             this.wristFlex_wmax_ctrl.Location = new System.Drawing.Point(314, 102);
             this.wristFlex_wmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristFlex_wmax_ctrl.Maximum = new decimal(new int[] {
-            255,
+            150,
             0,
             0,
             0});
@@ -1712,14 +1912,14 @@
             0,
             0,
             0});
-            this.wristFlex_wmax_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_wmax_ctrl_ValueChanged);
+            this.wristFlex_wmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // wristFlex_wmin_ctrl
             // 
             this.wristFlex_wmin_ctrl.Location = new System.Drawing.Point(258, 102);
             this.wristFlex_wmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristFlex_wmin_ctrl.Maximum = new decimal(new int[] {
-            1023,
+            255,
             0,
             0,
             0});
@@ -1736,14 +1936,19 @@
             0,
             0,
             0});
-            this.wristFlex_wmin_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_wmin_ctrl_ValueChanged);
+            this.wristFlex_wmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // wristFlex_pmin_ctrl
             // 
             this.wristFlex_pmin_ctrl.Location = new System.Drawing.Point(148, 102);
             this.wristFlex_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristFlex_pmin_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3328,
+            0,
+            0,
+            0});
+            this.wristFlex_pmin_ctrl.Minimum = new decimal(new int[] {
+            790,
             0,
             0,
             0});
@@ -1755,14 +1960,19 @@
             0,
             0,
             0});
-            this.wristFlex_pmin_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_pmin_ctrl_ValueChanged);
+            this.wristFlex_pmin_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // wristFlex_pmax_ctrl
             // 
             this.wristFlex_pmax_ctrl.Location = new System.Drawing.Point(203, 102);
             this.wristFlex_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
             this.wristFlex_pmax_ctrl.Maximum = new decimal(new int[] {
-            4095,
+            3328,
+            0,
+            0,
+            0});
+            this.wristFlex_pmax_ctrl.Minimum = new decimal(new int[] {
+            790,
             0,
             0,
             0});
@@ -1774,7 +1984,7 @@
             0,
             0,
             0});
-            this.wristFlex_pmax_ctrl.ValueChanged += new System.EventHandler(this.wristFlex_pmax_ctrl_ValueChanged);
+            this.wristFlex_pmax_ctrl.ValueChanged += new System.EventHandler(this.Bento_Joint_Limit_ValueChanged);
             // 
             // label5
             // 
@@ -2488,7 +2698,7 @@
             // delay_max
             // 
             this.delay_max.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.delay_max.Location = new System.Drawing.Point(1074, 563);
+            this.delay_max.Location = new System.Drawing.Point(1062, 531);
             this.delay_max.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.delay_max.Name = "delay_max";
             this.delay_max.Size = new System.Drawing.Size(39, 15);
@@ -2499,7 +2709,7 @@
             // label121
             // 
             this.label121.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label121.Location = new System.Drawing.Point(975, 563);
+            this.label121.Location = new System.Drawing.Point(963, 531);
             this.label121.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label121.Name = "label121";
             this.label121.Size = new System.Drawing.Size(95, 15);
@@ -2511,7 +2721,7 @@
             // label119
             // 
             this.label119.AutoSize = true;
-            this.label119.Location = new System.Drawing.Point(976, 589);
+            this.label119.Location = new System.Drawing.Point(964, 557);
             this.label119.Name = "label119";
             this.label119.Size = new System.Drawing.Size(40, 13);
             this.label119.TabIndex = 204;
@@ -2521,7 +2731,7 @@
             // dynaStatus
             // 
             this.dynaStatus.AutoSize = true;
-            this.dynaStatus.Location = new System.Drawing.Point(1013, 589);
+            this.dynaStatus.Location = new System.Drawing.Point(1001, 557);
             this.dynaStatus.Name = "dynaStatus";
             this.dynaStatus.Size = new System.Drawing.Size(73, 13);
             this.dynaStatus.TabIndex = 205;
@@ -2677,7 +2887,7 @@
             this.groupBox4.Controls.Add(this.groupBox5);
             this.groupBox4.Location = new System.Drawing.Point(3, 6);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(300, 474);
+            this.groupBox4.Size = new System.Drawing.Size(301, 473);
             this.groupBox4.TabIndex = 211;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Input Devices";
@@ -3330,6 +3540,8 @@
             "Down",
             "Left",
             "Right",
+            "LeftShift",
+            "RightShift",
             "LeftAlt",
             "RightAlt",
             "Space"});
@@ -3561,7 +3773,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(1004, 401);
+            this.button1.Location = new System.Drawing.Point(1003, 474);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(115, 23);
             this.button1.TabIndex = 214;
@@ -3575,7 +3787,7 @@
             this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox2.FormattingEnabled = true;
             this.comboBox2.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.comboBox2.Location = new System.Drawing.Point(1005, 427);
+            this.comboBox2.Location = new System.Drawing.Point(1004, 500);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 213;
@@ -3589,7 +3801,7 @@
             "Apple",
             "Orange",
             "Banana"});
-            this.checkedListFruit.Location = new System.Drawing.Point(1031, 283);
+            this.checkedListFruit.Location = new System.Drawing.Point(1036, 367);
             this.checkedListFruit.Name = "checkedListFruit";
             this.checkedListFruit.Size = new System.Drawing.Size(120, 79);
             this.checkedListFruit.TabIndex = 212;
@@ -3799,6 +4011,10 @@
             // 
             // KBgroupBox
             // 
+            this.KBgroupBox.Controls.Add(this.KBcheckRightShift);
+            this.KBgroupBox.Controls.Add(this.KBcheckLeftShift);
+            this.KBgroupBox.Controls.Add(this.label266);
+            this.KBgroupBox.Controls.Add(this.label267);
             this.KBgroupBox.Controls.Add(this.KBrampS);
             this.KBgroupBox.Controls.Add(this.KBrampD);
             this.KBgroupBox.Controls.Add(this.KBrampW);
@@ -3840,6 +4056,50 @@
             this.KBgroupBox.TabIndex = 210;
             this.KBgroupBox.TabStop = false;
             this.KBgroupBox.Text = "Keyboard";
+            // 
+            // KBcheckRightShift
+            // 
+            this.KBcheckRightShift.AutoSize = true;
+            this.KBcheckRightShift.BackColor = System.Drawing.Color.Transparent;
+            this.KBcheckRightShift.Enabled = false;
+            this.KBcheckRightShift.Location = new System.Drawing.Point(154, 142);
+            this.KBcheckRightShift.Name = "KBcheckRightShift";
+            this.KBcheckRightShift.Size = new System.Drawing.Size(15, 14);
+            this.KBcheckRightShift.TabIndex = 199;
+            this.KBcheckRightShift.UseVisualStyleBackColor = false;
+            // 
+            // KBcheckLeftShift
+            // 
+            this.KBcheckLeftShift.AutoSize = true;
+            this.KBcheckLeftShift.BackColor = System.Drawing.Color.Transparent;
+            this.KBcheckLeftShift.Enabled = false;
+            this.KBcheckLeftShift.Location = new System.Drawing.Point(154, 127);
+            this.KBcheckLeftShift.Name = "KBcheckLeftShift";
+            this.KBcheckLeftShift.Size = new System.Drawing.Size(15, 14);
+            this.KBcheckLeftShift.TabIndex = 200;
+            this.KBcheckLeftShift.UseVisualStyleBackColor = false;
+            // 
+            // label266
+            // 
+            this.label266.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label266.Location = new System.Drawing.Point(96, 125);
+            this.label266.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label266.Name = "label266";
+            this.label266.Size = new System.Drawing.Size(58, 15);
+            this.label266.TabIndex = 201;
+            this.label266.Text = "LeftShift:";
+            this.label266.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // label267
+            // 
+            this.label267.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label267.Location = new System.Drawing.Point(90, 141);
+            this.label267.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label267.Name = "label267";
+            this.label267.Size = new System.Drawing.Size(64, 15);
+            this.label267.TabIndex = 202;
+            this.label267.Text = "RightShift:";
+            this.label267.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // KBrampS
             // 
@@ -4222,9 +4482,11 @@
             this.tabControl1.Controls.Add(this.tabIO);
             this.tabControl1.Controls.Add(this.tabMapping);
             this.tabControl1.Controls.Add(this.tabBento);
+            this.tabControl1.Controls.Add(this.tabVirtualBento);
             this.tabControl1.Controls.Add(this.tabHANDi);
+            this.tabControl1.Controls.Add(this.tabSequencer);
             this.tabControl1.Controls.Add(this.tabViz);
-            this.tabControl1.Location = new System.Drawing.Point(8, 27);
+            this.tabControl1.Location = new System.Drawing.Point(7, 27);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(1170, 668);
@@ -4234,6 +4496,7 @@
             // 
             // tabIO
             // 
+            this.tabIO.Controls.Add(this.demoVirtualBentoButton);
             this.tabIO.Controls.Add(this.demoDelsysButton);
             this.tabIO.Controls.Add(this.label236);
             this.tabIO.Controls.Add(this.label203);
@@ -4266,9 +4529,20 @@
             this.tabIO.Text = "Input/Output";
             this.tabIO.UseVisualStyleBackColor = true;
             // 
+            // demoVirtualBentoButton
+            // 
+            this.demoVirtualBentoButton.Location = new System.Drawing.Point(1003, 137);
+            this.demoVirtualBentoButton.Name = "demoVirtualBentoButton";
+            this.demoVirtualBentoButton.Size = new System.Drawing.Size(103, 48);
+            this.demoVirtualBentoButton.TabIndex = 231;
+            this.demoVirtualBentoButton.Text = "Launch Virtual Bento Demo";
+            this.demoVirtualBentoButton.UseVisualStyleBackColor = true;
+            this.demoVirtualBentoButton.Visible = false;
+            this.demoVirtualBentoButton.Click += new System.EventHandler(this.demoVirtualBentoButton_Click);
+            // 
             // demoDelsysButton
             // 
-            this.demoDelsysButton.Location = new System.Drawing.Point(723, 386);
+            this.demoDelsysButton.Location = new System.Drawing.Point(1004, 191);
             this.demoDelsysButton.Name = "demoDelsysButton";
             this.demoDelsysButton.Size = new System.Drawing.Size(103, 48);
             this.demoDelsysButton.TabIndex = 230;
@@ -4280,7 +4554,7 @@
             // label236
             // 
             this.label236.AutoSize = true;
-            this.label236.Location = new System.Drawing.Point(1041, 91);
+            this.label236.Location = new System.Drawing.Point(824, 565);
             this.label236.Name = "label236";
             this.label236.Size = new System.Drawing.Size(78, 13);
             this.label236.TabIndex = 229;
@@ -4290,7 +4564,7 @@
             // label203
             // 
             this.label203.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label203.Location = new System.Drawing.Point(1015, 114);
+            this.label203.Location = new System.Drawing.Point(798, 588);
             this.label203.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label203.Name = "label203";
             this.label203.Size = new System.Drawing.Size(83, 15);
@@ -4302,7 +4576,7 @@
             // biopatrecDelay
             // 
             this.biopatrecDelay.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.biopatrecDelay.Location = new System.Drawing.Point(1097, 114);
+            this.biopatrecDelay.Location = new System.Drawing.Point(880, 588);
             this.biopatrecDelay.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.biopatrecDelay.Name = "biopatrecDelay";
             this.biopatrecDelay.Size = new System.Drawing.Size(42, 15);
@@ -4312,7 +4586,7 @@
             // 
             // demoShutdownButton
             // 
-            this.demoShutdownButton.Location = new System.Drawing.Point(723, 546);
+            this.demoShutdownButton.Location = new System.Drawing.Point(1004, 351);
             this.demoShutdownButton.Name = "demoShutdownButton";
             this.demoShutdownButton.Size = new System.Drawing.Size(103, 48);
             this.demoShutdownButton.TabIndex = 228;
@@ -4323,7 +4597,7 @@
             // 
             // demoMYObutton
             // 
-            this.demoMYObutton.Location = new System.Drawing.Point(723, 492);
+            this.demoMYObutton.Location = new System.Drawing.Point(1004, 297);
             this.demoMYObutton.Name = "demoMYObutton";
             this.demoMYObutton.Size = new System.Drawing.Size(103, 48);
             this.demoMYObutton.TabIndex = 227;
@@ -4334,7 +4608,7 @@
             // 
             // demoXBoxButton
             // 
-            this.demoXBoxButton.Location = new System.Drawing.Point(723, 440);
+            this.demoXBoxButton.Location = new System.Drawing.Point(1004, 245);
             this.demoXBoxButton.Name = "demoXBoxButton";
             this.demoXBoxButton.Size = new System.Drawing.Size(103, 48);
             this.demoXBoxButton.TabIndex = 226;
@@ -4347,7 +4621,7 @@
             // 
             this.InputComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.InputComboBox.FormattingEnabled = true;
-            this.InputComboBox.Location = new System.Drawing.Point(917, 517);
+            this.InputComboBox.Location = new System.Drawing.Point(937, 582);
             this.InputComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.InputComboBox.Name = "InputComboBox";
             this.InputComboBox.Size = new System.Drawing.Size(99, 21);
@@ -4359,7 +4633,7 @@
             this.OutputComboBox.DisplayMember = "1";
             this.OutputComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.OutputComboBox.FormattingEnabled = true;
-            this.OutputComboBox.Location = new System.Drawing.Point(1038, 517);
+            this.OutputComboBox.Location = new System.Drawing.Point(1058, 582);
             this.OutputComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.OutputComboBox.Name = "OutputComboBox";
             this.OutputComboBox.Size = new System.Drawing.Size(99, 21);
@@ -4370,7 +4644,7 @@
             // 
             this.label166.AutoSize = true;
             this.label166.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label166.Location = new System.Drawing.Point(1017, 520);
+            this.label166.Location = new System.Drawing.Point(1037, 585);
             this.label166.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label166.Name = "label166";
             this.label166.Size = new System.Drawing.Size(19, 13);
@@ -4381,7 +4655,7 @@
             // labelType
             // 
             this.labelType.AutoSize = true;
-            this.labelType.Location = new System.Drawing.Point(1009, 480);
+            this.labelType.Location = new System.Drawing.Point(1106, 544);
             this.labelType.Name = "labelType";
             this.labelType.Size = new System.Drawing.Size(33, 13);
             this.labelType.TabIndex = 219;
@@ -4395,7 +4669,7 @@
             this.checkedListDairy.Items.AddRange(new object[] {
             "Cheese",
             "Milk"});
-            this.checkedListDairy.Location = new System.Drawing.Point(1031, 191);
+            this.checkedListDairy.Location = new System.Drawing.Point(1036, 282);
             this.checkedListDairy.Name = "checkedListDairy";
             this.checkedListDairy.Size = new System.Drawing.Size(120, 79);
             this.checkedListDairy.TabIndex = 218;
@@ -4404,7 +4678,7 @@
             // button14
             // 
             this.button14.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button14.Location = new System.Drawing.Point(1005, 373);
+            this.button14.Location = new System.Drawing.Point(1004, 446);
             this.button14.Margin = new System.Windows.Forms.Padding(2);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(109, 23);
@@ -4416,7 +4690,7 @@
             // labelID
             // 
             this.labelID.AutoSize = true;
-            this.labelID.Location = new System.Drawing.Point(1009, 467);
+            this.labelID.Location = new System.Drawing.Point(1106, 531);
             this.labelID.Name = "labelID";
             this.labelID.Size = new System.Drawing.Size(18, 13);
             this.labelID.TabIndex = 217;
@@ -4426,7 +4700,7 @@
             // labelText
             // 
             this.labelText.AutoSize = true;
-            this.labelText.Location = new System.Drawing.Point(1009, 493);
+            this.labelText.Location = new System.Drawing.Point(1106, 557);
             this.labelText.Name = "labelText";
             this.labelText.Size = new System.Drawing.Size(24, 13);
             this.labelText.TabIndex = 216;
@@ -4435,14 +4709,195 @@
             // 
             // groupBox9
             // 
+            this.groupBox9.Controls.Add(this.groupBoxVRBentoArmSetup);
             this.groupBox9.Controls.Add(this.groupBox21);
             this.groupBox9.Controls.Add(this.groupBox6);
-            this.groupBox9.Location = new System.Drawing.Point(308, 6);
+            this.groupBox9.Location = new System.Drawing.Point(309, 6);
             this.groupBox9.Name = "groupBox9";
-            this.groupBox9.Size = new System.Drawing.Size(348, 190);
+            this.groupBox9.Size = new System.Drawing.Size(348, 361);
             this.groupBox9.TabIndex = 215;
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "Output Devices";
+            // 
+            // groupBoxVRBentoArmSetup
+            // 
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoDisplay);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.label263);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoClearAll);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoSelectAll);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.textVRBentoRXPort);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.unityRXPort);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.unityTXPort);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.unityIPaddr);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.textVRBentoTXPort);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.textVRBentoIPAddress);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.pictureBox14);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoDisconnect);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoConnect);
+            this.groupBoxVRBentoArmSetup.Controls.Add(this.VirtualBentoList);
+            this.groupBoxVRBentoArmSetup.Location = new System.Drawing.Point(6, 188);
+            this.groupBoxVRBentoArmSetup.Name = "groupBoxVRBentoArmSetup";
+            this.groupBoxVRBentoArmSetup.Size = new System.Drawing.Size(334, 167);
+            this.groupBoxVRBentoArmSetup.TabIndex = 228;
+            this.groupBoxVRBentoArmSetup.TabStop = false;
+            this.groupBoxVRBentoArmSetup.Text = "Virtual Bento - Setup";
+            // 
+            // VirtualBentoDisplay
+            // 
+            this.VirtualBentoDisplay.FormattingEnabled = true;
+            this.VirtualBentoDisplay.Items.AddRange(new object[] {
+            "Monitor"});
+            this.VirtualBentoDisplay.Location = new System.Drawing.Point(237, 18);
+            this.VirtualBentoDisplay.Name = "VirtualBentoDisplay";
+            this.VirtualBentoDisplay.Size = new System.Drawing.Size(90, 21);
+            this.VirtualBentoDisplay.TabIndex = 238;
+            // 
+            // label263
+            // 
+            this.label263.AutoSize = true;
+            this.label263.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label263.Location = new System.Drawing.Point(190, 21);
+            this.label263.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label263.Name = "label263";
+            this.label263.Size = new System.Drawing.Size(44, 13);
+            this.label263.TabIndex = 239;
+            this.label263.Text = "Display:";
+            // 
+            // VirtualBentoClearAll
+            // 
+            this.VirtualBentoClearAll.Enabled = false;
+            this.VirtualBentoClearAll.Location = new System.Drawing.Point(261, 141);
+            this.VirtualBentoClearAll.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoClearAll.Name = "VirtualBentoClearAll";
+            this.VirtualBentoClearAll.Size = new System.Drawing.Size(66, 19);
+            this.VirtualBentoClearAll.TabIndex = 227;
+            this.VirtualBentoClearAll.Text = "Clear All";
+            this.VirtualBentoClearAll.UseVisualStyleBackColor = true;
+            this.VirtualBentoClearAll.Click += new System.EventHandler(this.VirtualBentoClearAll_Click);
+            // 
+            // VirtualBentoSelectAll
+            // 
+            this.VirtualBentoSelectAll.Enabled = false;
+            this.VirtualBentoSelectAll.Location = new System.Drawing.Point(191, 141);
+            this.VirtualBentoSelectAll.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoSelectAll.Name = "VirtualBentoSelectAll";
+            this.VirtualBentoSelectAll.Size = new System.Drawing.Size(66, 19);
+            this.VirtualBentoSelectAll.TabIndex = 226;
+            this.VirtualBentoSelectAll.Text = "Select All";
+            this.VirtualBentoSelectAll.UseVisualStyleBackColor = true;
+            this.VirtualBentoSelectAll.Click += new System.EventHandler(this.VirtualBentoSelectAll_Click);
+            // 
+            // textVRBentoRXPort
+            // 
+            this.textVRBentoRXPort.Enabled = false;
+            this.textVRBentoRXPort.Location = new System.Drawing.Point(155, 180);
+            this.textVRBentoRXPort.Name = "textVRBentoRXPort";
+            this.textVRBentoRXPort.Size = new System.Drawing.Size(45, 20);
+            this.textVRBentoRXPort.TabIndex = 237;
+            this.textVRBentoRXPort.Text = "30005";
+            // 
+            // unityRXPort
+            // 
+            this.unityRXPort.AutoSize = true;
+            this.unityRXPort.Location = new System.Drawing.Point(111, 184);
+            this.unityRXPort.Name = "unityRXPort";
+            this.unityRXPort.Size = new System.Drawing.Size(44, 13);
+            this.unityRXPort.TabIndex = 236;
+            this.unityRXPort.Text = "RX Port";
+            // 
+            // unityTXPort
+            // 
+            this.unityTXPort.AutoSize = true;
+            this.unityTXPort.Location = new System.Drawing.Point(13, 184);
+            this.unityTXPort.Name = "unityTXPort";
+            this.unityTXPort.Size = new System.Drawing.Size(43, 13);
+            this.unityTXPort.TabIndex = 235;
+            this.unityTXPort.Text = "TX Port";
+            // 
+            // unityIPaddr
+            // 
+            this.unityIPaddr.AutoSize = true;
+            this.unityIPaddr.Location = new System.Drawing.Point(210, 183);
+            this.unityIPaddr.Name = "unityIPaddr";
+            this.unityIPaddr.Size = new System.Drawing.Size(58, 13);
+            this.unityIPaddr.TabIndex = 234;
+            this.unityIPaddr.Text = "IP Address";
+            // 
+            // textVRBentoTXPort
+            // 
+            this.textVRBentoTXPort.Enabled = false;
+            this.textVRBentoTXPort.Location = new System.Drawing.Point(57, 181);
+            this.textVRBentoTXPort.Name = "textVRBentoTXPort";
+            this.textVRBentoTXPort.Size = new System.Drawing.Size(45, 20);
+            this.textVRBentoTXPort.TabIndex = 233;
+            this.textVRBentoTXPort.Text = "30004";
+            // 
+            // textVRBentoIPAddress
+            // 
+            this.textVRBentoIPAddress.Enabled = false;
+            this.textVRBentoIPAddress.Location = new System.Drawing.Point(270, 180);
+            this.textVRBentoIPAddress.Name = "textVRBentoIPAddress";
+            this.textVRBentoIPAddress.Size = new System.Drawing.Size(58, 20);
+            this.textVRBentoIPAddress.TabIndex = 232;
+            this.textVRBentoIPAddress.Text = "127.0.0.1";
+            // 
+            // pictureBox14
+            // 
+            this.pictureBox14.Image = global::brachIOplexus.Properties.Resources.virtual_bento_rev2;
+            this.pictureBox14.InitialImage = ((System.Drawing.Image)(resources.GetObject("pictureBox14.InitialImage")));
+            this.pictureBox14.Location = new System.Drawing.Point(6, 40);
+            this.pictureBox14.Name = "pictureBox14";
+            this.pictureBox14.Size = new System.Drawing.Size(176, 120);
+            this.pictureBox14.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox14.TabIndex = 226;
+            this.pictureBox14.TabStop = false;
+            // 
+            // VirtualBentoDisconnect
+            // 
+            this.VirtualBentoDisconnect.Enabled = false;
+            this.VirtualBentoDisconnect.Location = new System.Drawing.Point(68, 18);
+            this.VirtualBentoDisconnect.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoDisconnect.Name = "VirtualBentoDisconnect";
+            this.VirtualBentoDisconnect.Size = new System.Drawing.Size(74, 19);
+            this.VirtualBentoDisconnect.TabIndex = 186;
+            this.VirtualBentoDisconnect.Text = "Close";
+            this.VirtualBentoDisconnect.UseVisualStyleBackColor = true;
+            this.VirtualBentoDisconnect.Click += new System.EventHandler(this.buttonVRBentoArmDisconnect_Click);
+            // 
+            // VirtualBentoConnect
+            // 
+            this.VirtualBentoConnect.Location = new System.Drawing.Point(6, 18);
+            this.VirtualBentoConnect.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoConnect.Name = "VirtualBentoConnect";
+            this.VirtualBentoConnect.Size = new System.Drawing.Size(56, 19);
+            this.VirtualBentoConnect.TabIndex = 185;
+            this.VirtualBentoConnect.Text = "Launch";
+            this.VirtualBentoConnect.UseVisualStyleBackColor = true;
+            this.VirtualBentoConnect.Click += new System.EventHandler(this.buttonVRBentoArmConnect_Click);
+            // 
+            // VirtualBentoList
+            // 
+            this.VirtualBentoList.CheckOnClick = true;
+            this.VirtualBentoList.Enabled = false;
+            this.VirtualBentoList.FormattingEnabled = true;
+            this.VirtualBentoList.Items.AddRange(new object[] {
+            "Shoulder (CCW)",
+            "Shoulder (CW)",
+            "Elbow Extend",
+            "Elbow Flex",
+            "Wrist (CCW)",
+            "Wrist (CW)",
+            "Wrist Flex",
+            "Wrist Extend",
+            "Hand Close",
+            "Hand Open",
+            "Torque On/Off",
+            "Run/Suspend"});
+            this.VirtualBentoList.Location = new System.Drawing.Point(193, 42);
+            this.VirtualBentoList.Name = "VirtualBentoList";
+            this.VirtualBentoList.Size = new System.Drawing.Size(134, 79);
+            this.VirtualBentoList.TabIndex = 223;
+            this.VirtualBentoList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.VirtualBentoList_ItemCheck);
             // 
             // groupBox21
             // 
@@ -4455,7 +4910,7 @@
             this.groupBox21.Controls.Add(this.HANDiConnect);
             this.groupBox21.Controls.Add(this.HANDiRefresh);
             this.groupBox21.Controls.Add(this.label215);
-            this.groupBox21.Location = new System.Drawing.Point(6, 188);
+            this.groupBox21.Location = new System.Drawing.Point(6, 361);
             this.groupBox21.Name = "groupBox21";
             this.groupBox21.Size = new System.Drawing.Size(334, 167);
             this.groupBox21.TabIndex = 226;
@@ -4582,7 +5037,7 @@
             this.tabMapping.Controls.Add(this.TaskTimerGroupBox);
             this.tabMapping.Controls.Add(this.ID2_state);
             this.tabMapping.Controls.Add(this.label148);
-            this.tabMapping.Controls.Add(this.groupBox16);
+            this.tabMapping.Controls.Add(this.SequentialSwitchGroupBox);
             this.tabMapping.Controls.Add(this.label162);
             this.tabMapping.Controls.Add(this.label150);
             this.tabMapping.Controls.Add(this.label146);
@@ -4741,58 +5196,58 @@
             this.label148.TextAlign = System.Drawing.ContentAlignment.TopRight;
             this.label148.Visible = false;
             // 
-            // groupBox16
+            // SequentialSwitchGroupBox
             // 
-            this.groupBox16.Controls.Add(this.switchState_label);
-            this.groupBox16.Controls.Add(this.switchSmaxLabel2);
-            this.groupBox16.Controls.Add(this.label213);
-            this.groupBox16.Controls.Add(this.switchSminLabel2);
-            this.groupBox16.Controls.Add(this.flag2_label);
-            this.groupBox16.Controls.Add(this.switchSminTick2);
-            this.groupBox16.Controls.Add(this.label211);
-            this.groupBox16.Controls.Add(this.switchSmaxTick2);
-            this.groupBox16.Controls.Add(this.flag1_label);
-            this.groupBox16.Controls.Add(this.switchSmaxCtrl2);
-            this.groupBox16.Controls.Add(this.label209);
-            this.groupBox16.Controls.Add(this.switchSminCtrl2);
-            this.groupBox16.Controls.Add(this.timer1_label);
-            this.groupBox16.Controls.Add(this.label205);
-            this.groupBox16.Controls.Add(this.switchSignalBar2);
-            this.groupBox16.Controls.Add(this.switchGainCtrl2);
-            this.groupBox16.Controls.Add(this.switchTimeCtrl2);
-            this.groupBox16.Controls.Add(this.groupBox11);
-            this.groupBox16.Controls.Add(this.groupBox10);
-            this.groupBox16.Controls.Add(this.label103);
-            this.groupBox16.Controls.Add(this.label104);
-            this.groupBox16.Controls.Add(this.label145);
-            this.groupBox16.Controls.Add(this.label147);
-            this.groupBox16.Controls.Add(this.switchSmaxLabel1);
-            this.groupBox16.Controls.Add(this.switchSminLabel1);
-            this.groupBox16.Controls.Add(this.switchSminTick1);
-            this.groupBox16.Controls.Add(this.switchSmaxTick1);
-            this.groupBox16.Controls.Add(this.switchSmaxCtrl1);
-            this.groupBox16.Controls.Add(this.switchSminCtrl1);
-            this.groupBox16.Controls.Add(this.switchSignalBar1);
-            this.groupBox16.Controls.Add(this.switchGainCtrl1);
-            this.groupBox16.Controls.Add(this.switchInputBox);
-            this.groupBox16.Controls.Add(this.label39);
-            this.groupBox16.Controls.Add(this.label27);
-            this.groupBox16.Controls.Add(this.switchTimeCtrl1);
-            this.groupBox16.Controls.Add(this.label242);
-            this.groupBox16.Controls.Add(this.switchModeBox);
-            this.groupBox16.Controls.Add(this.switchLabel);
-            this.groupBox16.Controls.Add(this.label257);
-            this.groupBox16.Controls.Add(this.switchDoFbox);
-            this.groupBox16.Controls.Add(this.label258);
-            this.groupBox16.Location = new System.Drawing.Point(724, 18);
-            this.groupBox16.Margin = new System.Windows.Forms.Padding(2);
-            this.groupBox16.Name = "groupBox16";
-            this.groupBox16.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox16.Size = new System.Drawing.Size(372, 423);
-            this.groupBox16.TabIndex = 138;
-            this.groupBox16.TabStop = false;
-            this.groupBox16.Text = "Sequential Switch";
-            this.groupBox16.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchState_label);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxLabel2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label213);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminLabel2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.flag2_label);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminTick2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label211);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxTick2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.flag1_label);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxCtrl2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label209);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminCtrl2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.timer1_label);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label205);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSignalBar2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchGainCtrl2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchTimeCtrl2);
+            this.SequentialSwitchGroupBox.Controls.Add(this.groupBox11);
+            this.SequentialSwitchGroupBox.Controls.Add(this.groupBox10);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label103);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label104);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label145);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label147);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxLabel1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminLabel1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminTick1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxTick1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSmaxCtrl1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSminCtrl1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchSignalBar1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchGainCtrl1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchInputBox);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label39);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label27);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchTimeCtrl1);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label242);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchModeBox);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchLabel);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label257);
+            this.SequentialSwitchGroupBox.Controls.Add(this.switchDoFbox);
+            this.SequentialSwitchGroupBox.Controls.Add(this.label258);
+            this.SequentialSwitchGroupBox.Location = new System.Drawing.Point(724, 18);
+            this.SequentialSwitchGroupBox.Margin = new System.Windows.Forms.Padding(2);
+            this.SequentialSwitchGroupBox.Name = "SequentialSwitchGroupBox";
+            this.SequentialSwitchGroupBox.Padding = new System.Windows.Forms.Padding(2);
+            this.SequentialSwitchGroupBox.Size = new System.Drawing.Size(372, 423);
+            this.SequentialSwitchGroupBox.TabIndex = 138;
+            this.SequentialSwitchGroupBox.TabStop = false;
+            this.SequentialSwitchGroupBox.Text = "Sequential Switch";
+            this.SequentialSwitchGroupBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.switchSignalBar1_MouseClick);
             // 
             // switchState_label
             // 
@@ -5887,6 +6342,54 @@
             this.TaskTimerPanel.TabIndex = 240;
             this.TaskTimerPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.TaskTimerValue_MouseClick);
             // 
+            // doF6
+            // 
+            this.doF6.Location = new System.Drawing.Point(6, 512);
+            this.doF6.Margin = new System.Windows.Forms.Padding(4);
+            this.doF6.Name = "doF6";
+            this.doF6.Size = new System.Drawing.Size(649, 94);
+            this.doF6.TabIndex = 144;
+            // 
+            // doF5
+            // 
+            this.doF5.Location = new System.Drawing.Point(6, 412);
+            this.doF5.Margin = new System.Windows.Forms.Padding(4);
+            this.doF5.Name = "doF5";
+            this.doF5.Size = new System.Drawing.Size(649, 94);
+            this.doF5.TabIndex = 143;
+            // 
+            // doF4
+            // 
+            this.doF4.Location = new System.Drawing.Point(6, 312);
+            this.doF4.Margin = new System.Windows.Forms.Padding(4);
+            this.doF4.Name = "doF4";
+            this.doF4.Size = new System.Drawing.Size(649, 94);
+            this.doF4.TabIndex = 142;
+            // 
+            // doF3
+            // 
+            this.doF3.Location = new System.Drawing.Point(6, 212);
+            this.doF3.Margin = new System.Windows.Forms.Padding(4);
+            this.doF3.Name = "doF3";
+            this.doF3.Size = new System.Drawing.Size(649, 94);
+            this.doF3.TabIndex = 141;
+            // 
+            // doF2
+            // 
+            this.doF2.Location = new System.Drawing.Point(6, 115);
+            this.doF2.Margin = new System.Windows.Forms.Padding(4);
+            this.doF2.Name = "doF2";
+            this.doF2.Size = new System.Drawing.Size(649, 94);
+            this.doF2.TabIndex = 140;
+            // 
+            // doF1
+            // 
+            this.doF1.Location = new System.Drawing.Point(6, 18);
+            this.doF1.Margin = new System.Windows.Forms.Padding(4);
+            this.doF1.Name = "doF1";
+            this.doF1.Size = new System.Drawing.Size(649, 94);
+            this.doF1.TabIndex = 139;
+            // 
             // tabBento
             // 
             this.tabBento.Controls.Add(this.groupBox19);
@@ -6133,6 +6636,1180 @@
             this.label151.Size = new System.Drawing.Size(129, 15);
             this.label151.TabIndex = 150;
             this.label151.Text = "Load Threshold (1-1023):";
+            // 
+            // tabVirtualBento
+            // 
+            this.tabVirtualBento.Controls.Add(this.groupBoxSimulationSettings);
+            this.tabVirtualBento.Controls.Add(this.groupBoxVRJointLimits);
+            this.tabVirtualBento.Controls.Add(this.groupBoxVRSimulationFeedback);
+            this.tabVirtualBento.Controls.Add(this.numericFrameRate);
+            this.tabVirtualBento.Controls.Add(this.groupBoxTaskSettings);
+            this.tabVirtualBento.Controls.Add(this.groupBoxVRHeadsetSettings);
+            this.tabVirtualBento.Controls.Add(this.buttonApplyChangesToTask);
+            this.tabVirtualBento.Controls.Add(this.buttonLaunchVRSimulation);
+            this.tabVirtualBento.Controls.Add(this.labelFrameRate);
+            this.tabVirtualBento.Location = new System.Drawing.Point(4, 22);
+            this.tabVirtualBento.Name = "tabVirtualBento";
+            this.tabVirtualBento.Size = new System.Drawing.Size(1162, 642);
+            this.tabVirtualBento.TabIndex = 6;
+            this.tabVirtualBento.Text = "Virtual Bento";
+            this.tabVirtualBento.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxSimulationSettings
+            // 
+            this.groupBoxSimulationSettings.Controls.Add(this.VirtualBentoRun);
+            this.groupBoxSimulationSettings.Controls.Add(this.VirtualBentoSuspend);
+            this.groupBoxSimulationSettings.Controls.Add(this.labelSimulationSettingsInstructions);
+            this.groupBoxSimulationSettings.Controls.Add(this.comboBoxSelectTask);
+            this.groupBoxSimulationSettings.Controls.Add(this.labelSelectTask);
+            this.groupBoxSimulationSettings.Controls.Add(this.labelSelectEndEffector);
+            this.groupBoxSimulationSettings.Controls.Add(this.comboBoxSelectEndEffector);
+            this.groupBoxSimulationSettings.Controls.Add(this.buttonStartTask);
+            this.groupBoxSimulationSettings.Enabled = false;
+            this.groupBoxSimulationSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxSimulationSettings.Location = new System.Drawing.Point(3, 5);
+            this.groupBoxSimulationSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxSimulationSettings.Name = "groupBoxSimulationSettings";
+            this.groupBoxSimulationSettings.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxSimulationSettings.Size = new System.Drawing.Size(353, 202);
+            this.groupBoxSimulationSettings.TabIndex = 17;
+            this.groupBoxSimulationSettings.TabStop = false;
+            this.groupBoxSimulationSettings.Text = "Main Controls";
+            // 
+            // VirtualBentoRun
+            // 
+            this.VirtualBentoRun.Enabled = false;
+            this.VirtualBentoRun.Location = new System.Drawing.Point(126, 22);
+            this.VirtualBentoRun.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoRun.Name = "VirtualBentoRun";
+            this.VirtualBentoRun.Size = new System.Drawing.Size(79, 21);
+            this.VirtualBentoRun.TabIndex = 202;
+            this.VirtualBentoRun.Text = "Run";
+            this.VirtualBentoRun.UseVisualStyleBackColor = true;
+            this.VirtualBentoRun.Click += new System.EventHandler(this.VirtualBentoRun_Click);
+            // 
+            // VirtualBentoSuspend
+            // 
+            this.VirtualBentoSuspend.Enabled = false;
+            this.VirtualBentoSuspend.Location = new System.Drawing.Point(201, 22);
+            this.VirtualBentoSuspend.Margin = new System.Windows.Forms.Padding(2);
+            this.VirtualBentoSuspend.Name = "VirtualBentoSuspend";
+            this.VirtualBentoSuspend.Size = new System.Drawing.Size(86, 21);
+            this.VirtualBentoSuspend.TabIndex = 203;
+            this.VirtualBentoSuspend.Text = "Suspend";
+            this.VirtualBentoSuspend.UseVisualStyleBackColor = true;
+            this.VirtualBentoSuspend.Click += new System.EventHandler(this.VirtualBentoSuspend_Click);
+            // 
+            // labelSimulationSettingsInstructions
+            // 
+            this.labelSimulationSettingsInstructions.AutoSize = true;
+            this.labelSimulationSettingsInstructions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSimulationSettingsInstructions.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.labelSimulationSettingsInstructions.Location = new System.Drawing.Point(5, 117);
+            this.labelSimulationSettingsInstructions.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSimulationSettingsInstructions.Name = "labelSimulationSettingsInstructions";
+            this.labelSimulationSettingsInstructions.Size = new System.Drawing.Size(327, 26);
+            this.labelSimulationSettingsInstructions.TabIndex = 10;
+            this.labelSimulationSettingsInstructions.Text = "Click \'Load Task\' to load or reload the selected task and click \'Run\' \r\nto connec" +
+    "t the input devices to the arm, so that it can move.";
+            // 
+            // comboBoxSelectTask
+            // 
+            this.comboBoxSelectTask.AllowDrop = true;
+            this.comboBoxSelectTask.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxSelectTask.FormattingEnabled = true;
+            this.comboBoxSelectTask.Items.AddRange(new object[] {
+            "Basic Movement",
+            "Slam Dunk",
+            "Don\'t Spill",
+            "1up Ball Cup",
+            "Bento Block Stacking",
+            "Cup Stacking"});
+            this.comboBoxSelectTask.Location = new System.Drawing.Point(8, 77);
+            this.comboBoxSelectTask.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxSelectTask.Name = "comboBoxSelectTask";
+            this.comboBoxSelectTask.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxSelectTask.TabIndex = 4;
+            // 
+            // labelSelectTask
+            // 
+            this.labelSelectTask.AutoSize = true;
+            this.labelSelectTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSelectTask.Location = new System.Drawing.Point(5, 59);
+            this.labelSelectTask.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSelectTask.Name = "labelSelectTask";
+            this.labelSelectTask.Size = new System.Drawing.Size(67, 13);
+            this.labelSelectTask.TabIndex = 7;
+            this.labelSelectTask.Text = "Select Task:";
+            // 
+            // labelSelectEndEffector
+            // 
+            this.labelSelectEndEffector.AutoSize = true;
+            this.labelSelectEndEffector.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSelectEndEffector.Location = new System.Drawing.Point(175, 59);
+            this.labelSelectEndEffector.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSelectEndEffector.Name = "labelSelectEndEffector";
+            this.labelSelectEndEffector.Size = new System.Drawing.Size(102, 13);
+            this.labelSelectEndEffector.TabIndex = 8;
+            this.labelSelectEndEffector.Text = "Select End Effector:";
+            // 
+            // comboBoxSelectEndEffector
+            // 
+            this.comboBoxSelectEndEffector.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBoxSelectEndEffector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSelectEndEffector.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxSelectEndEffector.FormattingEnabled = true;
+            this.comboBoxSelectEndEffector.Items.AddRange(new object[] {
+            "Chopsticks Gripper"});
+            this.comboBoxSelectEndEffector.Location = new System.Drawing.Point(178, 77);
+            this.comboBoxSelectEndEffector.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBoxSelectEndEffector.Name = "comboBoxSelectEndEffector";
+            this.comboBoxSelectEndEffector.Size = new System.Drawing.Size(150, 21);
+            this.comboBoxSelectEndEffector.TabIndex = 5;
+            // 
+            // buttonStartTask
+            // 
+            this.buttonStartTask.Enabled = false;
+            this.buttonStartTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonStartTask.Location = new System.Drawing.Point(8, 20);
+            this.buttonStartTask.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonStartTask.Name = "buttonStartTask";
+            this.buttonStartTask.Size = new System.Drawing.Size(100, 25);
+            this.buttonStartTask.TabIndex = 19;
+            this.buttonStartTask.Text = "Load Task";
+            this.buttonStartTask.UseVisualStyleBackColor = true;
+            this.buttonStartTask.Click += new System.EventHandler(this.buttonStartTask_Click);
+            // 
+            // groupBoxVRJointLimits
+            // 
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_hand_vmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_hand_vmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_hand_pmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_hand_pmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelHand);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristRotation_vmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristRotation_vmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelWristRotation);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristRotation_pmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristRotation_pmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_elbow_vmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_elbow_vmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_elbow_pmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_elbow_pmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelElbow);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_shoulder_vmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_shoulder_vmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_shoulder_pmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_shoulder_pmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelShoulderRotation);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelWrist);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristFlex_vmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristFlex_vmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristFlex_pmin_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.VR_wristFlex_pmax_ctrl);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelPmin);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelPmax);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelVmin);
+            this.groupBoxVRJointLimits.Controls.Add(this.labelVmax);
+            this.groupBoxVRJointLimits.Enabled = false;
+            this.groupBoxVRJointLimits.Location = new System.Drawing.Point(3, 211);
+            this.groupBoxVRJointLimits.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRJointLimits.Name = "groupBoxVRJointLimits";
+            this.groupBoxVRJointLimits.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRJointLimits.Size = new System.Drawing.Size(408, 173);
+            this.groupBoxVRJointLimits.TabIndex = 179;
+            this.groupBoxVRJointLimits.TabStop = false;
+            this.groupBoxVRJointLimits.Text = "Joint Limits (Position, Velocity)";
+            // 
+            // VR_hand_vmax_ctrl
+            // 
+            this.VR_hand_vmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_hand_vmax_ctrl.Location = new System.Drawing.Point(345, 136);
+            this.VR_hand_vmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_hand_vmax_ctrl.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
+            this.VR_hand_vmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_hand_vmax_ctrl.Name = "VR_hand_vmax_ctrl";
+            this.VR_hand_vmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_hand_vmax_ctrl.TabIndex = 178;
+            this.VR_hand_vmax_ctrl.Value = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.VR_hand_vmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_hand_vmin_ctrl
+            // 
+            this.VR_hand_vmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_hand_vmin_ctrl.Location = new System.Drawing.Point(286, 136);
+            this.VR_hand_vmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_hand_vmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.VR_hand_vmin_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_hand_vmin_ctrl.Name = "VR_hand_vmin_ctrl";
+            this.VR_hand_vmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_hand_vmin_ctrl.TabIndex = 177;
+            this.VR_hand_vmin_ctrl.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_hand_vmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_hand_pmin_ctrl
+            // 
+            this.VR_hand_pmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_hand_pmin_ctrl.Location = new System.Drawing.Point(168, 136);
+            this.VR_hand_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_hand_pmin_ctrl.Maximum = new decimal(new int[] {
+            2800,
+            0,
+            0,
+            0});
+            this.VR_hand_pmin_ctrl.Minimum = new decimal(new int[] {
+            1928,
+            0,
+            0,
+            0});
+            this.VR_hand_pmin_ctrl.Name = "VR_hand_pmin_ctrl";
+            this.VR_hand_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_hand_pmin_ctrl.TabIndex = 175;
+            this.VR_hand_pmin_ctrl.Value = new decimal(new int[] {
+            1928,
+            0,
+            0,
+            0});
+            this.VR_hand_pmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_hand_pmax_ctrl
+            // 
+            this.VR_hand_pmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_hand_pmax_ctrl.Location = new System.Drawing.Point(227, 136);
+            this.VR_hand_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_hand_pmax_ctrl.Maximum = new decimal(new int[] {
+            2800,
+            0,
+            0,
+            0});
+            this.VR_hand_pmax_ctrl.Minimum = new decimal(new int[] {
+            1928,
+            0,
+            0,
+            0});
+            this.VR_hand_pmax_ctrl.Name = "VR_hand_pmax_ctrl";
+            this.VR_hand_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_hand_pmax_ctrl.TabIndex = 176;
+            this.VR_hand_pmax_ctrl.Value = new decimal(new int[] {
+            2800,
+            0,
+            0,
+            0});
+            this.VR_hand_pmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // labelHand
+            // 
+            this.labelHand.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelHand.Location = new System.Drawing.Point(12, 138);
+            this.labelHand.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelHand.Name = "labelHand";
+            this.labelHand.Size = new System.Drawing.Size(100, 15);
+            this.labelHand.TabIndex = 174;
+            this.labelHand.Text = "Hand Close/Open:";
+            // 
+            // VR_wristRotation_vmax_ctrl
+            // 
+            this.VR_wristRotation_vmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristRotation_vmax_ctrl.Location = new System.Drawing.Point(345, 90);
+            this.VR_wristRotation_vmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristRotation_vmax_ctrl.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmax_ctrl.Name = "VR_wristRotation_vmax_ctrl";
+            this.VR_wristRotation_vmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristRotation_vmax_ctrl.TabIndex = 173;
+            this.VR_wristRotation_vmax_ctrl.Value = new decimal(new int[] {
+            90,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_wristRotation_vmin_ctrl
+            // 
+            this.VR_wristRotation_vmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristRotation_vmin_ctrl.Location = new System.Drawing.Point(286, 90);
+            this.VR_wristRotation_vmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristRotation_vmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmin_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmin_ctrl.Name = "VR_wristRotation_vmin_ctrl";
+            this.VR_wristRotation_vmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristRotation_vmin_ctrl.TabIndex = 172;
+            this.VR_wristRotation_vmin_ctrl.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_vmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // labelWristRotation
+            // 
+            this.labelWristRotation.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelWristRotation.Location = new System.Drawing.Point(12, 91);
+            this.labelWristRotation.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelWristRotation.Name = "labelWristRotation";
+            this.labelWristRotation.Size = new System.Drawing.Size(130, 15);
+            this.labelWristRotation.TabIndex = 171;
+            this.labelWristRotation.Text = "Wrist Rotation CCW/CW:";
+            // 
+            // VR_wristRotation_pmin_ctrl
+            // 
+            this.VR_wristRotation_pmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristRotation_pmin_ctrl.Location = new System.Drawing.Point(168, 90);
+            this.VR_wristRotation_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristRotation_pmin_ctrl.Maximum = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmin_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmin_ctrl.Name = "VR_wristRotation_pmin_ctrl";
+            this.VR_wristRotation_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristRotation_pmin_ctrl.TabIndex = 169;
+            this.VR_wristRotation_pmin_ctrl.Value = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_wristRotation_pmax_ctrl
+            // 
+            this.VR_wristRotation_pmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristRotation_pmax_ctrl.Location = new System.Drawing.Point(227, 89);
+            this.VR_wristRotation_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristRotation_pmax_ctrl.Maximum = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmax_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmax_ctrl.Name = "VR_wristRotation_pmax_ctrl";
+            this.VR_wristRotation_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristRotation_pmax_ctrl.TabIndex = 170;
+            this.VR_wristRotation_pmax_ctrl.Value = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_wristRotation_pmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_elbow_vmax_ctrl
+            // 
+            this.VR_elbow_vmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_elbow_vmax_ctrl.Location = new System.Drawing.Point(345, 64);
+            this.VR_elbow_vmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_elbow_vmax_ctrl.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmax_ctrl.Name = "VR_elbow_vmax_ctrl";
+            this.VR_elbow_vmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_elbow_vmax_ctrl.TabIndex = 168;
+            this.VR_elbow_vmax_ctrl.Value = new decimal(new int[] {
+            45,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_elbow_vmin_ctrl
+            // 
+            this.VR_elbow_vmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_elbow_vmin_ctrl.Location = new System.Drawing.Point(286, 65);
+            this.VR_elbow_vmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_elbow_vmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmin_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmin_ctrl.Name = "VR_elbow_vmin_ctrl";
+            this.VR_elbow_vmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_elbow_vmin_ctrl.TabIndex = 167;
+            this.VR_elbow_vmin_ctrl.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_elbow_vmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_elbow_pmin_ctrl
+            // 
+            this.VR_elbow_pmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_elbow_pmin_ctrl.Location = new System.Drawing.Point(168, 66);
+            this.VR_elbow_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_elbow_pmin_ctrl.Maximum = new decimal(new int[] {
+            2570,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmin_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmin_ctrl.Name = "VR_elbow_pmin_ctrl";
+            this.VR_elbow_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_elbow_pmin_ctrl.TabIndex = 165;
+            this.VR_elbow_pmin_ctrl.Value = new decimal(new int[] {
+            2038,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_elbow_pmax_ctrl
+            // 
+            this.VR_elbow_pmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_elbow_pmax_ctrl.Location = new System.Drawing.Point(227, 66);
+            this.VR_elbow_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_elbow_pmax_ctrl.Maximum = new decimal(new int[] {
+            2570,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmax_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmax_ctrl.Name = "VR_elbow_pmax_ctrl";
+            this.VR_elbow_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_elbow_pmax_ctrl.TabIndex = 166;
+            this.VR_elbow_pmax_ctrl.Value = new decimal(new int[] {
+            2570,
+            0,
+            0,
+            0});
+            this.VR_elbow_pmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // labelElbow
+            // 
+            this.labelElbow.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelElbow.Location = new System.Drawing.Point(12, 67);
+            this.labelElbow.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelElbow.Name = "labelElbow";
+            this.labelElbow.Size = new System.Drawing.Size(128, 15);
+            this.labelElbow.TabIndex = 164;
+            this.labelElbow.Text = "Elbow Extension/Flexion:";
+            // 
+            // VR_shoulder_vmax_ctrl
+            // 
+            this.VR_shoulder_vmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_shoulder_vmax_ctrl.Location = new System.Drawing.Point(345, 43);
+            this.VR_shoulder_vmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_shoulder_vmax_ctrl.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmax_ctrl.Name = "VR_shoulder_vmax_ctrl";
+            this.VR_shoulder_vmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_shoulder_vmax_ctrl.TabIndex = 163;
+            this.VR_shoulder_vmax_ctrl.Value = new decimal(new int[] {
+            67,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_shoulder_vmin_ctrl
+            // 
+            this.VR_shoulder_vmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_shoulder_vmin_ctrl.Location = new System.Drawing.Point(286, 43);
+            this.VR_shoulder_vmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_shoulder_vmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmin_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmin_ctrl.Name = "VR_shoulder_vmin_ctrl";
+            this.VR_shoulder_vmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_shoulder_vmin_ctrl.TabIndex = 162;
+            this.VR_shoulder_vmin_ctrl.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_shoulder_vmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_shoulder_pmin_ctrl
+            // 
+            this.VR_shoulder_pmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_shoulder_pmin_ctrl.Location = new System.Drawing.Point(168, 43);
+            this.VR_shoulder_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_shoulder_pmin_ctrl.Maximum = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmin_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmin_ctrl.Name = "VR_shoulder_pmin_ctrl";
+            this.VR_shoulder_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_shoulder_pmin_ctrl.TabIndex = 160;
+            this.VR_shoulder_pmin_ctrl.Value = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_shoulder_pmax_ctrl
+            // 
+            this.VR_shoulder_pmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_shoulder_pmax_ctrl.Location = new System.Drawing.Point(227, 42);
+            this.VR_shoulder_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_shoulder_pmax_ctrl.Maximum = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmax_ctrl.Minimum = new decimal(new int[] {
+            1028,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmax_ctrl.Name = "VR_shoulder_pmax_ctrl";
+            this.VR_shoulder_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_shoulder_pmax_ctrl.TabIndex = 161;
+            this.VR_shoulder_pmax_ctrl.Value = new decimal(new int[] {
+            3073,
+            0,
+            0,
+            0});
+            this.VR_shoulder_pmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // labelShoulderRotation
+            // 
+            this.labelShoulderRotation.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelShoulderRotation.Location = new System.Drawing.Point(12, 44);
+            this.labelShoulderRotation.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelShoulderRotation.Name = "labelShoulderRotation";
+            this.labelShoulderRotation.Size = new System.Drawing.Size(149, 15);
+            this.labelShoulderRotation.TabIndex = 159;
+            this.labelShoulderRotation.Text = "Shoulder Rotation CCW/CW:";
+            // 
+            // labelWrist
+            // 
+            this.labelWrist.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelWrist.Location = new System.Drawing.Point(12, 116);
+            this.labelWrist.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelWrist.Name = "labelWrist";
+            this.labelWrist.Size = new System.Drawing.Size(128, 18);
+            this.labelWrist.TabIndex = 158;
+            this.labelWrist.Text = "Wrist Extension/Flexion";
+            // 
+            // VR_wristFlex_vmax_ctrl
+            // 
+            this.VR_wristFlex_vmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristFlex_vmax_ctrl.Location = new System.Drawing.Point(345, 114);
+            this.VR_wristFlex_vmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristFlex_vmax_ctrl.Maximum = new decimal(new int[] {
+            150,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmax_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmax_ctrl.Name = "VR_wristFlex_vmax_ctrl";
+            this.VR_wristFlex_vmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristFlex_vmax_ctrl.TabIndex = 157;
+            this.VR_wristFlex_vmax_ctrl.Value = new decimal(new int[] {
+            67,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_wristFlex_vmin_ctrl
+            // 
+            this.VR_wristFlex_vmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristFlex_vmin_ctrl.Location = new System.Drawing.Point(286, 114);
+            this.VR_wristFlex_vmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristFlex_vmin_ctrl.Maximum = new decimal(new int[] {
+            1023,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmin_ctrl.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmin_ctrl.Name = "VR_wristFlex_vmin_ctrl";
+            this.VR_wristFlex_vmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristFlex_vmin_ctrl.TabIndex = 156;
+            this.VR_wristFlex_vmin_ctrl.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_vmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_wristFlex_pmin_ctrl
+            // 
+            this.VR_wristFlex_pmin_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristFlex_pmin_ctrl.Location = new System.Drawing.Point(168, 114);
+            this.VR_wristFlex_pmin_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristFlex_pmin_ctrl.Maximum = new decimal(new int[] {
+            3328,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmin_ctrl.Minimum = new decimal(new int[] {
+            790,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmin_ctrl.Name = "VR_wristFlex_pmin_ctrl";
+            this.VR_wristFlex_pmin_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristFlex_pmin_ctrl.TabIndex = 154;
+            this.VR_wristFlex_pmin_ctrl.Value = new decimal(new int[] {
+            790,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmin_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // VR_wristFlex_pmax_ctrl
+            // 
+            this.VR_wristFlex_pmax_ctrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.VR_wristFlex_pmax_ctrl.Location = new System.Drawing.Point(227, 113);
+            this.VR_wristFlex_pmax_ctrl.Margin = new System.Windows.Forms.Padding(2);
+            this.VR_wristFlex_pmax_ctrl.Maximum = new decimal(new int[] {
+            3328,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmax_ctrl.Minimum = new decimal(new int[] {
+            790,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmax_ctrl.Name = "VR_wristFlex_pmax_ctrl";
+            this.VR_wristFlex_pmax_ctrl.Size = new System.Drawing.Size(48, 20);
+            this.VR_wristFlex_pmax_ctrl.TabIndex = 155;
+            this.VR_wristFlex_pmax_ctrl.Value = new decimal(new int[] {
+            3328,
+            0,
+            0,
+            0});
+            this.VR_wristFlex_pmax_ctrl.ValueChanged += new System.EventHandler(this.VR_Joint_Limit_ValueChanged);
+            // 
+            // labelPmin
+            // 
+            this.labelPmin.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelPmin.Location = new System.Drawing.Point(165, 25);
+            this.labelPmin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelPmin.Name = "labelPmin";
+            this.labelPmin.Size = new System.Drawing.Size(35, 15);
+            this.labelPmin.TabIndex = 152;
+            this.labelPmin.Text = "Pmin:";
+            // 
+            // labelPmax
+            // 
+            this.labelPmax.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelPmax.Location = new System.Drawing.Point(224, 25);
+            this.labelPmax.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelPmax.Name = "labelPmax";
+            this.labelPmax.Size = new System.Drawing.Size(51, 15);
+            this.labelPmax.TabIndex = 153;
+            this.labelPmax.Text = "Pmax:";
+            // 
+            // labelVmin
+            // 
+            this.labelVmin.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVmin.Location = new System.Drawing.Point(283, 25);
+            this.labelVmin.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVmin.Name = "labelVmin";
+            this.labelVmin.Size = new System.Drawing.Size(50, 15);
+            this.labelVmin.TabIndex = 150;
+            this.labelVmin.Text = "Vmin:";
+            // 
+            // labelVmax
+            // 
+            this.labelVmax.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVmax.Location = new System.Drawing.Point(341, 25);
+            this.labelVmax.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVmax.Name = "labelVmax";
+            this.labelVmax.Size = new System.Drawing.Size(41, 15);
+            this.labelVmax.TabIndex = 151;
+            this.labelVmax.Text = "Vmax:";
+            // 
+            // groupBoxVRSimulationFeedback
+            // 
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRHandLoad);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRHandVelocity);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRHandPosition);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristRotateLoad);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristRotateVelocity);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristRotatePosition);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRElbowLoad);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRElbowVelocity);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRElbowPosition);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRShoulderLoad);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRShoulderVelocity);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRShoulderPosition);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRArmLoadFeedback);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRArmVelocityFeedback);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRArmPositionFeedback);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristFlexLoad);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristFlexVelocity);
+            this.groupBoxVRSimulationFeedback.Controls.Add(this.labelVRWristFlexPosition);
+            this.groupBoxVRSimulationFeedback.Enabled = false;
+            this.groupBoxVRSimulationFeedback.Location = new System.Drawing.Point(415, 211);
+            this.groupBoxVRSimulationFeedback.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRSimulationFeedback.Name = "groupBoxVRSimulationFeedback";
+            this.groupBoxVRSimulationFeedback.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRSimulationFeedback.Size = new System.Drawing.Size(175, 173);
+            this.groupBoxVRSimulationFeedback.TabIndex = 142;
+            this.groupBoxVRSimulationFeedback.TabStop = false;
+            this.groupBoxVRSimulationFeedback.Text = "Feedback";
+            // 
+            // labelVRHandLoad
+            // 
+            this.labelVRHandLoad.AutoSize = true;
+            this.labelVRHandLoad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRHandLoad.Location = new System.Drawing.Point(127, 140);
+            this.labelVRHandLoad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRHandLoad.Name = "labelVRHandLoad";
+            this.labelVRHandLoad.Size = new System.Drawing.Size(13, 13);
+            this.labelVRHandLoad.TabIndex = 167;
+            this.labelVRHandLoad.Text = "--";
+            // 
+            // labelVRHandVelocity
+            // 
+            this.labelVRHandVelocity.AutoSize = true;
+            this.labelVRHandVelocity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRHandVelocity.Location = new System.Drawing.Point(74, 140);
+            this.labelVRHandVelocity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRHandVelocity.Name = "labelVRHandVelocity";
+            this.labelVRHandVelocity.Size = new System.Drawing.Size(13, 13);
+            this.labelVRHandVelocity.TabIndex = 166;
+            this.labelVRHandVelocity.Text = "--";
+            // 
+            // labelVRHandPosition
+            // 
+            this.labelVRHandPosition.AutoSize = true;
+            this.labelVRHandPosition.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRHandPosition.Location = new System.Drawing.Point(21, 140);
+            this.labelVRHandPosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRHandPosition.Name = "labelVRHandPosition";
+            this.labelVRHandPosition.Size = new System.Drawing.Size(13, 13);
+            this.labelVRHandPosition.TabIndex = 165;
+            this.labelVRHandPosition.Text = "--";
+            // 
+            // labelVRWristRotateLoad
+            // 
+            this.labelVRWristRotateLoad.AutoSize = true;
+            this.labelVRWristRotateLoad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristRotateLoad.Location = new System.Drawing.Point(127, 92);
+            this.labelVRWristRotateLoad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristRotateLoad.Name = "labelVRWristRotateLoad";
+            this.labelVRWristRotateLoad.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristRotateLoad.TabIndex = 161;
+            this.labelVRWristRotateLoad.Text = "--";
+            // 
+            // labelVRWristRotateVelocity
+            // 
+            this.labelVRWristRotateVelocity.AutoSize = true;
+            this.labelVRWristRotateVelocity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristRotateVelocity.Location = new System.Drawing.Point(74, 92);
+            this.labelVRWristRotateVelocity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristRotateVelocity.Name = "labelVRWristRotateVelocity";
+            this.labelVRWristRotateVelocity.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristRotateVelocity.TabIndex = 160;
+            this.labelVRWristRotateVelocity.Text = "--";
+            // 
+            // labelVRWristRotatePosition
+            // 
+            this.labelVRWristRotatePosition.AutoSize = true;
+            this.labelVRWristRotatePosition.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristRotatePosition.Location = new System.Drawing.Point(21, 92);
+            this.labelVRWristRotatePosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristRotatePosition.Name = "labelVRWristRotatePosition";
+            this.labelVRWristRotatePosition.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristRotatePosition.TabIndex = 159;
+            this.labelVRWristRotatePosition.Text = "--";
+            // 
+            // labelVRElbowLoad
+            // 
+            this.labelVRElbowLoad.AutoSize = true;
+            this.labelVRElbowLoad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRElbowLoad.Location = new System.Drawing.Point(127, 68);
+            this.labelVRElbowLoad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRElbowLoad.Name = "labelVRElbowLoad";
+            this.labelVRElbowLoad.Size = new System.Drawing.Size(13, 13);
+            this.labelVRElbowLoad.TabIndex = 155;
+            this.labelVRElbowLoad.Text = "--";
+            // 
+            // labelVRElbowVelocity
+            // 
+            this.labelVRElbowVelocity.AutoSize = true;
+            this.labelVRElbowVelocity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRElbowVelocity.Location = new System.Drawing.Point(74, 68);
+            this.labelVRElbowVelocity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRElbowVelocity.Name = "labelVRElbowVelocity";
+            this.labelVRElbowVelocity.Size = new System.Drawing.Size(13, 13);
+            this.labelVRElbowVelocity.TabIndex = 154;
+            this.labelVRElbowVelocity.Text = "--";
+            // 
+            // labelVRElbowPosition
+            // 
+            this.labelVRElbowPosition.AutoSize = true;
+            this.labelVRElbowPosition.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRElbowPosition.Location = new System.Drawing.Point(21, 68);
+            this.labelVRElbowPosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRElbowPosition.Name = "labelVRElbowPosition";
+            this.labelVRElbowPosition.Size = new System.Drawing.Size(13, 13);
+            this.labelVRElbowPosition.TabIndex = 153;
+            this.labelVRElbowPosition.Text = "--";
+            // 
+            // labelVRShoulderLoad
+            // 
+            this.labelVRShoulderLoad.AutoSize = true;
+            this.labelVRShoulderLoad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRShoulderLoad.Location = new System.Drawing.Point(127, 45);
+            this.labelVRShoulderLoad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRShoulderLoad.Name = "labelVRShoulderLoad";
+            this.labelVRShoulderLoad.Size = new System.Drawing.Size(13, 13);
+            this.labelVRShoulderLoad.TabIndex = 149;
+            this.labelVRShoulderLoad.Text = "--";
+            // 
+            // labelVRShoulderVelocity
+            // 
+            this.labelVRShoulderVelocity.AutoSize = true;
+            this.labelVRShoulderVelocity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRShoulderVelocity.Location = new System.Drawing.Point(74, 45);
+            this.labelVRShoulderVelocity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRShoulderVelocity.Name = "labelVRShoulderVelocity";
+            this.labelVRShoulderVelocity.Size = new System.Drawing.Size(13, 13);
+            this.labelVRShoulderVelocity.TabIndex = 148;
+            this.labelVRShoulderVelocity.Text = "--";
+            // 
+            // labelVRShoulderPosition
+            // 
+            this.labelVRShoulderPosition.AutoSize = true;
+            this.labelVRShoulderPosition.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRShoulderPosition.Location = new System.Drawing.Point(21, 45);
+            this.labelVRShoulderPosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRShoulderPosition.Name = "labelVRShoulderPosition";
+            this.labelVRShoulderPosition.Size = new System.Drawing.Size(13, 13);
+            this.labelVRShoulderPosition.TabIndex = 147;
+            this.labelVRShoulderPosition.Text = "--";
+            // 
+            // labelVRArmLoadFeedback
+            // 
+            this.labelVRArmLoadFeedback.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRArmLoadFeedback.Location = new System.Drawing.Point(127, 25);
+            this.labelVRArmLoadFeedback.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRArmLoadFeedback.Name = "labelVRArmLoadFeedback";
+            this.labelVRArmLoadFeedback.Size = new System.Drawing.Size(39, 20);
+            this.labelVRArmLoadFeedback.TabIndex = 143;
+            this.labelVRArmLoadFeedback.Text = "Load:";
+            // 
+            // labelVRArmVelocityFeedback
+            // 
+            this.labelVRArmVelocityFeedback.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRArmVelocityFeedback.Location = new System.Drawing.Point(74, 25);
+            this.labelVRArmVelocityFeedback.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRArmVelocityFeedback.Name = "labelVRArmVelocityFeedback";
+            this.labelVRArmVelocityFeedback.Size = new System.Drawing.Size(49, 20);
+            this.labelVRArmVelocityFeedback.TabIndex = 142;
+            this.labelVRArmVelocityFeedback.Text = "Velocity:";
+            // 
+            // labelVRArmPositionFeedback
+            // 
+            this.labelVRArmPositionFeedback.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRArmPositionFeedback.Location = new System.Drawing.Point(21, 25);
+            this.labelVRArmPositionFeedback.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRArmPositionFeedback.Name = "labelVRArmPositionFeedback";
+            this.labelVRArmPositionFeedback.Size = new System.Drawing.Size(49, 20);
+            this.labelVRArmPositionFeedback.TabIndex = 140;
+            this.labelVRArmPositionFeedback.Text = "Position:";
+            // 
+            // labelVRWristFlexLoad
+            // 
+            this.labelVRWristFlexLoad.AutoSize = true;
+            this.labelVRWristFlexLoad.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristFlexLoad.Location = new System.Drawing.Point(127, 116);
+            this.labelVRWristFlexLoad.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristFlexLoad.Name = "labelVRWristFlexLoad";
+            this.labelVRWristFlexLoad.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristFlexLoad.TabIndex = 127;
+            this.labelVRWristFlexLoad.Text = "--";
+            // 
+            // labelVRWristFlexVelocity
+            // 
+            this.labelVRWristFlexVelocity.AutoSize = true;
+            this.labelVRWristFlexVelocity.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristFlexVelocity.Location = new System.Drawing.Point(74, 116);
+            this.labelVRWristFlexVelocity.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristFlexVelocity.Name = "labelVRWristFlexVelocity";
+            this.labelVRWristFlexVelocity.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristFlexVelocity.TabIndex = 122;
+            this.labelVRWristFlexVelocity.Text = "--";
+            // 
+            // labelVRWristFlexPosition
+            // 
+            this.labelVRWristFlexPosition.AutoSize = true;
+            this.labelVRWristFlexPosition.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.labelVRWristFlexPosition.Location = new System.Drawing.Point(21, 116);
+            this.labelVRWristFlexPosition.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelVRWristFlexPosition.Name = "labelVRWristFlexPosition";
+            this.labelVRWristFlexPosition.Size = new System.Drawing.Size(13, 13);
+            this.labelVRWristFlexPosition.TabIndex = 117;
+            this.labelVRWristFlexPosition.Text = "--";
+            // 
+            // numericFrameRate
+            // 
+            this.numericFrameRate.Location = new System.Drawing.Point(1070, 133);
+            this.numericFrameRate.Name = "numericFrameRate";
+            this.numericFrameRate.Size = new System.Drawing.Size(78, 20);
+            this.numericFrameRate.TabIndex = 11;
+            this.numericFrameRate.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.numericFrameRate.Visible = false;
+            // 
+            // groupBoxTaskSettings
+            // 
+            this.groupBoxTaskSettings.Controls.Add(this.buttonDeleteCameraView);
+            this.groupBoxTaskSettings.Controls.Add(this.buttonSaveCameraView);
+            this.groupBoxTaskSettings.Controls.Add(this.buttonAddCameraView);
+            this.groupBoxTaskSettings.Controls.Add(this.listBoxSelectCameraView);
+            this.groupBoxTaskSettings.Enabled = false;
+            this.groupBoxTaskSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxTaskSettings.Location = new System.Drawing.Point(360, 5);
+            this.groupBoxTaskSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxTaskSettings.Name = "groupBoxTaskSettings";
+            this.groupBoxTaskSettings.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxTaskSettings.Size = new System.Drawing.Size(230, 202);
+            this.groupBoxTaskSettings.TabIndex = 18;
+            this.groupBoxTaskSettings.TabStop = false;
+            this.groupBoxTaskSettings.Text = "Camera Controls";
+            // 
+            // buttonDeleteCameraView
+            // 
+            this.buttonDeleteCameraView.Enabled = false;
+            this.buttonDeleteCameraView.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonDeleteCameraView.Location = new System.Drawing.Point(144, 171);
+            this.buttonDeleteCameraView.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonDeleteCameraView.Name = "buttonDeleteCameraView";
+            this.buttonDeleteCameraView.Size = new System.Drawing.Size(76, 21);
+            this.buttonDeleteCameraView.TabIndex = 25;
+            this.buttonDeleteCameraView.Text = "Delete View";
+            this.buttonDeleteCameraView.UseVisualStyleBackColor = true;
+            this.buttonDeleteCameraView.Click += new System.EventHandler(this.buttonDeleteCameraView_Click);
+            // 
+            // buttonSaveCameraView
+            // 
+            this.buttonSaveCameraView.Enabled = false;
+            this.buttonSaveCameraView.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSaveCameraView.Location = new System.Drawing.Point(73, 171);
+            this.buttonSaveCameraView.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonSaveCameraView.Name = "buttonSaveCameraView";
+            this.buttonSaveCameraView.Size = new System.Drawing.Size(67, 21);
+            this.buttonSaveCameraView.TabIndex = 24;
+            this.buttonSaveCameraView.Text = "Save View";
+            this.buttonSaveCameraView.UseVisualStyleBackColor = true;
+            this.buttonSaveCameraView.Click += new System.EventHandler(this.buttonSaveCameraView_Click);
+            // 
+            // buttonAddCameraView
+            // 
+            this.buttonAddCameraView.Enabled = false;
+            this.buttonAddCameraView.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonAddCameraView.Location = new System.Drawing.Point(9, 171);
+            this.buttonAddCameraView.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonAddCameraView.Name = "buttonAddCameraView";
+            this.buttonAddCameraView.Size = new System.Drawing.Size(60, 21);
+            this.buttonAddCameraView.TabIndex = 23;
+            this.buttonAddCameraView.Text = "Add View";
+            this.buttonAddCameraView.UseVisualStyleBackColor = true;
+            this.buttonAddCameraView.Click += new System.EventHandler(this.buttonAddCameraView_Click);
+            // 
+            // listBoxSelectCameraView
+            // 
+            this.listBoxSelectCameraView.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listBoxSelectCameraView.FormattingEnabled = true;
+            this.listBoxSelectCameraView.Location = new System.Drawing.Point(9, 20);
+            this.listBoxSelectCameraView.Margin = new System.Windows.Forms.Padding(2);
+            this.listBoxSelectCameraView.Name = "listBoxSelectCameraView";
+            this.listBoxSelectCameraView.Size = new System.Drawing.Size(212, 147);
+            this.listBoxSelectCameraView.TabIndex = 11;
+            this.listBoxSelectCameraView.SelectedIndexChanged += new System.EventHandler(this.listBoxSelectCameraView_SelectedIndexChanged);
+            // 
+            // groupBoxVRHeadsetSettings
+            // 
+            this.groupBoxVRHeadsetSettings.Controls.Add(this.labelSelectHeadset);
+            this.groupBoxVRHeadsetSettings.Controls.Add(this.checkBoxUseVRHeadset);
+            this.groupBoxVRHeadsetSettings.Controls.Add(this.comboBox3);
+            this.groupBoxVRHeadsetSettings.Enabled = false;
+            this.groupBoxVRHeadsetSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxVRHeadsetSettings.Location = new System.Drawing.Point(923, 164);
+            this.groupBoxVRHeadsetSettings.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRHeadsetSettings.Name = "groupBoxVRHeadsetSettings";
+            this.groupBoxVRHeadsetSettings.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxVRHeadsetSettings.Size = new System.Drawing.Size(225, 119);
+            this.groupBoxVRHeadsetSettings.TabIndex = 22;
+            this.groupBoxVRHeadsetSettings.TabStop = false;
+            this.groupBoxVRHeadsetSettings.Text = "VR Headset Settings";
+            this.groupBoxVRHeadsetSettings.Visible = false;
+            // 
+            // labelSelectHeadset
+            // 
+            this.labelSelectHeadset.AutoSize = true;
+            this.labelSelectHeadset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSelectHeadset.Location = new System.Drawing.Point(9, 55);
+            this.labelSelectHeadset.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSelectHeadset.Name = "labelSelectHeadset";
+            this.labelSelectHeadset.Size = new System.Drawing.Size(83, 13);
+            this.labelSelectHeadset.TabIndex = 12;
+            this.labelSelectHeadset.Text = "Select Headset:";
+            // 
+            // checkBoxUseVRHeadset
+            // 
+            this.checkBoxUseVRHeadset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxUseVRHeadset.Location = new System.Drawing.Point(11, 19);
+            this.checkBoxUseVRHeadset.Margin = new System.Windows.Forms.Padding(2);
+            this.checkBoxUseVRHeadset.Name = "checkBoxUseVRHeadset";
+            this.checkBoxUseVRHeadset.Size = new System.Drawing.Size(157, 27);
+            this.checkBoxUseVRHeadset.TabIndex = 10;
+            this.checkBoxUseVRHeadset.Text = "Use VR Headset";
+            this.checkBoxUseVRHeadset.UseVisualStyleBackColor = true;
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.BackColor = System.Drawing.SystemColors.Window;
+            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.Items.AddRange(new object[] {
+            "Headset1",
+            "Headset2",
+            "Headset3"});
+            this.comboBox3.Location = new System.Drawing.Point(11, 79);
+            this.comboBox3.Margin = new System.Windows.Forms.Padding(2);
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(188, 21);
+            this.comboBox3.TabIndex = 11;
+            // 
+            // buttonApplyChangesToTask
+            // 
+            this.buttonApplyChangesToTask.Enabled = false;
+            this.buttonApplyChangesToTask.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonApplyChangesToTask.Location = new System.Drawing.Point(951, 32);
+            this.buttonApplyChangesToTask.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonApplyChangesToTask.Name = "buttonApplyChangesToTask";
+            this.buttonApplyChangesToTask.Size = new System.Drawing.Size(197, 25);
+            this.buttonApplyChangesToTask.TabIndex = 20;
+            this.buttonApplyChangesToTask.Text = "Apply Changes to Task";
+            this.buttonApplyChangesToTask.UseVisualStyleBackColor = true;
+            this.buttonApplyChangesToTask.Visible = false;
+            this.buttonApplyChangesToTask.Click += new System.EventHandler(this.buttonApplyChangesToTask_Click);
+            // 
+            // buttonLaunchVRSimulation
+            // 
+            this.buttonLaunchVRSimulation.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonLaunchVRSimulation.Location = new System.Drawing.Point(760, 32);
+            this.buttonLaunchVRSimulation.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonLaunchVRSimulation.Name = "buttonLaunchVRSimulation";
+            this.buttonLaunchVRSimulation.Size = new System.Drawing.Size(187, 25);
+            this.buttonLaunchVRSimulation.TabIndex = 21;
+            this.buttonLaunchVRSimulation.Text = "Launch Virtual Bento";
+            this.buttonLaunchVRSimulation.UseVisualStyleBackColor = true;
+            this.buttonLaunchVRSimulation.Visible = false;
+            this.buttonLaunchVRSimulation.Click += new System.EventHandler(this.buttonLaunchVRSimulation_Click);
+            // 
+            // labelFrameRate
+            // 
+            this.labelFrameRate.AutoSize = true;
+            this.labelFrameRate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFrameRate.Location = new System.Drawing.Point(1067, 109);
+            this.labelFrameRate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelFrameRate.Name = "labelFrameRate";
+            this.labelFrameRate.Size = new System.Drawing.Size(65, 13);
+            this.labelFrameRate.TabIndex = 9;
+            this.labelFrameRate.Text = "Frame Rate:";
+            this.labelFrameRate.Visible = false;
             // 
             // tabHANDi
             // 
@@ -7104,6 +8781,423 @@
             this.label279.Size = new System.Drawing.Size(13, 13);
             this.label279.TabIndex = 117;
             this.label279.Text = "--";
+            // 
+            // tabSequencer
+            // 
+            this.tabSequencer.Controls.Add(this.groupBoxSequencer);
+            this.tabSequencer.Location = new System.Drawing.Point(4, 22);
+            this.tabSequencer.Name = "tabSequencer";
+            this.tabSequencer.Size = new System.Drawing.Size(1162, 642);
+            this.tabSequencer.TabIndex = 7;
+            this.tabSequencer.Text = "Motion Sequencer";
+            this.tabSequencer.UseVisualStyleBackColor = true;
+            // 
+            // groupBoxSequencer
+            // 
+            this.groupBoxSequencer.Controls.Add(this.buttonEnableSequencer);
+            this.groupBoxSequencer.Controls.Add(this.buttonStopSequencer);
+            this.groupBoxSequencer.Controls.Add(this.buttonPlaySequencer);
+            this.groupBoxSequencer.Controls.Add(this.panelSequencerControls);
+            this.groupBoxSequencer.Enabled = false;
+            this.groupBoxSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBoxSequencer.Location = new System.Drawing.Point(3, 5);
+            this.groupBoxSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.groupBoxSequencer.Name = "groupBoxSequencer";
+            this.groupBoxSequencer.Padding = new System.Windows.Forms.Padding(2);
+            this.groupBoxSequencer.Size = new System.Drawing.Size(733, 466);
+            this.groupBoxSequencer.TabIndex = 42;
+            this.groupBoxSequencer.TabStop = false;
+            this.groupBoxSequencer.Text = "Main Controls";
+            // 
+            // buttonEnableSequencer
+            // 
+            this.buttonEnableSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonEnableSequencer.Location = new System.Drawing.Point(15, 24);
+            this.buttonEnableSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonEnableSequencer.Name = "buttonEnableSequencer";
+            this.buttonEnableSequencer.Size = new System.Drawing.Size(84, 23);
+            this.buttonEnableSequencer.TabIndex = 41;
+            this.buttonEnableSequencer.Text = "Enable";
+            this.buttonEnableSequencer.UseVisualStyleBackColor = true;
+            this.buttonEnableSequencer.Click += new System.EventHandler(this.buttonEnableSequencer_Click);
+            // 
+            // buttonStopSequencer
+            // 
+            this.buttonStopSequencer.Enabled = false;
+            this.buttonStopSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonStopSequencer.Location = new System.Drawing.Point(189, 24);
+            this.buttonStopSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonStopSequencer.Name = "buttonStopSequencer";
+            this.buttonStopSequencer.Size = new System.Drawing.Size(60, 23);
+            this.buttonStopSequencer.TabIndex = 25;
+            this.buttonStopSequencer.Text = "Stop";
+            this.buttonStopSequencer.UseVisualStyleBackColor = true;
+            this.buttonStopSequencer.Click += new System.EventHandler(this.buttonStopSequencer_Click);
+            // 
+            // buttonPlaySequencer
+            // 
+            this.buttonPlaySequencer.Enabled = false;
+            this.buttonPlaySequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonPlaySequencer.Location = new System.Drawing.Point(130, 24);
+            this.buttonPlaySequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonPlaySequencer.Name = "buttonPlaySequencer";
+            this.buttonPlaySequencer.Size = new System.Drawing.Size(60, 23);
+            this.buttonPlaySequencer.TabIndex = 24;
+            this.buttonPlaySequencer.Text = "Play";
+            this.buttonPlaySequencer.UseVisualStyleBackColor = true;
+            this.buttonPlaySequencer.Click += new System.EventHandler(this.buttonPlaySequencer_Click);
+            // 
+            // panelSequencerControls
+            // 
+            this.panelSequencerControls.Controls.Add(this.numericIterationsSequencer);
+            this.panelSequencerControls.Controls.Add(this.labelCount);
+            this.panelSequencerControls.Controls.Add(this.labelSwitchingDelay);
+            this.panelSequencerControls.Controls.Add(this.labelIterationCount);
+            this.panelSequencerControls.Controls.Add(this.buttonClearSequencer);
+            this.panelSequencerControls.Controls.Add(this.SwitchingDelaySequencer);
+            this.panelSequencerControls.Controls.Add(this.buttonMoveDownSequencer);
+            this.panelSequencerControls.Controls.Add(this.checkboxRepeat);
+            this.panelSequencerControls.Controls.Add(this.buttonMoveUpSequencer);
+            this.panelSequencerControls.Controls.Add(this.checkBoxLogData);
+            this.panelSequencerControls.Controls.Add(this.buttonDelMovement);
+            this.panelSequencerControls.Controls.Add(this.checkBoxRepeatForever);
+            this.panelSequencerControls.Controls.Add(this.buttonAddMovement);
+            this.panelSequencerControls.Controls.Add(this.labelIterations);
+            this.panelSequencerControls.Controls.Add(this.labelFilePath);
+            this.panelSequencerControls.Controls.Add(this.buttonSelectPathSequencer);
+            this.panelSequencerControls.Controls.Add(this.dataSequencer);
+            this.panelSequencerControls.Controls.Add(this.buttonLoadSeq);
+            this.panelSequencerControls.Controls.Add(this.buttonSaveSeq);
+            this.panelSequencerControls.Enabled = false;
+            this.panelSequencerControls.Location = new System.Drawing.Point(5, 56);
+            this.panelSequencerControls.Name = "panelSequencerControls";
+            this.panelSequencerControls.Size = new System.Drawing.Size(725, 395);
+            this.panelSequencerControls.TabIndex = 43;
+            // 
+            // numericIterationsSequencer
+            // 
+            this.numericIterationsSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.numericIterationsSequencer.Location = new System.Drawing.Point(70, 34);
+            this.numericIterationsSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.numericIterationsSequencer.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.numericIterationsSequencer.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericIterationsSequencer.Name = "numericIterationsSequencer";
+            this.numericIterationsSequencer.Size = new System.Drawing.Size(51, 20);
+            this.numericIterationsSequencer.TabIndex = 42;
+            this.numericIterationsSequencer.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericIterationsSequencer.ValueChanged += new System.EventHandler(this.numericIterationsSequencer_ValueChanged);
+            // 
+            // labelCount
+            // 
+            this.labelCount.AutoSize = true;
+            this.labelCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelCount.Location = new System.Drawing.Point(103, 74);
+            this.labelCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelCount.Name = "labelCount";
+            this.labelCount.Size = new System.Drawing.Size(13, 13);
+            this.labelCount.TabIndex = 35;
+            this.labelCount.Text = "0";
+            // 
+            // labelSwitchingDelay
+            // 
+            this.labelSwitchingDelay.AutoSize = true;
+            this.labelSwitchingDelay.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelSwitchingDelay.Location = new System.Drawing.Point(419, 13);
+            this.labelSwitchingDelay.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelSwitchingDelay.Name = "labelSwitchingDelay";
+            this.labelSwitchingDelay.Size = new System.Drawing.Size(106, 13);
+            this.labelSwitchingDelay.TabIndex = 40;
+            this.labelSwitchingDelay.Text = "Switching delay (ms):";
+            this.labelSwitchingDelay.Visible = false;
+            // 
+            // labelIterationCount
+            // 
+            this.labelIterationCount.AutoSize = true;
+            this.labelIterationCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelIterationCount.Location = new System.Drawing.Point(9, 74);
+            this.labelIterationCount.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelIterationCount.Name = "labelIterationCount";
+            this.labelIterationCount.Size = new System.Drawing.Size(82, 13);
+            this.labelIterationCount.TabIndex = 34;
+            this.labelIterationCount.Text = "Iteration Count: ";
+            // 
+            // buttonClearSequencer
+            // 
+            this.buttonClearSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonClearSequencer.Location = new System.Drawing.Point(593, 361);
+            this.buttonClearSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonClearSequencer.Name = "buttonClearSequencer";
+            this.buttonClearSequencer.Size = new System.Drawing.Size(106, 23);
+            this.buttonClearSequencer.TabIndex = 30;
+            this.buttonClearSequencer.Text = "Clear All";
+            this.buttonClearSequencer.UseVisualStyleBackColor = true;
+            this.buttonClearSequencer.Click += new System.EventHandler(this.buttonClearSequencer_Click);
+            // 
+            // SwitchingDelaySequencer
+            // 
+            this.SwitchingDelaySequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SwitchingDelaySequencer.Location = new System.Drawing.Point(528, 10);
+            this.SwitchingDelaySequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.SwitchingDelaySequencer.Name = "SwitchingDelaySequencer";
+            this.SwitchingDelaySequencer.Size = new System.Drawing.Size(37, 20);
+            this.SwitchingDelaySequencer.TabIndex = 41;
+            this.SwitchingDelaySequencer.Text = "0";
+            this.SwitchingDelaySequencer.Visible = false;
+            this.SwitchingDelaySequencer.Validating += new System.ComponentModel.CancelEventHandler(this.SwitchingDelaySequencer_Validating);
+            this.SwitchingDelaySequencer.Validated += new System.EventHandler(this.SwitchingDelaySequencer_Validated);
+            // 
+            // buttonMoveDownSequencer
+            // 
+            this.buttonMoveDownSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonMoveDownSequencer.Location = new System.Drawing.Point(650, 305);
+            this.buttonMoveDownSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonMoveDownSequencer.Name = "buttonMoveDownSequencer";
+            this.buttonMoveDownSequencer.Size = new System.Drawing.Size(47, 35);
+            this.buttonMoveDownSequencer.TabIndex = 29;
+            this.buttonMoveDownSequencer.Text = "↓";
+            this.buttonMoveDownSequencer.UseVisualStyleBackColor = true;
+            this.buttonMoveDownSequencer.Click += new System.EventHandler(this.buttonMoveDownSequencer_Click);
+            // 
+            // checkboxRepeat
+            // 
+            this.checkboxRepeat.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkboxRepeat.Location = new System.Drawing.Point(12, 34);
+            this.checkboxRepeat.Margin = new System.Windows.Forms.Padding(2);
+            this.checkboxRepeat.Name = "checkboxRepeat";
+            this.checkboxRepeat.Size = new System.Drawing.Size(69, 21);
+            this.checkboxRepeat.TabIndex = 31;
+            this.checkboxRepeat.Text = "Repeat";
+            this.checkboxRepeat.UseVisualStyleBackColor = true;
+            this.checkboxRepeat.CheckedChanged += new System.EventHandler(this.checkboxRepeat_CheckedChanged);
+            // 
+            // buttonMoveUpSequencer
+            // 
+            this.buttonMoveUpSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.buttonMoveUpSequencer.Location = new System.Drawing.Point(593, 305);
+            this.buttonMoveUpSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonMoveUpSequencer.Name = "buttonMoveUpSequencer";
+            this.buttonMoveUpSequencer.Size = new System.Drawing.Size(47, 35);
+            this.buttonMoveUpSequencer.TabIndex = 28;
+            this.buttonMoveUpSequencer.Text = "↑";
+            this.buttonMoveUpSequencer.UseVisualStyleBackColor = true;
+            this.buttonMoveUpSequencer.Click += new System.EventHandler(this.buttonMoveUpSequencer_Click);
+            // 
+            // checkBoxLogData
+            // 
+            this.checkBoxLogData.AutoSize = true;
+            this.checkBoxLogData.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxLogData.Location = new System.Drawing.Point(202, 12);
+            this.checkBoxLogData.Margin = new System.Windows.Forms.Padding(2);
+            this.checkBoxLogData.Name = "checkBoxLogData";
+            this.checkBoxLogData.Size = new System.Drawing.Size(96, 17);
+            this.checkBoxLogData.TabIndex = 36;
+            this.checkBoxLogData.Text = "Log data to file";
+            this.checkBoxLogData.UseVisualStyleBackColor = true;
+            this.checkBoxLogData.Visible = false;
+            this.checkBoxLogData.CheckedChanged += new System.EventHandler(this.checkBoxLogData_CheckedChanged);
+            // 
+            // buttonDelMovement
+            // 
+            this.buttonDelMovement.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonDelMovement.Location = new System.Drawing.Point(593, 262);
+            this.buttonDelMovement.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonDelMovement.Name = "buttonDelMovement";
+            this.buttonDelMovement.Size = new System.Drawing.Size(106, 23);
+            this.buttonDelMovement.TabIndex = 27;
+            this.buttonDelMovement.Text = "Delete Movement";
+            this.buttonDelMovement.UseVisualStyleBackColor = true;
+            this.buttonDelMovement.Click += new System.EventHandler(this.buttonDelMovement_Click);
+            // 
+            // checkBoxRepeatForever
+            // 
+            this.checkBoxRepeatForever.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBoxRepeatForever.Location = new System.Drawing.Point(12, 10);
+            this.checkBoxRepeatForever.Margin = new System.Windows.Forms.Padding(2);
+            this.checkBoxRepeatForever.Name = "checkBoxRepeatForever";
+            this.checkBoxRepeatForever.Size = new System.Drawing.Size(117, 21);
+            this.checkBoxRepeatForever.TabIndex = 39;
+            this.checkBoxRepeatForever.Text = "Repeat forever";
+            this.checkBoxRepeatForever.UseVisualStyleBackColor = true;
+            this.checkBoxRepeatForever.CheckedChanged += new System.EventHandler(this.checkBoxRepeatForever_CheckedChanged);
+            // 
+            // buttonAddMovement
+            // 
+            this.buttonAddMovement.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonAddMovement.Location = new System.Drawing.Point(593, 220);
+            this.buttonAddMovement.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonAddMovement.Name = "buttonAddMovement";
+            this.buttonAddMovement.Size = new System.Drawing.Size(106, 23);
+            this.buttonAddMovement.TabIndex = 26;
+            this.buttonAddMovement.Text = "Add Movement";
+            this.buttonAddMovement.UseVisualStyleBackColor = true;
+            this.buttonAddMovement.Click += new System.EventHandler(this.buttonAddMovement_Click);
+            // 
+            // labelIterations
+            // 
+            this.labelIterations.AutoSize = true;
+            this.labelIterations.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelIterations.Location = new System.Drawing.Point(125, 37);
+            this.labelIterations.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelIterations.Name = "labelIterations";
+            this.labelIterations.Size = new System.Drawing.Size(31, 13);
+            this.labelIterations.TabIndex = 33;
+            this.labelIterations.Text = "times";
+            // 
+            // labelFilePath
+            // 
+            this.labelFilePath.AutoSize = true;
+            this.labelFilePath.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelFilePath.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.labelFilePath.Location = new System.Drawing.Point(200, 35);
+            this.labelFilePath.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.labelFilePath.Name = "labelFilePath";
+            this.labelFilePath.Size = new System.Drawing.Size(101, 13);
+            this.labelFilePath.TabIndex = 37;
+            this.labelFilePath.Text = "No filepath selected";
+            this.labelFilePath.Visible = false;
+            // 
+            // buttonSelectPathSequencer
+            // 
+            this.buttonSelectPathSequencer.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSelectPathSequencer.Location = new System.Drawing.Point(298, 8);
+            this.buttonSelectPathSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonSelectPathSequencer.Name = "buttonSelectPathSequencer";
+            this.buttonSelectPathSequencer.Size = new System.Drawing.Size(73, 23);
+            this.buttonSelectPathSequencer.TabIndex = 38;
+            this.buttonSelectPathSequencer.Text = "Browse";
+            this.buttonSelectPathSequencer.UseVisualStyleBackColor = true;
+            this.buttonSelectPathSequencer.Visible = false;
+            this.buttonSelectPathSequencer.Click += new System.EventHandler(this.buttonSelectPathSequencer_Click);
+            // 
+            // dataSequencer
+            // 
+            this.dataSequencer.AllowUserToAddRows = false;
+            this.dataSequencer.AllowUserToDeleteRows = false;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataSequencer.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            this.dataSequencer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataSequencer.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Joint,
+            this.motionType,
+            this.GoalPos,
+            this.Vel,
+            this.Tol,
+            this.motionDelay});
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataSequencer.DefaultCellStyle = dataGridViewCellStyle2;
+            this.dataSequencer.EnableHeadersVisualStyles = false;
+            this.dataSequencer.Location = new System.Drawing.Point(10, 90);
+            this.dataSequencer.Margin = new System.Windows.Forms.Padding(2);
+            this.dataSequencer.Name = "dataSequencer";
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataSequencer.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
+            this.dataSequencer.RowHeadersWidth = 45;
+            this.dataSequencer.RowTemplate.Height = 30;
+            this.dataSequencer.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataSequencer.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dataSequencer.Size = new System.Drawing.Size(556, 294);
+            this.dataSequencer.TabIndex = 23;
+            this.dataSequencer.CellValidating += new System.Windows.Forms.DataGridViewCellValidatingEventHandler(this.dataSequencer_CellValidating);
+            this.dataSequencer.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataSequencer_CellValueChanged);
+            // 
+            // Joint
+            // 
+            this.Joint.HeaderText = "Joint";
+            this.Joint.Items.AddRange(new object[] {
+            "Shoulder",
+            "Elbow",
+            "Wrist Rotate",
+            "Wrist Flex",
+            "Hand"});
+            this.Joint.Name = "Joint";
+            this.Joint.Width = 82;
+            // 
+            // motionType
+            // 
+            this.motionType.HeaderText = "Motion Type";
+            this.motionType.Items.AddRange(new object[] {
+            "Auto",
+            "User"});
+            this.motionType.Name = "motionType";
+            this.motionType.Width = 82;
+            // 
+            // GoalPos
+            // 
+            this.GoalPos.HeaderText = "Position";
+            this.GoalPos.Name = "GoalPos";
+            this.GoalPos.Width = 82;
+            // 
+            // Vel
+            // 
+            this.Vel.HeaderText = "Velocity";
+            this.Vel.Name = "Vel";
+            this.Vel.Width = 82;
+            // 
+            // Tol
+            // 
+            this.Tol.HeaderText = "Tolerance";
+            this.Tol.Name = "Tol";
+            this.Tol.Width = 82;
+            // 
+            // motionDelay
+            // 
+            this.motionDelay.HeaderText = "Delay (ms)";
+            this.motionDelay.Name = "motionDelay";
+            this.motionDelay.Width = 82;
+            // 
+            // buttonLoadSeq
+            // 
+            this.buttonLoadSeq.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonLoadSeq.Location = new System.Drawing.Point(593, 132);
+            this.buttonLoadSeq.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonLoadSeq.Name = "buttonLoadSeq";
+            this.buttonLoadSeq.Size = new System.Drawing.Size(106, 23);
+            this.buttonLoadSeq.TabIndex = 21;
+            this.buttonLoadSeq.Text = "Load Sequence";
+            this.buttonLoadSeq.UseVisualStyleBackColor = true;
+            this.buttonLoadSeq.Click += new System.EventHandler(this.buttonLoadSeq_Click);
+            // 
+            // buttonSaveSeq
+            // 
+            this.buttonSaveSeq.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonSaveSeq.Location = new System.Drawing.Point(593, 90);
+            this.buttonSaveSeq.Margin = new System.Windows.Forms.Padding(2);
+            this.buttonSaveSeq.Name = "buttonSaveSeq";
+            this.buttonSaveSeq.Size = new System.Drawing.Size(106, 23);
+            this.buttonSaveSeq.TabIndex = 22;
+            this.buttonSaveSeq.Text = "Save Sequence";
+            this.buttonSaveSeq.UseVisualStyleBackColor = true;
+            this.buttonSaveSeq.Click += new System.EventHandler(this.buttonSaveSeq_Click);
             // 
             // tabViz
             // 
@@ -8518,54 +10612,6 @@
             this.serialHANDi.RtsEnable = true;
             this.serialHANDi.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialHANDi_DataReceived);
             // 
-            // doF6
-            // 
-            this.doF6.Location = new System.Drawing.Point(6, 512);
-            this.doF6.Margin = new System.Windows.Forms.Padding(4);
-            this.doF6.Name = "doF6";
-            this.doF6.Size = new System.Drawing.Size(649, 94);
-            this.doF6.TabIndex = 144;
-            // 
-            // doF5
-            // 
-            this.doF5.Location = new System.Drawing.Point(6, 412);
-            this.doF5.Margin = new System.Windows.Forms.Padding(4);
-            this.doF5.Name = "doF5";
-            this.doF5.Size = new System.Drawing.Size(649, 94);
-            this.doF5.TabIndex = 143;
-            // 
-            // doF4
-            // 
-            this.doF4.Location = new System.Drawing.Point(6, 312);
-            this.doF4.Margin = new System.Windows.Forms.Padding(4);
-            this.doF4.Name = "doF4";
-            this.doF4.Size = new System.Drawing.Size(649, 94);
-            this.doF4.TabIndex = 142;
-            // 
-            // doF3
-            // 
-            this.doF3.Location = new System.Drawing.Point(6, 212);
-            this.doF3.Margin = new System.Windows.Forms.Padding(4);
-            this.doF3.Name = "doF3";
-            this.doF3.Size = new System.Drawing.Size(649, 94);
-            this.doF3.TabIndex = 141;
-            // 
-            // doF2
-            // 
-            this.doF2.Location = new System.Drawing.Point(6, 115);
-            this.doF2.Margin = new System.Windows.Forms.Padding(4);
-            this.doF2.Name = "doF2";
-            this.doF2.Size = new System.Drawing.Size(649, 94);
-            this.doF2.TabIndex = 140;
-            // 
-            // doF1
-            // 
-            this.doF1.Location = new System.Drawing.Point(6, 18);
-            this.doF1.Margin = new System.Windows.Forms.Padding(4);
-            this.doF1.Name = "doF1";
-            this.doF1.Size = new System.Drawing.Size(649, 94);
-            this.doF1.TabIndex = 139;
-            // 
             // mainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -8579,9 +10625,11 @@
             this.KeyPreview = true;
             this.MaximumSize = new System.Drawing.Size(1200, 727);
             this.Name = "mainForm";
-            this.Text = "brachI/Oplexus - V1.5";
+            this.Text = "brachI/Oplexus - V2.0";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.mainForm_FormClosing);
             this.Load += new System.EventHandler(this.mainForm_Load);
+            this.Shown += new System.EventHandler(this.mainForm_Shown);
+            this.SizeChanged += new System.EventHandler(this.mainForm_SizeChanged);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.mainForm_KeyDown);
             this.MenuStrip1.ResumeLayout(false);
             this.MenuStrip1.PerformLayout();
@@ -8636,14 +10684,17 @@
             this.tabIO.ResumeLayout(false);
             this.tabIO.PerformLayout();
             this.groupBox9.ResumeLayout(false);
+            this.groupBoxVRBentoArmSetup.ResumeLayout(false);
+            this.groupBoxVRBentoArmSetup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).EndInit();
             this.groupBox21.ResumeLayout(false);
             this.groupBox21.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox13)).EndInit();
             this.tabMapping.ResumeLayout(false);
             this.TaskTimerGroupBox.ResumeLayout(false);
             this.TaskTimerGroupBox.PerformLayout();
-            this.groupBox16.ResumeLayout(false);
-            this.groupBox16.PerformLayout();
+            this.SequentialSwitchGroupBox.ResumeLayout(false);
+            this.SequentialSwitchGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.switchSmaxCtrl2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchSminCtrl2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.switchGainCtrl2)).EndInit();
@@ -8671,6 +10722,37 @@
             this.BentoAdaptGripBox.ResumeLayout(false);
             this.BentoAdaptGripBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BentoAdaptGripCtrl)).EndInit();
+            this.tabVirtualBento.ResumeLayout(false);
+            this.tabVirtualBento.PerformLayout();
+            this.groupBoxSimulationSettings.ResumeLayout(false);
+            this.groupBoxSimulationSettings.PerformLayout();
+            this.groupBoxVRJointLimits.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_vmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_vmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_hand_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_vmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_vmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristRotation_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_vmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_vmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_elbow_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_vmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_vmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_shoulder_pmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_vmax_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_vmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_pmin_ctrl)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VR_wristFlex_pmax_ctrl)).EndInit();
+            this.groupBoxVRSimulationFeedback.ResumeLayout(false);
+            this.groupBoxVRSimulationFeedback.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericFrameRate)).EndInit();
+            this.groupBoxTaskSettings.ResumeLayout(false);
+            this.groupBoxVRHeadsetSettings.ResumeLayout(false);
+            this.groupBoxVRHeadsetSettings.PerformLayout();
             this.tabHANDi.ResumeLayout(false);
             this.HANDiGroupBox.ResumeLayout(false);
             this.HANDiParamBox.ResumeLayout(false);
@@ -8700,6 +10782,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.D3_pmax_ctrl)).EndInit();
             this.HANDiFeedbackBox.ResumeLayout(false);
             this.HANDiFeedbackBox.PerformLayout();
+            this.tabSequencer.ResumeLayout(false);
+            this.groupBoxSequencer.ResumeLayout(false);
+            this.panelSequencerControls.ResumeLayout(false);
+            this.panelSequencerControls.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericIterationsSequencer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataSequencer)).EndInit();
             this.tabViz.ResumeLayout(false);
             this.udpGroupBox.ResumeLayout(false);
             this.ArduinoInputGroupBox.ResumeLayout(false);
@@ -8960,7 +11048,7 @@
         internal System.Windows.Forms.Label label162;
         internal System.Windows.Forms.Label label150;
         internal System.Windows.Forms.Label label146;
-        internal System.Windows.Forms.GroupBox groupBox16;
+        internal System.Windows.Forms.GroupBox SequentialSwitchGroupBox;
         internal System.Windows.Forms.Label label237;
         internal System.Windows.Forms.ComboBox switch5MappingBox;
         internal System.Windows.Forms.Label label238;
@@ -9321,6 +11409,129 @@
         private System.Windows.Forms.Panel TaskTimerPanel;
         private System.Windows.Forms.Button TaskTimerClose;
         private System.Windows.Forms.Button TaskTimerOpen;
+        private System.Windows.Forms.GroupBox groupBoxVRBentoArmSetup;
+        private System.Windows.Forms.Button VirtualBentoClearAll;
+        private System.Windows.Forms.Button VirtualBentoSelectAll;
+        private System.Windows.Forms.TextBox textVRBentoRXPort;
+        private System.Windows.Forms.Label unityRXPort;
+        private System.Windows.Forms.Label unityTXPort;
+        private System.Windows.Forms.Label unityIPaddr;
+        private System.Windows.Forms.TextBox textVRBentoTXPort;
+        private System.Windows.Forms.TextBox textVRBentoIPAddress;
+        private System.Windows.Forms.PictureBox pictureBox14;
+        private System.Windows.Forms.Button VirtualBentoDisconnect;
+        private System.Windows.Forms.Button VirtualBentoConnect;
+        private System.Windows.Forms.CheckedListBox VirtualBentoList;
+        private System.Windows.Forms.TabPage tabVirtualBento;
+        private System.Windows.Forms.GroupBox groupBoxVRSimulationFeedback;
+        internal System.Windows.Forms.Label labelVRHandLoad;
+        internal System.Windows.Forms.Label labelVRHandVelocity;
+        internal System.Windows.Forms.Label labelVRHandPosition;
+        internal System.Windows.Forms.Label labelVRWristRotateLoad;
+        internal System.Windows.Forms.Label labelVRWristRotateVelocity;
+        internal System.Windows.Forms.Label labelVRWristRotatePosition;
+        internal System.Windows.Forms.Label labelVRElbowLoad;
+        internal System.Windows.Forms.Label labelVRElbowVelocity;
+        internal System.Windows.Forms.Label labelVRElbowPosition;
+        internal System.Windows.Forms.Label labelVRShoulderLoad;
+        internal System.Windows.Forms.Label labelVRShoulderVelocity;
+        internal System.Windows.Forms.Label labelVRShoulderPosition;
+        internal System.Windows.Forms.Label labelVRArmLoadFeedback;
+        internal System.Windows.Forms.Label labelVRArmVelocityFeedback;
+        internal System.Windows.Forms.Label labelVRArmPositionFeedback;
+        internal System.Windows.Forms.Label labelVRWristFlexLoad;
+        internal System.Windows.Forms.Label labelVRWristFlexVelocity;
+        internal System.Windows.Forms.Label labelVRWristFlexPosition;
+        private System.Windows.Forms.GroupBox groupBoxVRHeadsetSettings;
+        private System.Windows.Forms.Label labelSelectHeadset;
+        private System.Windows.Forms.CheckBox checkBoxUseVRHeadset;
+        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.Button buttonLaunchVRSimulation;
+        private System.Windows.Forms.Button buttonApplyChangesToTask;
+        private System.Windows.Forms.Button buttonStartTask;
+        private System.Windows.Forms.GroupBox groupBoxTaskSettings;
+        private System.Windows.Forms.Button buttonAddCameraView;
+        private System.Windows.Forms.GroupBox groupBoxVRJointLimits;
+        internal System.Windows.Forms.NumericUpDown VR_hand_vmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_hand_vmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_hand_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_hand_pmax_ctrl;
+        internal System.Windows.Forms.Label labelHand;
+        internal System.Windows.Forms.NumericUpDown VR_wristRotation_vmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_wristRotation_vmin_ctrl;
+        internal System.Windows.Forms.Label labelWristRotation;
+        internal System.Windows.Forms.NumericUpDown VR_wristRotation_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_wristRotation_pmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_elbow_vmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_elbow_vmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_elbow_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_elbow_pmax_ctrl;
+        internal System.Windows.Forms.Label labelElbow;
+        internal System.Windows.Forms.NumericUpDown VR_shoulder_vmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_shoulder_vmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_shoulder_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_shoulder_pmax_ctrl;
+        internal System.Windows.Forms.Label labelShoulderRotation;
+        internal System.Windows.Forms.Label labelWrist;
+        internal System.Windows.Forms.NumericUpDown VR_wristFlex_vmax_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_wristFlex_vmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_wristFlex_pmin_ctrl;
+        internal System.Windows.Forms.NumericUpDown VR_wristFlex_pmax_ctrl;
+        internal System.Windows.Forms.Label labelPmin;
+        internal System.Windows.Forms.Label labelPmax;
+        internal System.Windows.Forms.Label labelVmin;
+        internal System.Windows.Forms.Label labelVmax;
+        private System.Windows.Forms.ListBox listBoxSelectCameraView;
+        private System.Windows.Forms.GroupBox groupBoxSimulationSettings;
+        private System.Windows.Forms.NumericUpDown numericFrameRate;
+        private System.Windows.Forms.Label labelSimulationSettingsInstructions;
+        private System.Windows.Forms.ComboBox comboBoxSelectTask;
+        private System.Windows.Forms.Label labelSelectTask;
+        private System.Windows.Forms.Label labelSelectEndEffector;
+        private System.Windows.Forms.Label labelFrameRate;
+        private System.Windows.Forms.ComboBox comboBoxSelectEndEffector;
+        private System.Windows.Forms.Button VirtualBentoRun;
+        private System.Windows.Forms.Button VirtualBentoSuspend;
+        private System.Windows.Forms.Button buttonDeleteCameraView;
+        private System.Windows.Forms.Button buttonSaveCameraView;
+        private System.Windows.Forms.ComboBox VirtualBentoDisplay;
+        internal System.Windows.Forms.Label label263;
+        private System.Windows.Forms.Button demoVirtualBentoButton;
+        private System.Windows.Forms.TabPage tabSequencer;
+        private System.Windows.Forms.GroupBox groupBoxSequencer;
+        private System.Windows.Forms.Button buttonEnableSequencer;
+        private System.Windows.Forms.Button buttonStopSequencer;
+        private System.Windows.Forms.Button buttonPlaySequencer;
+        private System.Windows.Forms.Panel panelSequencerControls;
+        private System.Windows.Forms.NumericUpDown numericIterationsSequencer;
+        private System.Windows.Forms.Label labelCount;
+        private System.Windows.Forms.Label labelSwitchingDelay;
+        private System.Windows.Forms.Label labelIterationCount;
+        private System.Windows.Forms.Button buttonClearSequencer;
+        private System.Windows.Forms.TextBox SwitchingDelaySequencer;
+        private System.Windows.Forms.Button buttonMoveDownSequencer;
+        private System.Windows.Forms.CheckBox checkboxRepeat;
+        private System.Windows.Forms.Button buttonMoveUpSequencer;
+        private System.Windows.Forms.CheckBox checkBoxLogData;
+        private System.Windows.Forms.Button buttonDelMovement;
+        private System.Windows.Forms.CheckBox checkBoxRepeatForever;
+        private System.Windows.Forms.Button buttonAddMovement;
+        private System.Windows.Forms.Label labelIterations;
+        private System.Windows.Forms.Label labelFilePath;
+        private System.Windows.Forms.Button buttonSelectPathSequencer;
+        private System.Windows.Forms.DataGridView dataSequencer;
+        private System.Windows.Forms.Button buttonLoadSeq;
+        private System.Windows.Forms.Button buttonSaveSeq;
+        private System.Windows.Forms.CheckBox KBcheckRightShift;
+        private System.Windows.Forms.CheckBox KBcheckLeftShift;
+        internal System.Windows.Forms.Label label266;
+        internal System.Windows.Forms.Label label267;
+        private System.Windows.Forms.DataGridViewComboBoxColumn Joint;
+        private System.Windows.Forms.DataGridViewComboBoxColumn motionType;
+        private System.Windows.Forms.DataGridViewTextBoxColumn GoalPos;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Vel;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Tol;
+        private System.Windows.Forms.DataGridViewTextBoxColumn motionDelay;
     }
 }
 

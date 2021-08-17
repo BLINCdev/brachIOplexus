@@ -37,6 +37,7 @@ using MyoSharp.Exceptions;              // for MyoSharp
 using Clifton.Collections.Generic;      // For simple moving average
 using Clifton.Tools.Data;               // For simple moving average
 using System.Windows.Input;
+using Shell32;
 
 namespace brachIOplexus
 {
@@ -44,10 +45,6 @@ namespace brachIOplexus
     {
 
         #region "Initialization"
-        // Create xPC Target parameter object for xPC Target/SLRT interface
-        int[] SLRT_ch = new int[8];
-        int SLRTflag = 0;   //  Used to cycle through which channels are being read each time step of the main loop (2 channels/time step), initialize to 0 when connecting to SLRT
-
         // Create TCP listener/client for biopatrec communication and initalize related variables
         TcpListener listener;
         TcpClient client;
@@ -73,11 +70,14 @@ namespace brachIOplexus
         // Properties for running the process are stored here
         private ProcessStartInfo procInfo = new ProcessStartInfo();
 
-        // Absolute path to the profiles used as part of the 'Open/Save Profiles' functionality
+        // Relative path to the profiles used as part of the 'Open/Save Profiles' functionality
         string ProfilesPath = @"Resources\Profiles";
 
         // Create a sound player for sequential switching feedback
         System.Media.SoundPlayer player = new System.Media.SoundPlayer();
+
+        // Create a variable for tracking the state of the GUI window to refresh and redraw it more quickly after being minimized
+        FormWindowState LastWindowState;
 
         // XInputDotNet - Initialize ReporterState for XBOX controller
         private ReporterState reporterState = new ReporterState();
@@ -109,12 +109,13 @@ namespace brachIOplexus
         bool myoBuzzFlag = false;
 
         // Keyboard - Initialize variables
-        const int KB_NUM = 15;                        // Number of keyboard keys that are available for mapping
+        const int KB_NUM = 17;                        // Number of keyboard keys that are available for mapping
         double[] KBvel = new double[KB_NUM];
 
-        // add stopwatch for tracking main loop delay
+        // Add stopwatch for tracking main loop delay
         Stopwatch stopWatch1 = new Stopwatch();
         long milliSec1;     // the timestep of the main loop in milliseconds -> will vary depending on how many dynamixel servos are connected
+        static IMovingAverage stopWatch1_avg = new SimpleMovingAverage(100);    // for simplemovingaverage filter
 
         // Quick Profiles - Initialize variables
         bool QuickProfileFlag = false;
@@ -123,7 +124,7 @@ namespace brachIOplexus
         // Auto-suspend - Initialize variables
         bool autosuspend_flag = false;
 
-        // serialArduinoInput - initialize variables for reading in strings over serial or bluetooth
+        // serialArduinoInput - Initialize variables for reading in strings over serial or bluetooth
         string RxString;
         char[] separatingChars = { 'A', 'B', 'C', 'D' };
         Stopwatch ArduinoStartTimer = new Stopwatch();
@@ -146,6 +147,79 @@ namespace brachIOplexus
 
         // Usage Log - Initialize Variables
         DateTime StartTime;
+
+        // Motion Sequencer - Initialize Variables
+        string SequencesPath = @"Resources\Sequences"; // relative path to the sequence files
+        bool MovSeqEnabled = false;
+        bool MovSeqPlay = false;
+        bool MovSeqStop = true;
+        bool MovSeqLogData = false;
+        bool MovSeqSwitch = false;
+        int numSwitches = 0;
+        long switchingDelay = 0;
+        Stopwatch switchingStopwatch = new Stopwatch();
+        Stopwatch postMotionStopwatch = new Stopwatch();
+        bool reachGoalPositionFlag = false;
+        List<List<int>> currentMovSeq;
+        int currentMoveIndex = 0;
+        int iterationCount = 0;
+        int numIterations;
+        StreamWriter movSeqDataFile;
+        string logDataFilePath;
+        int switchDoFbox_temp;
+        int switchModeBox_temp;
+        int switch1OutputBox_temp;
+        int switch2OutputBox_temp;
+        int switch3OutputBox_temp;
+        int switch4OutputBox_temp;
+        int switch5OutputBox_temp;
+
+        #region Virtual Bento Arm Environment Initialization
+
+        // Global variables for Virtual Bento
+        bool simulationRunning = false;
+        bool connectionEstablished = false;
+        bool useVRHeadset = false;
+        int VRShoulderPosition = 0;
+        float VRShoulderVelocity = 0;
+        int VRElbowPosition = 0;
+        float VRElbowVelocity = 0;
+        int VRWristRotatePosition = 0;
+        float VRWristRotateVelocity = 0;
+        int VRWristFlexPosition = 0;
+        float VRWristFlexVelocity = 0;
+        int VRHandPosition = 0;
+        float VRHandVelocity = 0;
+
+        // For sending communication to unity
+        System.Threading.Timer sendingThread;
+        UdpClient unityUdpClientTX;
+        IPEndPoint unityIPEndPointTX;
+
+        // For receiving communication from unity
+        //System.Threading.Timer receivingThread;
+        private Thread receivingThread = null;
+        UdpClient unityUdpClientRX;
+        IPEndPoint unityIPEndPointRX;
+
+        // Instantiate the simulation actually running
+        System.Diagnostics.Process simulation;
+
+        // Variables for camera views
+        string newCameraViewName;
+        string ChangeCameraView;    // can be set to to "add" to add a view or "save" to save a view
+        string newCameraView;
+        string cameraViewFilepath = @"Resources\VirtualBento\CameraViews.csv";
+        List<string[]> allCameraViews;
+        int SelectedCameraView;
+        int numDefaultCameraViews = 8;
+
+        // Paths to unity executable and zip file
+        string unityFilepath = @"Resources\VirtualBento\VirtualBento.exe";
+        string unityFolderPath = @"Resources\VirtualBento";
+        string unityZipFile = @"Resources\VirtualBento.zip";
+
+        #endregion
 
         #region "Dynamixel SDK Initilization"
         // DynamixelSDK
@@ -253,6 +327,7 @@ namespace brachIOplexus
 
         // Used as part of the auto suspend functionality (i.e. see run/suspend buttons on bento tab)
         bool bentoSuspend = false;
+        int bentoMode = 0;      // 0 = not connected, 1 = physical bento arm connected, 2 = virtual bento arm connected
 
         #endregion
 
@@ -374,8 +449,6 @@ namespace brachIOplexus
             public int wmax { get; set; }       // the maximum velocity of the motor
             public int w { get; set; }       // the goal velocity
             public int w_prev { get; set; }     // the previous velocity of the motor (not currently being used)
-
-
         }
 
         public class State
@@ -387,6 +460,7 @@ namespace brachIOplexus
             public long timer1 { get; set; }        // Counter used for co-contracting switching.
             public long timer2 { get; set; }        // 2nd counter used for co-contracting switching
             public int[] motorState = new int[BENTO_NUM + HANDI_NUM];   // The state of each motor (i.e. 0 = off, 1 = moving in cw direction, 2 = moving in ccw direction, 3 = hanging until co-contraction is finished).
+            public bool[] motorFlipped = new bool[BENTO_NUM + HANDI_NUM];   // Whether or not the motor direction has been flipped based on the default settings in the mapping tab
             // The indexing starts at 0, but some of the IDs are offset by 1 to reflect their actualy IDs on the dynamixel bus. For example shoulder is indexed at 0 in this object, but its ID on the bus is 1. Hand is indexed at 4, but its ID on the bus is 5.
             public State()
             {
@@ -394,6 +468,12 @@ namespace brachIOplexus
                 for (int i = 0; i < BENTO_NUM + HANDI_NUM; i++)
                 {
                     motorState[i] = new int();
+                }
+
+                motorFlipped = new bool[BENTO_NUM + HANDI_NUM];
+                for (int i = 0; i < BENTO_NUM + HANDI_NUM; i++)
+                {
+                    motorFlipped[i] = new bool();
                 }
             }
         }
@@ -434,6 +514,32 @@ namespace brachIOplexus
             public ushort tempf { get; set; }      // the current filtered temperature of the motor
         }
 
+        // Class LastMove stores the last movement of the arm for use by the motion sequencer
+        public class LastMove
+        {
+            public int ID { get; set; }        // The ID of the last joint that moved
+            public int pos { get; set; }       // The position of the last joint that moved
+            public int vel { get; set; }       // The maximum velocity of the last joint that moved
+
+            public void update(int jointID, int jointPos, int jointVel)
+            {
+                if (ID != jointID && jointVel > 0)
+                {
+                    vel = jointVel;    // reset maximum velocity if the joint being moved has changed
+                }
+
+                if (jointVel > 0)
+                {
+                    ID = jointID;
+                    pos = jointPos;
+                    if (jointVel > vel)
+                    {
+                        vel = jointVel;
+                    }
+                }
+            }
+        }
+
         // Initialize state, robot, and switching object
         State stateObj = new State();
         public const int DOF_NUM = 6;       // the number of DoF in the GUI
@@ -444,7 +550,7 @@ namespace brachIOplexus
         DoF_[] dofObj = new DoF_[DOF_NUM];
         int[] dofStop = new int[2] { -1, -1};   // Used to selectively stop a joint on a robot when changing the mapping via the input/output tab. The first indice is for type and the second is for ID and correspond to the values in the outputmap array in the mainloop. If set to -1 no stoppage will occur, but if set to other values then that joint will be stopped.
         RobotSensors BentoSense = new RobotSensors();
-
+        LastMove LastMovement = new LastMove();     // Used with the motion sequencer to determine the last movement
         #endregion
 
         public mainForm()
@@ -559,12 +665,23 @@ namespace brachIOplexus
 
             // Start pollingWorker! This is the main loop for reading in the keyboard/Xbox inputs and sending packets to the output devices.
             pollingWorker.RunWorkerAsync();
+
+            // Start in top left position of current screen
+            this.StartPosition = FormStartPosition.Manual;
+            var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+            Rectangle workingArea = screen.WorkingArea;     // this makes it go to the center of the active screen
+            this.Location = new Point()
+            {
+                X = Math.Max(workingArea.X, workingArea.X + (workingArea.Width - this.Width) / 2),
+                Y = Math.Max(workingArea.Y, workingArea.Y + (workingArea.Height - this.Height) / 2)
+            };
         }
 
         private void mainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
+
                 // Close simulator connection
                 socketClient.Close();
 
@@ -596,9 +713,16 @@ namespace brachIOplexus
                 pollingWorker.CancelAsync();
 
                 // Close port
-                if (BentoGroupBox.Enabled == true)
+                if (bentoMode == 1)
                 {
                     dynamixel.closePort(port_num);
+                }
+
+                // Close Virtual Bento if it is running
+
+                if (simulationRunning)
+                {
+                    simulation.CloseMainWindow();
                 }
 
                 // Write an entry into the usage log to track how much the program is being used
@@ -613,6 +737,24 @@ namespace brachIOplexus
             }
         }
 
+        private void mainForm_SizeChanged(object sender, EventArgs e)
+        {
+            // Manually calling the Refresh() command on mainForm causes the screen to redraw significantly faster when maximized or restored from being minimized
+            //FormWindowState LastWindowState = FormWindowState.Minimized;
+            //if (LastWindowState == FormWindowState.Minimized && (WindowState == FormWindowState.Maximized || WindowState == FormWindowState.Normal))
+            if (LastWindowState != WindowState)
+            {
+                this.Refresh();
+            }
+            LastWindowState = WindowState;
+        }
+
+        private void mainForm_Shown(object sender, EventArgs e)
+        {
+            // Manually calling the Refresh() command on mainForm causes the screen to redraw significantly faster when loading for the first time
+            this.Refresh();
+        }
+        
         // Helper function for figuring out the COM port associated with an Arduino wired to the computer with a USB cable
         private string AutodetectArduinoPort()
         {
@@ -754,6 +896,7 @@ namespace brachIOplexus
             }
 
             for (int i = 0; i <= (KBlist.Items.Count - 1); i++)
+            //for (int i = 0; i <= (KBlist.Items.Count - 3); i++) // TEMPORARY
             {
                 bool m = brInput.ReadBoolean();
                 if (m == true)
@@ -766,10 +909,10 @@ namespace brachIOplexus
                 }
             }
 
-            KBcheckRamp.Checked = brInput.ReadBoolean();
+            //KBcheckRamp.Checked = brInput.ReadBoolean();
 
-            biopatrecIPaddr.Text = brInput.ReadString();
-            biopatrecIPport.Text = brInput.ReadString();
+            //biopatrecIPaddr.Text = brInput.ReadString();
+            //biopatrecIPport.Text = brInput.ReadString();
 
             for (int i = 0; i <= (biopatrecList.Items.Count - 1); i++)
             {
@@ -836,6 +979,22 @@ namespace brachIOplexus
                 }
             }
 
+            for (int i = 0; i <= (VirtualBentoList.Items.Count - 1); i++)
+            {
+                bool m = brInput.ReadBoolean();
+                if (m == true)
+                {
+                    VirtualBentoList.SetItemCheckState(i, CheckState.Checked);
+                }
+                else
+                {
+                    VirtualBentoList.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+
+
+            //VirtualBentoDisplay.SelectedIndex = brInput.ReadInt32();
+
             for (int i = 0; i <= (HANDiList.Items.Count - 1); i++)
             {
                 bool m = brInput.ReadBoolean();
@@ -850,6 +1009,11 @@ namespace brachIOplexus
             }
 
             updateCheckedLists();
+
+            KBcheckRamp.Checked = brInput.ReadBoolean();
+            biopatrecIPaddr.Text = brInput.ReadString();
+            biopatrecIPport.Text = brInput.ReadString();
+            VirtualBentoDisplay.SelectedIndex = brInput.ReadInt32();
 
             doF1.channel1.inputBox.SelectedIndex = brInput.ReadInt32();
             doF1.channel1.outputBox.SelectedIndex = brInput.ReadInt32();
@@ -959,6 +1123,7 @@ namespace brachIOplexus
             myoBuzzBox.Checked = brInput.ReadBoolean();
             XboxBuzzBox.Checked = brInput.ReadBoolean();
 
+            // Bento Arm Tab
             shoulder_pmin_ctrl.Value = brInput.ReadDecimal();
             shoulder_pmax_ctrl.Value = brInput.ReadDecimal();
             shoulder_wmin_ctrl.Value = brInput.ReadDecimal();
@@ -987,6 +1152,36 @@ namespace brachIOplexus
             BentoAdaptGripCheck.Checked = brInput.ReadBoolean();
             BentoAdaptGripCtrl.Value = brInput.ReadDecimal();
 
+            // Virtual Bento Tab
+            comboBoxSelectTask.SelectedIndex = brInput.ReadInt32();
+            comboBoxSelectEndEffector.SelectedIndex = brInput.ReadInt32();
+
+            VR_shoulder_pmin_ctrl.Value = brInput.ReadDecimal();
+            VR_shoulder_pmax_ctrl.Value = brInput.ReadDecimal();
+            VR_shoulder_vmin_ctrl.Value = brInput.ReadDecimal();
+            VR_shoulder_vmax_ctrl.Value = brInput.ReadDecimal();
+
+            VR_elbow_pmin_ctrl.Value = brInput.ReadDecimal();
+            VR_elbow_pmax_ctrl.Value = brInput.ReadDecimal();
+            VR_elbow_vmin_ctrl.Value = brInput.ReadDecimal();
+            VR_elbow_vmax_ctrl.Value = brInput.ReadDecimal();
+
+            VR_wristRotation_pmin_ctrl.Value = brInput.ReadDecimal();
+            VR_wristRotation_pmax_ctrl.Value = brInput.ReadDecimal();
+            VR_wristRotation_vmin_ctrl.Value = brInput.ReadDecimal();
+            VR_wristRotation_vmax_ctrl.Value = brInput.ReadDecimal();
+
+            VR_wristFlex_pmin_ctrl.Value = brInput.ReadDecimal();
+            VR_wristFlex_pmax_ctrl.Value = brInput.ReadDecimal();
+            VR_wristFlex_vmin_ctrl.Value = brInput.ReadDecimal();
+            VR_wristFlex_vmax_ctrl.Value = brInput.ReadDecimal();
+
+            VR_hand_pmin_ctrl.Value = brInput.ReadDecimal();
+            VR_hand_pmax_ctrl.Value = brInput.ReadDecimal();
+            VR_hand_vmin_ctrl.Value = brInput.ReadDecimal();
+            VR_hand_vmax_ctrl.Value = brInput.ReadDecimal();
+
+            // HANDi Hand Tab
             D0_pmin_ctrl.Value = brInput.ReadDecimal();
             D0_pmax_ctrl.Value = brInput.ReadDecimal();
             D0_wmin_ctrl.Value = brInput.ReadDecimal();
@@ -1016,6 +1211,13 @@ namespace brachIOplexus
             D5_pmax_ctrl.Value = brInput.ReadDecimal();
             D5_wmin_ctrl.Value = brInput.ReadDecimal();
             D5_wmax_ctrl.Value = brInput.ReadDecimal();
+
+            // Motion Sequencer Tab
+            checkBoxRepeatForever.Checked = brInput.ReadBoolean();
+            checkboxRepeat.Checked = brInput.ReadBoolean();
+            numericIterationsSequencer.Value = brInput.ReadDecimal();
+            checkBoxLogData.Checked = brInput.ReadBoolean();
+            SwitchingDelaySequencer.Text = brInput.ReadString();
 
             //Close and dispose of file writing objects
             brInput.Close();
@@ -1047,6 +1249,9 @@ namespace brachIOplexus
             switch3Flip_CheckedChanged(null, null);
             switch4Flip_CheckedChanged(null, null);
             switch5Flip_CheckedChanged(null, null);
+            SwitchingDelaySequencer_Validated(null, null);
+            Bento_Joint_Limit_ValueChanged(null, null);
+            VR_Joint_Limit_ValueChanged(null, null);
 
             // Ensure that the active joint does not get stuck in its sequential switching hang state when switching between profiles
             if ((switchObj.List[stateObj.listPos].output - 1) >= 0)
@@ -1083,12 +1288,6 @@ namespace brachIOplexus
                 bwOutput.Write(Convert.ToBoolean(KBlist.GetItemCheckState(i)));
             }
 
-            bwOutput.Write(KBcheckRamp.Checked);
-
-            bwOutput.Write(biopatrecIPaddr.Text);
-
-            bwOutput.Write(biopatrecIPport.Text);
-
             for (int i = 0; i <= (biopatrecList.Items.Count - 1); i++)
             {
                 bwOutput.Write(Convert.ToBoolean(biopatrecList.GetItemCheckState(i)));
@@ -1114,10 +1313,20 @@ namespace brachIOplexus
                 bwOutput.Write(Convert.ToBoolean(BentoList.GetItemCheckState(i)));
             }
 
+            for (int i = 0; i <= (VirtualBentoList.Items.Count - 1); i++)
+            {
+                bwOutput.Write(Convert.ToBoolean(VirtualBentoList.GetItemCheckState(i)));
+            }
+
             for (int i = 0; i <= (HANDiList.Items.Count - 1); i++)
             {
                 bwOutput.Write(Convert.ToBoolean(HANDiList.GetItemCheckState(i)));
             }
+
+            bwOutput.Write(KBcheckRamp.Checked);
+            bwOutput.Write(biopatrecIPaddr.Text);
+            bwOutput.Write(biopatrecIPport.Text);
+            bwOutput.Write(VirtualBentoDisplay.SelectedIndex);
 
             bwOutput.Write(doF1.channel1.inputBox.SelectedIndex);
             bwOutput.Write(doF1.channel1.outputBox.SelectedIndex);
@@ -1227,6 +1436,7 @@ namespace brachIOplexus
             bwOutput.Write(myoBuzzBox.Checked);
             bwOutput.Write(XboxBuzzBox.Checked);
 
+            // Bento Arm Tab
             bwOutput.Write(shoulder_pmin_ctrl.Value);
             bwOutput.Write(shoulder_pmax_ctrl.Value);
             bwOutput.Write(shoulder_wmin_ctrl.Value);
@@ -1254,6 +1464,38 @@ namespace brachIOplexus
 
             bwOutput.Write(BentoAdaptGripCheck.Checked);
             bwOutput.Write(BentoAdaptGripCtrl.Value);
+
+
+            // Virtual Bento Tab
+            bwOutput.Write(comboBoxSelectTask.SelectedIndex);
+            bwOutput.Write(comboBoxSelectEndEffector.SelectedIndex);
+
+            bwOutput.Write(VR_shoulder_pmin_ctrl.Value);
+            bwOutput.Write(VR_shoulder_pmax_ctrl.Value);
+            bwOutput.Write(VR_shoulder_vmin_ctrl.Value);
+            bwOutput.Write(VR_shoulder_vmax_ctrl.Value);
+
+            bwOutput.Write(VR_elbow_pmin_ctrl.Value);
+            bwOutput.Write(VR_elbow_pmax_ctrl.Value);
+            bwOutput.Write(VR_elbow_vmin_ctrl.Value);
+            bwOutput.Write(VR_elbow_vmax_ctrl.Value);
+
+            bwOutput.Write(VR_wristRotation_pmin_ctrl.Value);
+            bwOutput.Write(VR_wristRotation_pmax_ctrl.Value);
+            bwOutput.Write(VR_wristRotation_vmin_ctrl.Value);
+            bwOutput.Write(VR_wristRotation_vmax_ctrl.Value);
+
+            bwOutput.Write(VR_wristFlex_pmin_ctrl.Value);
+            bwOutput.Write(VR_wristFlex_pmax_ctrl.Value);
+            bwOutput.Write(VR_wristFlex_vmin_ctrl.Value);
+            bwOutput.Write(VR_wristFlex_vmax_ctrl.Value);
+
+            bwOutput.Write(VR_hand_pmin_ctrl.Value);
+            bwOutput.Write(VR_hand_pmax_ctrl.Value);
+            bwOutput.Write(VR_hand_vmin_ctrl.Value);
+            bwOutput.Write(VR_hand_vmax_ctrl.Value);
+
+            // HANDi Hand Tab
 
             bwOutput.Write(D0_pmin_ctrl.Value);
             bwOutput.Write(D0_pmax_ctrl.Value);
@@ -1284,6 +1526,13 @@ namespace brachIOplexus
             bwOutput.Write(D5_pmax_ctrl.Value);
             bwOutput.Write(D5_wmin_ctrl.Value);
             bwOutput.Write(D5_wmax_ctrl.Value);
+
+            // Motion Sequencer Tab
+            bwOutput.Write(checkBoxRepeatForever.Checked);
+            bwOutput.Write(checkboxRepeat.Checked);
+            bwOutput.Write(numericIterationsSequencer.Value);
+            bwOutput.Write(checkBoxLogData.Checked);
+            bwOutput.Write(SwitchingDelaySequencer.Text);
 
             //Close and dispose of file writing objects
             bwOutput.Close();
@@ -1561,10 +1810,13 @@ namespace brachIOplexus
         // This is done to prevent controls from accidentally changing on the form when users are controlling the robot with the keyboard 
         private void mainForm_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (KBconnect.Enabled == false)
+            if (KBconnect.Enabled == false && bentoSuspend == false)
             {
                 //e.Handled = true;
-                e.SuppressKeyPress = true;
+                if (e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right)
+                {
+                    e.SuppressKeyPress = true;
+                }
             }
         }
 
@@ -1771,6 +2023,13 @@ namespace brachIOplexus
         // Connect to the dynamixel bus!
         private void dynaConnect_Click(object sender, EventArgs e)
         {
+
+            // Only allow one type of arm (physical or virtual) to be connected at time.
+            if (bentoMode == 2)
+            {
+                MessageBox.Show("Please disconnect from the Virtual Bento Arm before connecting to the Physical Bento Arm.");
+                return;
+            }
 
             // Added this code for the Task timer
             TaskTimerGroupBox.Enabled = true;
@@ -2080,6 +2339,8 @@ namespace brachIOplexus
                     dynaConnect.Enabled = false;
                     dynaDisconnect.Enabled = true;
                     BentoGroupBox.Enabled = true;
+                    bentoMode = 1;
+                    groupBoxSequencer.Enabled = true;
                     TorqueOn.Enabled = true;
                     TorqueOff.Enabled = false;
                     RobotParamBox.Enabled = true;
@@ -2092,6 +2353,8 @@ namespace brachIOplexus
                     BentoClearAll.Enabled = true;
                     dynaDisconnect.Focus();
 
+                    // Ensure that the joint limits are being applied from the numericupdown controls for the physical Bento Arm
+                    Bento_Joint_Limit_ValueChanged(null, null);
                 }
                 else
                 {
@@ -2107,7 +2370,6 @@ namespace brachIOplexus
 
         private void dynaDisconnect_Click(object sender, EventArgs e)
         {
-
             // Added this code for the Task timer
             TaskTimerGroupBox.Enabled = false;
 
@@ -2124,6 +2386,8 @@ namespace brachIOplexus
             dynaConnect.Enabled = true;
             dynaDisconnect.Enabled = false;
             BentoGroupBox.Enabled = false;
+            bentoMode = 0;
+            groupBoxSequencer.Enabled = false;
             TorqueOn.Enabled = true;
             TorqueOff.Enabled = false;
             moveCW.Enabled = false;
@@ -2324,13 +2588,21 @@ namespace brachIOplexus
         private void BentoRun_Click(object sender, EventArgs e)
         {
             // Connect inputs to the bento arm. This happens by default when the torque is turned on
-            if (TorqueOn.Enabled == false)
+            if ((TorqueOn.Enabled == false) || (bentoMode == 2))
             {
                 bentoSuspend = false;
                 BentoRun.Enabled = false;
                 BentoSuspend.Enabled = true;
                 BentoStatus.Text = "Torque On / Running";
                 BentoRunStatus.Text = "Suspend";
+
+                // initialize dynamixel velocities when going into the run state
+                // choose a relatively slow value in case the servo is outside of its normal range it will slowly move to the closest end limit
+                robotObj.Motor[0].w = 5;
+                robotObj.Motor[1].w = 5;
+                robotObj.Motor[2].w = 5;
+                robotObj.Motor[3].w = 5;
+                robotObj.Motor[4].w = 5;
             }
         }
 
@@ -2339,7 +2611,7 @@ namespace brachIOplexus
             // Disconnect inputs from the bento arm
             bentoSuspend = true;
 
-            if ((TorqueOn.Enabled == false && BentoGroupBox.Enabled == true) || (HANDiGroupBox.Enabled == true))
+            if ((TorqueOn.Enabled == false && bentoMode == 1) || (HANDiGroupBox.Enabled == true) || (bentoMode == 2))
             {
 
 
@@ -2372,135 +2644,6 @@ namespace brachIOplexus
                 BentoSuspend_Click(sender, e);
             }
         }
-
-        #region "Robotic Arm - Parameters"
-            // Control the robotic arm parameter values using the tagged block parameters from the xPC Target model
-            #region "Shoulder"
-            private void shoulder_pmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void shoulder_pmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void shoulder_wmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void shoulder_wmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-            #endregion
-            #region "Elbow"
-            private void elbow_pmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void elbow_pmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void elbow_wmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void elbow_wmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-            #endregion
-            #region "Wrist Rotate"
-            private void wristRot_pmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristRot_pmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristRot_wmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristRot_wmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-            #endregion
-            #region "Wrist Flex"
-            private void wristFlex_pmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristFlex_pmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristFlex_wmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void wristFlex_wmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-            #endregion
-            #region "Hand"
-            private void hand_pmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void hand_pmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void hand_wmin_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-
-            private void hand_wmax_ctrl_ValueChanged(object sender, EventArgs e)
-            {
-                // Auto-suspend the Bento Arm as soon as the control enters focus
-                InvokeOnClick(BentoSuspend, new EventArgs());
-            }
-            #endregion
-            #endregion
 
         private void writeDyna()
         {
@@ -2695,6 +2838,9 @@ namespace brachIOplexus
                 Temp1.Text = Convert.ToString(BentoSense.ID[0].tempf);
                 check_overheat(DXL1_ID, BentoSense.ID[0].temp);
                 check_overload(DXL1_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL1_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
+
+                int jointID = 0;
+                LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel - 1023));   // Keep track of last movement for the motion sequencer
             }
 
             // Get Dynamixel#2 present position value
@@ -2727,6 +2873,9 @@ namespace brachIOplexus
                 Temp2.Text = Convert.ToString(BentoSense.ID[1].tempf);
                 check_overheat(DXL2_ID, BentoSense.ID[1].temp);
                 check_overload(DXL2_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL2_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
+
+                int jointID = 1;
+                LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel - 1023));   // Keep track of last movement for the motion sequencer
             }
 
             // Get Dynamixel#3 present position value
@@ -2759,6 +2908,9 @@ namespace brachIOplexus
                 Temp3.Text = Convert.ToString(BentoSense.ID[2].tempf);
                 check_overheat(DXL3_ID, BentoSense.ID[2].temp);
                 check_overload(DXL3_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL3_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
+
+                int jointID = 2;
+                LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel - 1023));   // Keep track of last movement for the motion sequencer
             }
 
             // Get Dynamixel#4 present position value
@@ -2791,6 +2943,9 @@ namespace brachIOplexus
                 Temp4.Text = Convert.ToString(BentoSense.ID[3].tempf);
                 check_overheat(DXL4_ID, BentoSense.ID[3].temp);
                 check_overload(DXL4_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL4_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
+
+                int jointID = 3;
+                LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel - 1023));   // Keep track of last movement for the motion sequencer
             }
             // Get Dynamixel#5 present position value
             // If apply load in CCW direction load value is positive
@@ -2803,7 +2958,7 @@ namespace brachIOplexus
                 BentoSense.ID[4].volt = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_VOLTAGE, LEN_MX_PRESENT_VOLTAGE);
                 BentoSense.ID[4].temp = (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_PRESENT_TEMP, LEN_MX_PRESENT_TEMP);
 
-                ID5_present_load = BentoSense.ID[4].load - 1023;
+                ID5_present_load = BentoSense.ID[4].load;
                 ID5_present_position = BentoSense.ID[4].pos;
                 robotObj.Motor[4].p_prev = ID5_present_position;
 
@@ -2824,6 +2979,8 @@ namespace brachIOplexus
                 check_overheat(DXL5_ID, BentoSense.ID[4].temp);
                 check_overload(DXL5_ID, (UInt16)dynamixel.groupBulkReadGetData(read_group_num, DXL5_ID, ADDR_MX_TORQUE_LIMIT, LEN_MX_TORQUE_LIMIT));
 
+                int jointID = 4;
+                LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel - 1023));   // Keep track of last movement for the motion sequencer
             }
 
             if (BentoOverloadError == 0 && BentoOverheatError == 0)
@@ -2963,6 +3120,40 @@ namespace brachIOplexus
             return null;
         }
 
+        private void Bento_Joint_Limit_ValueChanged(object sender, EventArgs e)
+        {
+            if (bentoMode == 1)
+            {
+                //// Auto-suspend the Bento Arm as soon as the control enters focus
+                InvokeOnClick(BentoSuspend, new EventArgs());
+
+                robotObj.Motor[0].pmin = Convert.ToInt32(shoulder_pmin_ctrl.Value);
+                robotObj.Motor[0].pmax = Convert.ToInt32(shoulder_pmax_ctrl.Value);
+                robotObj.Motor[0].wmin = Convert.ToInt32(shoulder_wmin_ctrl.Value);
+                robotObj.Motor[0].wmax = Convert.ToInt32(shoulder_wmax_ctrl.Value);
+
+                robotObj.Motor[1].pmin = Convert.ToInt32(elbow_pmin_ctrl.Value);
+                robotObj.Motor[1].pmax = Convert.ToInt32(elbow_pmax_ctrl.Value);
+                robotObj.Motor[1].wmin = Convert.ToInt32(elbow_wmin_ctrl.Value);
+                robotObj.Motor[1].wmax = Convert.ToInt32(elbow_wmax_ctrl.Value);
+
+                robotObj.Motor[2].pmin = Convert.ToInt32(wristRot_pmin_ctrl.Value);
+                robotObj.Motor[2].pmax = Convert.ToInt32(wristRot_pmax_ctrl.Value);
+                robotObj.Motor[2].wmin = Convert.ToInt32(wristRot_wmin_ctrl.Value);
+                robotObj.Motor[2].wmax = Convert.ToInt32(wristRot_wmax_ctrl.Value);
+
+                robotObj.Motor[3].pmin = Convert.ToInt32(wristFlex_pmin_ctrl.Value);
+                robotObj.Motor[3].pmax = Convert.ToInt32(wristFlex_pmax_ctrl.Value);
+                robotObj.Motor[3].wmin = Convert.ToInt32(wristFlex_wmin_ctrl.Value);
+                robotObj.Motor[3].wmax = Convert.ToInt32(wristFlex_wmax_ctrl.Value);
+
+                robotObj.Motor[4].pmin = Convert.ToInt32(hand_pmin_ctrl.Value);
+                robotObj.Motor[4].pmax = Convert.ToInt32(hand_pmax_ctrl.Value);
+                robotObj.Motor[4].wmin = Convert.ToInt32(hand_wmin_ctrl.Value);
+                robotObj.Motor[4].wmax = Convert.ToInt32(hand_wmax_ctrl.Value);
+            }
+        }
+
         #region "Bento Joint Limit Profiles"
         private void BentoProfileSave_Click(object sender, EventArgs e)
         {
@@ -3087,6 +3278,1146 @@ namespace brachIOplexus
             brInput.Close();
             fsInput.Close();
             fsInput.Dispose();
+        }
+
+        #endregion
+
+        #endregion
+
+        #region "Virtual Bento Arm Environment"
+
+        #region "Handle UI elements"
+
+        private void buttonVRBentoArmConnect_Click(object sender, EventArgs e)
+        {
+            // Only allow one type of arm (physical or virtual) to be connected at time.
+            if (bentoMode == 1)
+            {
+                MessageBox.Show("Please disconnect from the Physical Bento Arm before connecting to the Virtual Bento Arm.");
+                return;
+            }
+
+            // Extract VirtualBento.zip to Resources\VirtualBento if the extracted folder does not already exist
+            // This is a method of packaging the VirtualBento unity project with brachI/Oplexus that does not cause reference conflicts with the clickonce installer
+            // It will only run the first time that someone launches the Virtual Bento Arm
+            if (!Directory.Exists(unityFolderPath))
+            {
+                if (MessageBox.Show("The Virtual Bento Arm is not yet installed on this system. \n\nClick ‘OK’ to install and launch the Virtual Bento Arm.", "Virtual Bento Arm Installation", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                {
+                    UnZip(unityZipFile, unityFolderPath);
+                }
+                else
+                {
+                    return;
+                }
+                
+            }
+
+            VirtualBentoConnect.Enabled = false;
+            VirtualBentoDisconnect.Enabled = true;
+            groupBoxVRJointLimits.Enabled = true;
+            VirtualBentoList.Enabled = true;
+            VirtualBentoSelectAll.Enabled = true;
+            VirtualBentoClearAll.Enabled = true;
+            bentoMode = 2;
+            groupBoxSequencer.Enabled = true;
+
+            // Enable/disable controls for Run/Suspend functionality
+            VirtualBentoRun.Enabled = false;
+            VirtualBentoSuspend.Enabled = true;
+            BentoRun_Click(sender, e);
+            BentoRunStatus.Enabled = true;
+
+            // Added this code for the Task timer
+            TaskTimerGroupBox.Enabled = true;
+            for (int i = 0; i <= BENTO_NUM - 1; i++)
+            {
+                BentoSense.ID[i].pos = 2048;
+                BentoSense.ID[i].vel = 1023;    // initialize velocity and load values to 1023, so that unconnected devices appear to have "0" velocity and loads in the GUI and in the surprise demo
+                BentoSense.ID[i].load = 1023;
+            }
+
+            // Configure
+            loadCameraViews();
+            setSimulationDefaults();
+
+            // Launch the unity window
+            startSimulation();
+
+            // Ensure that the joint limits are being applied from the numericupdown controls for the Virtual Bento Arm
+            VR_Joint_Limit_ValueChanged(null, null);
+
+        }
+
+        private void buttonVRBentoArmDisconnect_Click(object sender, EventArgs e)
+        {
+            if (simulationRunning)
+            {
+                simulation.Kill();      // Close the unity window
+                endSimulation();
+            }
+
+            VirtualBentoDisconnect.Enabled = false;
+            VirtualBentoConnect.Enabled = true;
+            groupBoxVRJointLimits.Enabled = false;
+            VirtualBentoList.Enabled = false;
+            VirtualBentoSelectAll.Enabled = false;
+            VirtualBentoClearAll.Enabled = false;
+            bentoMode = 0;
+            groupBoxSequencer.Enabled = false;
+
+            // Enable/disable controls for Run/Suspend functionality
+            VirtualBentoRun.Enabled = true;
+            VirtualBentoSuspend.Enabled = false;
+            BentoSuspend_Click(sender, e);
+            BentoRunStatus.Enabled = false;
+            BentoStatus.Text = "Disconnected";
+        }
+
+        private void VirtualBentoSelectAll_Click(object sender, EventArgs e)
+        {
+            // Select all of the items in the checkedListBox
+            for (int i = 0; i < VirtualBentoList.Items.Count; i++)
+            {
+                VirtualBentoList.SetItemChecked(i, true);
+
+            }
+        }
+
+        private void VirtualBentoClearAll_Click(object sender, EventArgs e)
+        {
+            // Unselect all of the items in the checkedListBox
+            for (int i = 0; i < BentoList.Items.Count; i++)
+            {
+                VirtualBentoList.SetItemChecked(i, false);
+            }
+        }
+
+        // Start the simulation if it is not already running
+        private void buttonLaunchVRSimulation_Click(object sender, EventArgs e)
+        {
+            if (!simulationRunning)
+            {
+                startSimulation();
+            }
+            else
+            {
+                simulation.Kill();
+                endSimulation();
+            }
+        }
+
+        // Send updates to unity when the apply changes button is clicked
+        // The button has been hidden in the lastest versions in favor of automatically sending the updates to Unity when changing joint limits or camera views
+        private void buttonApplyChangesToTask_Click(object sender, EventArgs e)
+        {
+            sendUpdatesToUnity();
+        }
+
+        // Start the selected task
+        private void buttonStartTask_Click(object sender, EventArgs e)
+        {
+            loadScene();
+        }
+
+        // Change the Virtual Bento Arm to the 'Run' state and allow the virtual arm to move
+        private void VirtualBentoRun_Click(object sender, EventArgs e)
+        {
+            VirtualBentoRun.Enabled = false;
+            VirtualBentoSuspend.Enabled = true;
+            BentoRun_Click(sender, e);
+        }
+
+        // Change the Virtual Bento Arm to the 'Suspend' state and stop it from moving
+        private void VirtualBentoSuspend_Click(object sender, EventArgs e)
+        {
+            VirtualBentoRun.Enabled = true;
+            VirtualBentoSuspend.Enabled = false;
+            BentoSuspend_Click(sender, e);
+        }
+
+        // Make it so the camera view changes automatically every time the user selects a new view in the listbox
+        private void listBoxSelectCameraView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (simulationRunning)
+            {
+                sendUpdatesToUnity();
+            }
+        }
+
+        // Add a new view to the camera listbox
+        private void buttonAddCameraView_Click(object sender, EventArgs e)
+        {
+            string cameraViewName = "CustomView1";
+            if (ShowSaveCameraDialog(ref cameraViewName) == DialogResult.OK)
+            {
+                sendRequestToUnity();
+                newCameraViewName = cameraViewName;
+                ChangeCameraView = "add";
+            }
+        }
+
+        // Save/Update an existing view in the camera listbox
+        private void buttonSaveCameraView_Click(object sender, EventArgs e)
+        {
+            if (SelectedCameraView <= numDefaultCameraViews - 1)
+            {
+                MessageBox.Show("Default camera views cannot be saved or updated. Only custom views can be saved or updated.");
+                return;
+            }
+            sendRequestToUnity();
+            newCameraViewName = listBoxSelectCameraView.SelectedItem.ToString();
+            ChangeCameraView = "save";
+        }
+
+        // Delete an existing view in the camera listbox
+        private void buttonDeleteCameraView_Click(object sender, EventArgs e)
+        {
+            if (SelectedCameraView <= numDefaultCameraViews - 1)
+            {
+                MessageBox.Show("Default camera views cannot be deleted. Only custom views can be deleted.");
+                return;
+            }
+            // Load all saved camera views from file
+            allCameraViews = new List<string[]>();
+            using (StreamReader reader = new StreamReader(cameraViewFilepath))
+            {
+                string currentline;
+                int numLines = 0;
+
+                // For each line write the name of the camera view to the camera view list
+                while ((currentline = reader.ReadLine()) != null)
+                {
+                    if (numLines == SelectedCameraView)
+                    {
+                        // Don't add the line that we want to delete
+                    }
+                    else
+                    {
+                        string[] cameraView = currentline.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                        allCameraViews.Add(cameraView);
+                    }
+                    numLines++;
+                }
+                reader.Close();
+            }
+            using (StreamWriter cameraFile = new StreamWriter(cameraViewFilepath, false))
+            {
+                for (int i = 0; i < allCameraViews.Count; i++)
+                {
+                    cameraFile.WriteLine(String.Join(",", allCameraViews[i]));
+                }
+                cameraFile.Close();
+            }
+            // Refresh the camera views on UI and select the new camera view
+            this.BeginInvoke(new MethodInvoker(delegate
+            {
+                loadCameraViews();
+                listBoxSelectCameraView.SelectedIndex = SelectedCameraView-1;
+            }));
+        }
+
+        // Automatically update the joint limits for the virtual bento whenever someone changes the value of one of the joint limit numeric up down controls in groupBoxVRJointLimits
+        private void VR_Joint_Limit_ValueChanged(object sender, EventArgs e)
+        {
+            if (bentoMode == 2)
+            {
+                robotObj.Motor[0].pmin = Convert.ToInt32(VR_shoulder_pmin_ctrl.Value);
+                robotObj.Motor[0].pmax = Convert.ToInt32(VR_shoulder_pmax_ctrl.Value);
+                robotObj.Motor[0].wmin = Convert.ToInt32(VR_shoulder_vmin_ctrl.Value);
+                robotObj.Motor[0].wmax = Convert.ToInt32(VR_shoulder_vmax_ctrl.Value);
+
+                robotObj.Motor[1].pmin = Convert.ToInt32(VR_elbow_pmin_ctrl.Value);
+                robotObj.Motor[1].pmax = Convert.ToInt32(VR_elbow_pmax_ctrl.Value);
+                robotObj.Motor[1].wmin = Convert.ToInt32(VR_elbow_vmin_ctrl.Value);
+                robotObj.Motor[1].wmax = Convert.ToInt32(VR_elbow_vmax_ctrl.Value);
+
+                robotObj.Motor[2].pmin = Convert.ToInt32(VR_wristRotation_pmin_ctrl.Value);
+                robotObj.Motor[2].pmax = Convert.ToInt32(VR_wristRotation_pmax_ctrl.Value);
+                robotObj.Motor[2].wmin = Convert.ToInt32(VR_wristRotation_vmin_ctrl.Value);
+                robotObj.Motor[2].wmax = Convert.ToInt32(VR_wristRotation_vmax_ctrl.Value);
+
+                robotObj.Motor[3].pmin = Convert.ToInt32(VR_wristFlex_pmin_ctrl.Value);
+                robotObj.Motor[3].pmax = Convert.ToInt32(VR_wristFlex_pmax_ctrl.Value);
+                robotObj.Motor[3].wmin = Convert.ToInt32(VR_wristFlex_vmin_ctrl.Value);
+                robotObj.Motor[3].wmax = Convert.ToInt32(VR_wristFlex_vmax_ctrl.Value);
+
+                robotObj.Motor[4].pmin = Convert.ToInt32(VR_hand_pmin_ctrl.Value);
+                robotObj.Motor[4].pmax = Convert.ToInt32(VR_hand_pmax_ctrl.Value);
+                robotObj.Motor[4].wmin = Convert.ToInt32(VR_hand_vmin_ctrl.Value);
+                robotObj.Motor[4].wmax = Convert.ToInt32(VR_hand_vmax_ctrl.Value);
+            }
+
+            if (simulationRunning)
+            {
+                sendUpdatesToUnity();
+            }
+        }
+
+        // Unzip files using Shell32
+        // Reference: https://www.fluxbytes.com/csharp/unzipping-files-using-shell32-in-c/
+        public static void UnZip(string zipFile, string folderPath)
+        {
+            try
+            {
+                if (!File.Exists(zipFile))
+                    throw new FileNotFoundException();
+
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
+
+                // The shell object needs to have the absolute path of the folder and zipFile, so we use the GetFullPath() method to convert the relative path to an absolute path
+                Shell32.Shell objShell = new Shell32.Shell();
+                Shell32.Folder destinationFolder = objShell.NameSpace(System.IO.Path.GetFullPath(folderPath));
+                Shell32.Folder sourceFile = objShell.NameSpace(System.IO.Path.GetFullPath(zipFile));
+
+                foreach (var file in sourceFile.Items())
+                {
+                    destinationFolder.CopyHere(file, 16);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+        }
+
+        #endregion
+
+        #region "Configuring the simulation"
+
+        // Define the default settings for the simulation if user has not yet selected any tasks, cameras, or end effectors
+        private void setSimulationDefaults()
+        {
+            try
+            {
+                // If no task is currently selected, select the first task in the list by default
+                if (comboBoxSelectTask.SelectedItem == null)
+                {
+                    comboBoxSelectTask.SelectedIndex = 0;
+                }
+
+                // If no end effector is currently selected, select the first end effector in the list by default
+                if (comboBoxSelectEndEffector.SelectedItem == null)
+                {
+                    comboBoxSelectEndEffector.SelectedIndex = 0;
+                }
+
+                // If no camera view is currently selected, select the first camera view in the list by default
+                if (listBoxSelectCameraView.SelectedItem == null)
+                {
+                    listBoxSelectCameraView.SelectedIndex = 0;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        // Set the joint limits in the virtual bento arm tab to be the same as in the tab for they physical bento arm
+        // This function is deprecated and will be removed in a future release.
+        private void setJointLimits()
+        {
+            VR_shoulder_pmin_ctrl.Value = shoulder_pmin_ctrl.Value;
+            VR_shoulder_pmax_ctrl.Value = shoulder_pmax_ctrl.Value;
+            VR_shoulder_vmin_ctrl.Value = shoulder_wmin_ctrl.Value;
+            VR_shoulder_vmax_ctrl.Value = shoulder_wmax_ctrl.Value;
+
+            VR_elbow_pmin_ctrl.Value = elbow_pmin_ctrl.Value;
+            VR_elbow_pmax_ctrl.Value = elbow_pmax_ctrl.Value;
+            VR_elbow_vmin_ctrl.Value = elbow_wmin_ctrl.Value;
+            VR_elbow_vmax_ctrl.Value = elbow_wmax_ctrl.Value;
+
+            VR_wristRotation_pmin_ctrl.Value = wristRot_pmin_ctrl.Value;
+            VR_wristRotation_pmax_ctrl.Value = wristRot_pmax_ctrl.Value;
+            VR_wristRotation_vmin_ctrl.Value = wristRot_wmin_ctrl.Value;
+            VR_wristRotation_vmax_ctrl.Value = wristRot_wmax_ctrl.Value;
+
+            VR_wristFlex_pmin_ctrl.Value = wristFlex_pmin_ctrl.Value;
+            VR_wristFlex_pmax_ctrl.Value = wristFlex_pmax_ctrl.Value;
+            VR_wristFlex_vmin_ctrl.Value = wristFlex_wmin_ctrl.Value;
+            VR_wristFlex_vmax_ctrl.Value = wristFlex_wmax_ctrl.Value;
+
+            VR_hand_pmin_ctrl.Value = hand_pmin_ctrl.Value;
+            VR_hand_pmax_ctrl.Value = hand_pmax_ctrl.Value;
+            VR_hand_vmin_ctrl.Value = hand_wmin_ctrl.Value;
+            VR_hand_vmax_ctrl.Value = hand_wmax_ctrl.Value;
+        }
+
+        private void loadCameraViews()
+        {
+            try
+            {
+                // Load all saved camera views from file
+                allCameraViews = new List<string[]>();
+                listBoxSelectCameraView.Items.Clear();
+                using (StreamReader reader = new StreamReader(cameraViewFilepath))
+                {
+                    string currentline;
+                    // For each line write the name of the camera view to the camera view list
+                    // Also refresh the list of camera views we have saved
+                    while ((currentline = reader.ReadLine()) != null)
+                    {
+                        string[] cameraView = currentline.Split(',');
+                        allCameraViews.Add(cameraView);
+                        listBoxSelectCameraView.Items.Add(cameraView[0]);
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        #endregion
+
+        #region "Running the simulation"
+        
+        // Launch the Unity Window, start communication, and enable the corresponding controls in the GUI
+        private void startSimulation()
+        {
+            simulationRunning = true;
+            buttonLaunchVRSimulation.Text = "End Simulation";
+            buttonStartTask.Enabled = true;
+            buttonApplyChangesToTask.Enabled = true;
+            buttonAddCameraView.Enabled = true;
+            buttonSaveCameraView.Enabled = true;
+            buttonDeleteCameraView.Enabled = true;
+            groupBoxSimulationSettings.Enabled = true;
+            groupBoxTaskSettings.Enabled = true;
+            groupBoxVRSimulationFeedback.Enabled = true;
+
+            launchUnity();
+            startCommunication();
+        }
+
+        // Close the Unity window, stop communication, and disable the corresponding controls in the GUI
+        private void endSimulation()
+        {
+            stopCommunication();
+            clearFeedback();
+
+            simulationRunning = false;
+            buttonLaunchVRSimulation.Text = "Launch Simulation";
+            VirtualBentoConnect.Enabled = true;
+            VirtualBentoDisconnect.Enabled = false;
+            bentoMode = 0;
+            buttonStartTask.Enabled = false;
+            buttonApplyChangesToTask.Enabled = false;
+            buttonAddCameraView.Enabled = false;
+            buttonSaveCameraView.Enabled = false;
+            buttonDeleteCameraView.Enabled = false;
+            groupBoxSimulationSettings.Enabled = false;
+            groupBoxVRJointLimits.Enabled = false;
+            groupBoxTaskSettings.Enabled = false;
+            groupBoxVRSimulationFeedback.Enabled = false;
+        }
+
+        // Launch the Unity Window
+        private void launchUnity()
+        {
+            try
+            {
+                simulation = new System.Diagnostics.Process();
+                simulation.StartInfo.FileName = unityFilepath;
+                simulation.EnableRaisingEvents = true;
+                simulation.Exited += new EventHandler(onUnityExit);
+                simulation.Start();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        // Close the Unity Window
+        private void onUnityExit(object sender, EventArgs e)
+        {
+            try
+            {
+                if (simulationRunning)
+                {
+                    this.BeginInvoke(new MethodInvoker(delegate
+                    {
+                        endSimulation();
+
+                        // Disable the motion sequencer if the user closes unity
+                        MovSeqEnabled = true;  
+                        InvokeOnClick(buttonEnableSequencer, new EventArgs());
+                        groupBoxSequencer.Enabled = false;
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        // Clear the joint feedback on the GUI when no longer connected to the Unity window
+        private void clearFeedback()
+        {
+            labelVRShoulderPosition.Text = "--";
+            labelVRShoulderVelocity.Text = "--";
+            labelVRElbowPosition.Text = "--";
+            labelVRElbowVelocity.Text = "--";
+            labelVRWristRotatePosition.Text = "--";
+            labelVRWristRotateVelocity.Text = "--";
+            labelVRWristFlexPosition.Text = "--";
+            labelVRWristFlexVelocity.Text = "--";
+            labelVRHandPosition.Text = "--";
+            labelVRHandVelocity.Text = "--";
+        }
+        #endregion
+
+        #region "Communication with unity"
+        private void startCommunication()
+        {
+            if (!connectionEstablished)
+            {
+                // Get address and ports from GUI
+                IPAddress simulationIPAddress = IPAddress.Parse(textVRBentoIPAddress.Text);
+                int simulationPortTX = Convert.ToInt32(textVRBentoTXPort.Text);
+                int simulationPortRX = Convert.ToInt32(textVRBentoRXPort.Text);
+
+                // Initiate client for sending communication
+                unityUdpClientTX = new UdpClient();
+                unityIPEndPointTX = new IPEndPoint(simulationIPAddress, simulationPortTX);
+
+                // Initiate client for receiving communication
+                unityUdpClientRX = new UdpClient(simulationPortRX);
+                unityIPEndPointRX = new IPEndPoint(simulationIPAddress, simulationPortRX);
+
+                // Start threads for background communication
+                sendingThread = new System.Threading.Timer(new TimerCallback(sendInfo), null, 0, 15);
+                receivingThread = new Thread(receiveInfo);
+                receivingThread.IsBackground = true;
+                receivingThread.Start();
+
+                connectionEstablished = true;
+                sendUpdatesToUnity();
+            }
+
+            else
+            {
+                // Connection is already established, just restart the timer
+                sendingThread.Change(0, 15);
+            }
+        }
+
+        private void sendInfo(object state)
+        {
+            // Continuously sends control packet to Unity
+            try
+            {
+                byte[] packet = buildControlPacket();
+
+                unityUdpClientTX.Send(packet, packet.Length, unityIPEndPointTX);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+        }
+
+        private void receiveInfo(object state)
+        {
+            while (true)
+            {
+                byte[] packet = unityUdpClientRX.Receive(ref unityIPEndPointRX);
+                // Continuously receives feedback packet from Unity
+                try
+                {
+                    parseUnityPacket(packet);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+            }
+        }
+
+        private void loadScene()
+        {
+            // Load selected scene in Unity
+            byte[] packet = buildScenePacket();
+            unityUdpClientTX.Send(packet, packet.Length, unityIPEndPointTX);
+        }
+
+        private void sendUpdatesToUnity()
+        {
+            // Send updated camera view and joint limits to Unity
+            byte[] packet = buildUpdatePacket();
+            unityUdpClientTX.Send(packet, packet.Length, unityIPEndPointTX);
+        }
+
+        private void sendRequestToUnity()
+        {
+            // PACKET TYPE: 3
+            // This is simply a request packet that prompts Unity to send the current camera positions
+            byte[] packet;
+
+            packet = new byte[4];
+            packet[0] = 255;                            // Header
+            packet[1] = 255;                            // Header
+            packet[2] = 3;                              // Type: 3
+
+            packet[3] = getCheckSum(packet);
+
+            unityUdpClientTX.Send(packet, packet.Length, unityIPEndPointTX);
+        }
+
+        // Stop the communication with the Unity window
+        private void stopCommunication()
+        {
+            sendingThread.Change(Timeout.Infinite, Timeout.Infinite);
+            //receivingThread.Abort();
+            //unityUdpClientRX.Close();
+        }
+        #endregion
+
+        #region "Building packets to send"
+        private byte[] buildUpdatePacket()
+        {
+            // PACKET TYPE: 2
+            // PACKET LENGTH: 43
+
+            // Header of the packet
+            byte[] packet;
+            byte length;
+            length = (byte)(3 * 6 + 4 * 5);
+            packet = new byte[5 + length];
+            packet[0] = 255;
+            packet[1] = 255;
+            packet[2] = 2;
+            packet[3] = length;
+
+            // First build the camera positions
+            int currentCameraViewIndex = listBoxSelectCameraView.SelectedIndex;
+            string[] currentCameraView = allCameraViews[currentCameraViewIndex];
+            int startIndex = 4;
+            for (int i = 0; i < 6; i++)
+            {
+                int pos = Convert.ToInt32(currentCameraView[i + 1]);
+                packet[startIndex] = low_byte((UInt16)Math.Abs(pos));
+                packet[startIndex + 1] = high_byte((UInt16)Math.Abs(pos));
+                if (pos >= 0)
+                {
+                    packet[startIndex + 2] = 1;
+                }
+                else
+                {
+                    packet[startIndex + 2] = 0;
+                }
+                startIndex += 3;
+            }
+
+            // Then build the joint limits as the remainder of the packet
+            packet[22] = low_byte((UInt16)VR_shoulder_pmin_ctrl.Value);
+            packet[23] = high_byte((UInt16)VR_shoulder_pmin_ctrl.Value);
+
+            packet[24] = low_byte((UInt16)VR_shoulder_pmax_ctrl.Value);
+            packet[25] = high_byte((UInt16)VR_shoulder_pmax_ctrl.Value);
+
+            packet[26] = low_byte((UInt16)VR_elbow_pmin_ctrl.Value);
+            packet[27] = high_byte((UInt16)VR_elbow_pmin_ctrl.Value);
+
+            packet[28] = low_byte((UInt16)VR_elbow_pmax_ctrl.Value);
+            packet[29] = high_byte((UInt16)VR_elbow_pmax_ctrl.Value);
+
+            packet[30] = low_byte((UInt16)VR_wristRotation_pmin_ctrl.Value);
+            packet[31] = high_byte((UInt16)VR_wristRotation_pmin_ctrl.Value);
+
+            packet[32] = low_byte((UInt16)VR_wristRotation_pmax_ctrl.Value);
+            packet[33] = high_byte((UInt16)VR_wristRotation_pmax_ctrl.Value);
+
+            packet[34] = low_byte((UInt16)VR_wristFlex_pmin_ctrl.Value);
+            packet[35] = high_byte((UInt16)VR_wristFlex_pmin_ctrl.Value);
+
+            packet[36] = low_byte((UInt16)VR_wristFlex_pmax_ctrl.Value);
+            packet[37] = high_byte((UInt16)VR_wristFlex_pmax_ctrl.Value);
+
+            packet[38] = low_byte((UInt16)VR_hand_pmin_ctrl.Value);
+            packet[39] = high_byte((UInt16)VR_hand_pmin_ctrl.Value);
+
+            packet[40] = low_byte((UInt16)VR_hand_pmax_ctrl.Value);
+            packet[41] = high_byte((UInt16)VR_hand_pmax_ctrl.Value);
+
+            packet[42] = getCheckSum(packet);
+
+            return packet;
+        }
+
+        private byte[] buildControlPacket()
+        {
+            // PACKET TYPE: 1
+            byte[] packet;
+            byte length = 0;
+            byte jointID;
+            //byte positionLowByte;
+            //byte positionHighByte;
+            byte velocityLowByte;
+            byte velocityHighByte;
+            byte motorState;
+
+            // Index of packet to start filling data 
+            int startIndex;
+            // How many pieces of data each motor contains
+            byte numData = 4;
+            // The joint currently selected by the switching list
+            int k = switchObj.List[stateObj.listPos].output - 1;
+
+            // Iterates through existing objects to see if any of the motors should be moving CW or CCW or stopping
+            for (int i = 0; i < BENTO_NUM; i++)
+            {
+                length++;
+            }
+
+            // Each motor will have 4 pieces of data associated with them 
+            length *= numData;
+
+            // Builds header of the packet 
+            packet = new byte[5 + length];
+            packet[0] = 255;
+            packet[1] = 255;
+            packet[2] = 1;
+            packet[3] = length;
+
+            // Starting index starts at 4 
+            startIndex = 4;
+            for (byte i = 0; i < BENTO_NUM; i++)
+            {
+                // In some cases the motor state needs to be flipped in order to work with the Virtual Bento Arm and Motion Sequencer
+                // This will be fixed in a future version of the Virtual Bento Arm, so the direction of rotation matches the physical Bento Arm
+                // If the motion sequencer is active and joints besides shoulder are not active in the sequential switching list
+                if (MovSeqPlay == true && i > 0 && i != k)
+                {
+                    if (stateObj.motorState[i] == 1 && stateObj.motorFlipped[i] == false)
+                    {
+                        motorState = (byte)2;
+                    }
+                    else if (stateObj.motorState[i] == 2 && stateObj.motorFlipped[i] == false)
+                    {
+                        motorState = (byte)1;
+                    }
+                    else
+                    {
+                        motorState = (byte)stateObj.motorState[i];
+                    }
+                }
+                // Flip the motor state if the motion sequencer is not active
+                else if (stateObj.motorState[i] == 1 && stateObj.motorFlipped[i] == false && MovSeqPlay == false)
+                {
+                    motorState = (byte)2;
+                }
+                // Flip the motor state if the motion sequencer is not active
+                else if (stateObj.motorState[i] == 2 && stateObj.motorFlipped[i] == false && MovSeqPlay == false)
+                {
+                    motorState = (byte)1;
+                }
+                // Flip If the movement sequencer is playing and the joint is set to shoulder
+                else if (MovSeqPlay == true && i == 0)
+                {
+                    if (stateObj.motorState[i] == 1 && stateObj.motorFlipped[i] == false)
+                    {
+                        motorState = (byte)2;
+                    }
+                    else if (stateObj.motorState[i] == 2 && stateObj.motorFlipped[i] == false)
+                    {
+                        motorState = (byte)1;
+                    }
+                    else
+                    {
+                        motorState = (byte)stateObj.motorState[i];
+                    }
+                }
+                else
+                {
+                    motorState = (byte)stateObj.motorState[i];
+                }
+
+                jointID = i;
+                velocityLowByte = low_byte((UInt16)robotObj.Motor[i].w);
+                velocityHighByte = high_byte((UInt16)robotObj.Motor[i].w);
+
+                packet[startIndex] = jointID;
+                packet[startIndex + 1] = velocityLowByte;
+                packet[startIndex + 2] = velocityHighByte;
+                packet[startIndex + 3] = motorState;
+
+                startIndex += numData;
+            }
+            packet[24] = getCheckSum(packet);
+
+            return packet;
+        }
+
+        private byte[] buildScenePacket()
+        {
+            // PACKET TYPE: 0
+            // PACKET LENGTH: 45    
+
+            byte[] packet;
+            byte length = (byte)(3 * 6 + 4 * 5);
+            // Is there a VR headset connected?
+            // Currently not sending this information because we are not using it!
+            byte headsetConnected = Convert.ToByte(checkBoxUseVRHeadset.Checked);
+
+            int sceneIndex = comboBoxSelectTask.SelectedIndex + 1;
+            // Change game frame rate
+            byte frameRate = Convert.ToByte(numericFrameRate.Value);
+
+            // First build header of the packet
+            packet = new byte[7 + length];
+            packet[0] = 255;
+            packet[1] = 255;
+            packet[2] = 0;
+            packet[3] = length;
+            packet[4] = (byte)sceneIndex;
+            packet[5] = frameRate;
+
+            // Then build the camera positions
+            int currentCameraViewIndex = listBoxSelectCameraView.SelectedIndex;
+
+            string[] currentCameraView;
+            currentCameraView = allCameraViews[currentCameraViewIndex];
+
+            int startIndex = 6;
+            for (int i = 0; i < 6; i++)
+            {
+                int pos = Convert.ToInt32(currentCameraView[i + 1]);
+                packet[startIndex] = low_byte((UInt16)Math.Abs(pos));
+                packet[startIndex + 1] = high_byte((UInt16)Math.Abs(pos));
+                if (pos >= 0)
+                {
+                    packet[startIndex + 2] = 1;
+                }
+                else
+                {
+                    packet[startIndex + 2] = 0;
+                }
+                startIndex += 3;
+            }
+
+            // Then build the joint limits as the remainder of the packet
+            packet[24] = low_byte((UInt16)VR_shoulder_pmin_ctrl.Value);
+            packet[25] = high_byte((UInt16)VR_shoulder_pmin_ctrl.Value);
+
+            packet[26] = low_byte((UInt16)VR_shoulder_pmax_ctrl.Value);
+            packet[27] = high_byte((UInt16)VR_shoulder_pmax_ctrl.Value);
+
+            packet[28] = low_byte((UInt16)VR_elbow_pmin_ctrl.Value);
+            packet[29] = high_byte((UInt16)VR_elbow_pmin_ctrl.Value);
+
+            packet[30] = low_byte((UInt16)VR_elbow_pmax_ctrl.Value);
+            packet[31] = high_byte((UInt16)VR_elbow_pmax_ctrl.Value);
+
+            packet[32] = low_byte((UInt16)VR_wristRotation_pmin_ctrl.Value);
+            packet[33] = high_byte((UInt16)VR_wristRotation_pmin_ctrl.Value);
+
+            packet[34] = low_byte((UInt16)VR_wristRotation_pmax_ctrl.Value);
+            packet[35] = high_byte((UInt16)VR_wristRotation_pmax_ctrl.Value);
+
+            packet[36] = low_byte((UInt16)VR_wristFlex_pmin_ctrl.Value);
+            packet[37] = high_byte((UInt16)VR_wristFlex_pmin_ctrl.Value);
+
+            packet[38] = low_byte((UInt16)VR_wristFlex_pmax_ctrl.Value);
+            packet[39] = high_byte((UInt16)VR_wristFlex_pmax_ctrl.Value);
+
+            packet[40] = low_byte((UInt16)VR_hand_pmin_ctrl.Value);
+            packet[41] = high_byte((UInt16)VR_hand_pmin_ctrl.Value);
+
+            packet[42] = low_byte((UInt16)VR_hand_pmax_ctrl.Value);
+            packet[43] = high_byte((UInt16)VR_hand_pmax_ctrl.Value);
+
+            packet[44] = getCheckSum(packet);
+
+            return packet;
+        }
+
+        private byte getCheckSum(byte[] packet)
+        {
+            // Stores calculated check sum 
+            byte checkSum;
+
+            // Reset check sum
+            checkSum = 0;
+
+            // Iterates through the data portion of the packet 
+            for (int i = 2; i < packet.Length - 1; i++)
+            {
+                checkSum += packet[i];
+            }
+
+            // Will only take lower byte if the check sum is less than -1 
+            if ((byte)~checkSum >= 255)
+            {
+                checkSum = low_byte((UInt16)~checkSum);
+            }
+            else
+            {
+                checkSum = (byte)~checkSum;
+            }
+
+            return checkSum;
+        }
+
+        // Returns the lower byte of an integer number
+        // https://stackoverflow.com/questions/5419453/getting-upper-and-lower-byte-of-an-integer-in-c-sharp-and-putting-it-as-a-char-a
+        private byte low_byte(ushort number)
+        {
+            return (byte)(number & 0xff);
+        }
+
+        // Returns the lower byte of an integer number
+        private byte high_byte(ushort number)
+        {
+            return (byte)(number >> 8);
+        }
+
+        #endregion
+
+        #region "Handling received packets"
+
+        // Parse and validate the packet sent from Unity
+        private void parseUnityPacket(byte[] packet)
+        {
+            if (validate(packet))
+            {
+                switch (packet[2])
+                {
+                    case 4:
+                        writeFeedback(packet);
+                        break;
+                    case 5:
+                        saveCameraPosition(packet);
+                        break;
+                    default:
+                        return;
+                }
+            }
+        }
+
+        // Take the joint feedback from Unity and update the relevant variables and GUI controls 
+        private void writeFeedback(byte[] packet)
+        {
+            int startIndex = 4;
+            int jointID;
+            int jointPosition;
+            float jointVelocity;
+
+            int numData = packet[3] / BENTO_NUM;
+
+            for (int i = 0; i < BENTO_NUM; i++)
+            {
+                jointID = (int)packet[startIndex];
+                jointPosition = (int)transformByteToFloat(packet[startIndex + 1], packet[startIndex + 2]);
+                // Check if position is negative
+                if (packet[startIndex + 3] == 0)
+                {
+                    jointPosition *= (-1);
+                }
+                jointVelocity = transformByteToFloat(packet[startIndex + 4], packet[startIndex + 5]);
+
+                switch (jointID)
+                {
+                    case 0:
+                        VRShoulderPosition = jointPosition;
+                        VRShoulderVelocity = jointVelocity;
+                        BentoSense.ID[jointID].pos = (ushort)jointPosition;
+                        BentoSense.ID[jointID].vel = (ushort)jointVelocity;
+                        LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel));   // Keep track of last movement for the motion sequencer
+                        break;
+                    case 1:
+                        VRElbowPosition = jointPosition;
+                        VRElbowVelocity = jointVelocity;
+                        BentoSense.ID[jointID].pos = (ushort)jointPosition;
+                        BentoSense.ID[jointID].vel = (ushort)jointVelocity;
+                        LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel));   // Keep track of last movement for the motion sequencer
+                        break;
+                    case 2:
+                        VRWristRotatePosition = jointPosition;
+                        VRWristRotateVelocity = jointVelocity;
+                        BentoSense.ID[jointID].pos = (ushort)jointPosition;
+                        BentoSense.ID[jointID].vel = (ushort)jointVelocity;
+                        LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel));   // Keep track of last movement for the motion sequencer
+                        break;
+                    case 3:
+                        VRWristFlexPosition = jointPosition;
+                        VRWristFlexVelocity = jointVelocity;
+                        BentoSense.ID[jointID].pos = (ushort)jointPosition;
+                        BentoSense.ID[jointID].vel = (ushort)jointVelocity;
+                        LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel));   // Keep track of last movement for the motion sequencer
+                        break;
+                    case 4:
+                        VRHandPosition = jointPosition;
+                        VRHandVelocity = jointVelocity;
+                        BentoSense.ID[jointID].pos = (ushort)jointPosition;
+                        BentoSense.ID[jointID].vel = (ushort)jointVelocity;
+                        LastMovement.update(jointID, BentoSense.ID[jointID].pos, Math.Abs(BentoSense.ID[jointID].vel));   // Keep track of last movement for the motion sequencer
+                        break;
+                    default:
+                        return;
+                }
+
+                startIndex += numData;
+            }
+        }
+
+        private void saveCameraPosition(byte[] packet)
+        {
+            try
+            { 
+                int startIndex = 4;
+                int numData = 3;
+
+                //newCameraView = newCameraViewName + ",";
+                newCameraView = newCameraViewName;
+                for (int i = 0; i < 6; i++)
+                {
+                    int pos = (int)transformByteToFloat(packet[startIndex], packet[startIndex + 1]);
+                    if (packet[startIndex + 2] == 0) // Camera position is a negative number
+                    {
+                        pos *= (-1);
+                    }
+                    // Write the camera position to file
+                    //newCameraView += (Convert.ToString(pos) + ",");
+                    newCameraView += ("," + Convert.ToString(pos));
+                    startIndex += numData;
+                }
+
+                if (ChangeCameraView == "add")
+                {
+                    StreamWriter cameraFile = new StreamWriter(cameraViewFilepath, true);
+                    cameraFile.WriteLine(newCameraView);
+                    cameraFile.Close();
+
+                    // Refresh the camera views on UI and select the new camera view
+                    this.BeginInvoke(new MethodInvoker(delegate
+                    {
+                        loadCameraViews();
+                        listBoxSelectCameraView.SelectedIndex = listBoxSelectCameraView.Items.Count - 1;
+                    }));
+                }
+                else if (ChangeCameraView == "save")
+                {
+                    // Load all saved camera views from file
+                    allCameraViews = new List<string[]>();
+                    using (StreamReader reader = new StreamReader(cameraViewFilepath))
+                    {
+
+                        string currentline;
+                        int numLines = 0;
+                        //int SelectedIndex = 0;
+                        //SelectedIndex = listBoxSelectCameraView.SelectedIndex;
+
+                        // For each line write the name of the camera view to the camera view list
+                        while ((currentline = reader.ReadLine()) != null)
+                        {
+                            if (numLines == SelectedCameraView)
+                            {
+                                //allCameraViews.Add(newCameraView.ToCharArray().Select(c => c.ToString()).ToArray());
+                                allCameraViews.Add(new[] { newCameraView });
+                            }
+                            else
+                            {
+                                string[] cameraView = currentline.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+                                allCameraViews.Add(cameraView);
+                            }
+                            numLines++;
+                        }
+                        reader.Close();
+                    }
+                    using (StreamWriter cameraFile = new StreamWriter(cameraViewFilepath, false))
+                    {
+                        for (int i = 0; i < allCameraViews.Count; i++)
+                        {
+                            cameraFile.WriteLine(String.Join(",",allCameraViews[i]));
+                        }
+                        cameraFile.Close();
+                    }
+                    // Refresh the camera views on UI and select the new camera view
+                    this.BeginInvoke(new MethodInvoker(delegate
+                    {
+                        loadCameraViews();
+                        listBoxSelectCameraView.SelectedIndex = SelectedCameraView;
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        // Open the dialog for allowing the user to specify the name for a new camera view
+        private static DialogResult ShowSaveCameraDialog(ref string input)
+        {
+            // Reference: https://stackoverflow.com/questions/97097/what-is-the-c-sharp-version-of-vb-nets-inputdialog
+            // This is a customized user input dialog
+
+            System.Drawing.Size size = new System.Drawing.Size(350, 70);
+            Form inputBox = new Form();
+            inputBox.StartPosition = FormStartPosition.CenterParent;
+
+            inputBox.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            inputBox.ClientSize = size;
+            inputBox.Text = "Save new camera view as";
+
+            System.Windows.Forms.TextBox textBox = new TextBox();
+            textBox.Size = new System.Drawing.Size(size.Width - 10, 23);
+            textBox.Location = new System.Drawing.Point(5, 5);
+            textBox.Text = input;
+            inputBox.Controls.Add(textBox);
+
+            Button okButton = new Button();
+            okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            okButton.Name = "okButton";
+            okButton.Size = new System.Drawing.Size(75, 23);
+            okButton.Text = "&OK";
+            okButton.Location = new System.Drawing.Point(size.Width - 80 - 80, 39);
+            inputBox.Controls.Add(okButton);
+
+            Button cancelButton = new Button();
+            cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new System.Drawing.Size(75, 23);
+            cancelButton.Text = "&Cancel";
+            cancelButton.Location = new System.Drawing.Point(size.Width - 80, 39);
+            inputBox.Controls.Add(cancelButton);
+
+            inputBox.AcceptButton = okButton;
+            inputBox.CancelButton = cancelButton;
+
+            DialogResult result = inputBox.ShowDialog();
+            input = textBox.Text;
+            return result;
+        }
+
+        // This function transforms a Byte into a Float
+        private float transformByteToFloat(byte lowByte, byte highByte)
+        {
+            UInt16 value = (UInt16)((lowByte) | (highByte << 8));
+            return (float)value;
+        }
+
+        // Validate a packet and make sure it has the header bytes as well as a matching checksum
+        private bool validate(byte[] packet)
+        {
+            byte checksum = 0;
+            checksum = getCheckSum(packet);
+            if (checksum == packet[packet.Length - 1] && packet[0] == 255 && packet[1] == 255)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         #endregion
@@ -3336,16 +4667,37 @@ namespace brachIOplexus
         {
             try
             {
-                // Stop stopwatch and record how long everything in the main loop took to execute as well as how long it took to retrigger the main loop
-                stopWatch1.Stop();
-                milliSec1 = stopWatch1.ElapsedMilliseconds;
-                delay.Text = Convert.ToString(milliSec1);
+                // Stop stopwatch and record how long everything in the main loop took to execute as well as how long it took to retrigger the main loop (to nearest Millisecond)
+                //stopWatch1.Stop();
+                //milliSec1 = stopWatch1.ElapsedMilliseconds;
+                //delay.Text = Convert.ToString(milliSec1);
 
-                // Check to see if the previous delay is the new maximum delay
-                if (milliSec1 > Convert.ToDecimal(delay_max.Text))
-                {
-                    delay_max.Text = Convert.ToString(milliSec1);
-                }
+                // Stop stopwatch and record how long everything in the main loop took to execute as well as how long it took to retrigger the main loop (to nearest tenth of millisecond)
+                stopWatch1.Stop();
+                TimeSpan ts = stopWatch1.Elapsed;
+                milliSec1 = stopWatch1.ElapsedMilliseconds;
+                float elapsedTime = ts.Ticks * 1000f / Stopwatch.Frequency;
+                //if ((bentoMode == 0 || bentoMode == 2) && elapsedTime < 4)
+                ////if (elapsedTime < 4)
+                //{
+                //    // Only allow the background thread to run after 4ms has elapsed 
+                //    stopWatch1.Start();
+                //    return;
+                //}
+
+                //delay.Text = elapsedTime.ToString("F3");
+                stopWatch1_avg.AddSample(elapsedTime);
+                //string fmt = "00.#";
+                //string fmt = "00";
+                //delay.Text = elapsedTime.ToString(fmt);
+                delay.Text = stopWatch1_avg.Average.ToString("F1");
+                delay.Update();
+
+                //// Check to see if the previous delay is the new maximum delay
+                //if (milliSec1 > Convert.ToDecimal(delay_max.Text))
+                //{
+                //    delay_max.Text = Convert.ToString(milliSec1);
+                //}
 
                 // Reset and start the stop watch
                 stopWatch1.Reset();
@@ -3535,9 +4887,11 @@ namespace brachIOplexus
                     InputMap[2, 10] = velocity_ramp(ref KBvel[10], Keyboard.IsKeyDown(Key.Left), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
                     InputMap[2, 11] = velocity_ramp(ref KBvel[11], Keyboard.IsKeyDown(Key.Right), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
 
-                    InputMap[2, 12] = velocity_ramp(ref KBvel[12], Keyboard.IsKeyDown(Key.LeftAlt), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
-                    InputMap[2, 13] = velocity_ramp(ref KBvel[13], Keyboard.IsKeyDown(Key.RightAlt), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
-                    InputMap[2, 14] = velocity_ramp(ref KBvel[14], Keyboard.IsKeyDown(Key.Space), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
+                    InputMap[2, 12] = velocity_ramp(ref KBvel[12], Keyboard.IsKeyDown(Key.LeftShift), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
+                    InputMap[2, 13] = velocity_ramp(ref KBvel[13], Keyboard.IsKeyDown(Key.RightShift), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
+                    InputMap[2, 14] = velocity_ramp(ref KBvel[14], Keyboard.IsKeyDown(Key.LeftAlt), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
+                    InputMap[2, 15] = velocity_ramp(ref KBvel[15], Keyboard.IsKeyDown(Key.RightAlt), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
+                    InputMap[2, 16] = velocity_ramp(ref KBvel[16], Keyboard.IsKeyDown(Key.Space), KBcheckRamp.Checked, preGain / (ramp_delay / milliSec1), preGain);
 
                     KBcheckW.Checked = Keyboard.IsKeyDown(Key.W);
                     KBcheckA.Checked = Keyboard.IsKeyDown(Key.A);
@@ -3557,6 +4911,8 @@ namespace brachIOplexus
                     KBcheckLeftAlt.Checked = Keyboard.IsKeyDown(Key.LeftAlt);
                     KBcheckRightAlt.Checked = Keyboard.IsKeyDown(Key.RightAlt);
                     KBcheckSpace.Checked = Keyboard.IsKeyDown(Key.Space);
+                    KBcheckLeftShift.Checked = Keyboard.IsKeyDown(Key.LeftShift);
+                    KBcheckRightShift.Checked = Keyboard.IsKeyDown(Key.RightShift);
 
                     KBrampW.Text = Convert.ToString(InputMap[2, 0]);
                     KBrampA.Text = Convert.ToString(InputMap[2, 1]);
@@ -3705,30 +5061,68 @@ namespace brachIOplexus
                 // Bento Arm
                 robotObj.type = 0;
 
-                robotObj.Motor[0].pmin = Convert.ToInt32(shoulder_pmin_ctrl.Value);
-                robotObj.Motor[0].pmax = Convert.ToInt32(shoulder_pmax_ctrl.Value);
-                robotObj.Motor[0].wmin = Convert.ToInt32(shoulder_wmin_ctrl.Value);
-                robotObj.Motor[0].wmax = Convert.ToInt32(shoulder_wmax_ctrl.Value);
+                // Instead of updating the joint limits on each iteration of the main loop they now update only when the user
+                // actually changes one of the joint limit values on the GUI. This fixes an issue with the numericupdown controls where 
+                // text entry of joint limits would not work when outside of the defined joint limit values.
+                // The code to update the joint limits can now be found in Bento_Joint_Limit_ValueChanged() and
+                // VR_Joint_Limit_ValueChanged() respectively.
 
-                robotObj.Motor[1].pmin = Convert.ToInt32(elbow_pmin_ctrl.Value);
-                robotObj.Motor[1].pmax = Convert.ToInt32(elbow_pmax_ctrl.Value);
-                robotObj.Motor[1].wmin = Convert.ToInt32(elbow_wmin_ctrl.Value);
-                robotObj.Motor[1].wmax = Convert.ToInt32(elbow_wmax_ctrl.Value);
+                //// If connected to the virtual bento arm then use the joint limits from the virtual bento arm tab 
+                //// otherwise use the joint limits from the physical bento arm tab
+                //if (bentoMode == 2)
+                //{
+                //    robotObj.Motor[0].pmin = Convert.ToInt32(VR_shoulder_pmin_ctrl.Value);
+                //    robotObj.Motor[0].pmax = Convert.ToInt32(VR_shoulder_pmax_ctrl.Value);
+                //    robotObj.Motor[0].wmin = Convert.ToInt32(VR_shoulder_vmin_ctrl.Value);
+                //    robotObj.Motor[0].wmax = Convert.ToInt32(VR_shoulder_vmax_ctrl.Value);
 
-                robotObj.Motor[2].pmin = Convert.ToInt32(wristRot_pmin_ctrl.Value);
-                robotObj.Motor[2].pmax = Convert.ToInt32(wristRot_pmax_ctrl.Value);
-                robotObj.Motor[2].wmin = Convert.ToInt32(wristRot_wmin_ctrl.Value);
-                robotObj.Motor[2].wmax = Convert.ToInt32(wristRot_wmax_ctrl.Value);
+                //    robotObj.Motor[1].pmin = Convert.ToInt32(VR_elbow_pmin_ctrl.Value);
+                //    robotObj.Motor[1].pmax = Convert.ToInt32(VR_elbow_pmax_ctrl.Value);
+                //    robotObj.Motor[1].wmin = Convert.ToInt32(VR_elbow_vmin_ctrl.Value);
+                //    robotObj.Motor[1].wmax = Convert.ToInt32(VR_elbow_vmax_ctrl.Value);
 
-                robotObj.Motor[3].pmin = Convert.ToInt32(wristFlex_pmin_ctrl.Value);
-                robotObj.Motor[3].pmax = Convert.ToInt32(wristFlex_pmax_ctrl.Value);
-                robotObj.Motor[3].wmin = Convert.ToInt32(wristFlex_wmin_ctrl.Value);
-                robotObj.Motor[3].wmax = Convert.ToInt32(wristFlex_wmax_ctrl.Value);
+                //    robotObj.Motor[2].pmin = Convert.ToInt32(VR_wristRotation_pmin_ctrl.Value);
+                //    robotObj.Motor[2].pmax = Convert.ToInt32(VR_wristRotation_pmax_ctrl.Value);
+                //    robotObj.Motor[2].wmin = Convert.ToInt32(VR_wristRotation_vmin_ctrl.Value);
+                //    robotObj.Motor[2].wmax = Convert.ToInt32(VR_wristRotation_vmax_ctrl.Value);
 
-                robotObj.Motor[4].pmin = Convert.ToInt32(hand_pmin_ctrl.Value);
-                robotObj.Motor[4].pmax = Convert.ToInt32(hand_pmax_ctrl.Value);
-                robotObj.Motor[4].wmin = Convert.ToInt32(hand_wmin_ctrl.Value);
-                robotObj.Motor[4].wmax = Convert.ToInt32(hand_wmax_ctrl.Value);
+                //    robotObj.Motor[3].pmin = Convert.ToInt32(VR_wristFlex_pmin_ctrl.Value);
+                //    robotObj.Motor[3].pmax = Convert.ToInt32(VR_wristFlex_pmax_ctrl.Value);
+                //    robotObj.Motor[3].wmin = Convert.ToInt32(VR_wristFlex_vmin_ctrl.Value);
+                //    robotObj.Motor[3].wmax = Convert.ToInt32(VR_wristFlex_vmax_ctrl.Value);
+
+                //    robotObj.Motor[4].pmin = Convert.ToInt32(VR_hand_pmin_ctrl.Value);
+                //    robotObj.Motor[4].pmax = Convert.ToInt32(VR_hand_pmax_ctrl.Value);
+                //    robotObj.Motor[4].wmin = Convert.ToInt32(VR_hand_vmin_ctrl.Value);
+                //    robotObj.Motor[4].wmax = Convert.ToInt32(VR_hand_vmax_ctrl.Value);
+                //}
+                //else
+                //{
+                //    robotObj.Motor[0].pmin = Convert.ToInt32(shoulder_pmin_ctrl.Value);
+                //    robotObj.Motor[0].pmax = Convert.ToInt32(shoulder_pmax_ctrl.Value);
+                //    robotObj.Motor[0].wmin = Convert.ToInt32(shoulder_wmin_ctrl.Value);
+                //    robotObj.Motor[0].wmax = Convert.ToInt32(shoulder_wmax_ctrl.Value);
+
+                //    robotObj.Motor[1].pmin = Convert.ToInt32(elbow_pmin_ctrl.Value);
+                //    robotObj.Motor[1].pmax = Convert.ToInt32(elbow_pmax_ctrl.Value);
+                //    robotObj.Motor[1].wmin = Convert.ToInt32(elbow_wmin_ctrl.Value);
+                //    robotObj.Motor[1].wmax = Convert.ToInt32(elbow_wmax_ctrl.Value);
+
+                //    robotObj.Motor[2].pmin = Convert.ToInt32(wristRot_pmin_ctrl.Value);
+                //    robotObj.Motor[2].pmax = Convert.ToInt32(wristRot_pmax_ctrl.Value);
+                //    robotObj.Motor[2].wmin = Convert.ToInt32(wristRot_wmin_ctrl.Value);
+                //    robotObj.Motor[2].wmax = Convert.ToInt32(wristRot_wmax_ctrl.Value);
+
+                //    robotObj.Motor[3].pmin = Convert.ToInt32(wristFlex_pmin_ctrl.Value);
+                //    robotObj.Motor[3].pmax = Convert.ToInt32(wristFlex_pmax_ctrl.Value);
+                //    robotObj.Motor[3].wmin = Convert.ToInt32(wristFlex_wmin_ctrl.Value);
+                //    robotObj.Motor[3].wmax = Convert.ToInt32(wristFlex_wmax_ctrl.Value);
+
+                //    robotObj.Motor[4].pmin = Convert.ToInt32(hand_pmin_ctrl.Value);
+                //    robotObj.Motor[4].pmax = Convert.ToInt32(hand_pmax_ctrl.Value);
+                //    robotObj.Motor[4].wmin = Convert.ToInt32(hand_wmin_ctrl.Value);
+                //    robotObj.Motor[4].wmax = Convert.ToInt32(hand_wmax_ctrl.Value);
+                //}
 
                 //// HANDi HAnd -> smushed into bento robotObj
                 robotObj.Motor[5].pmin = Convert.ToInt32(D0_pmin_ctrl.Value);
@@ -3794,6 +5188,7 @@ namespace brachIOplexus
                 //ID2_state.Text = Convert.ToString(stateObj.motorState[1]);
                 //ID2_state.Text = Convert.ToString(robotObj.Motor[4].w);
 
+
                 // Calculate joint positions and velocities and update states for active degrees of freedom
                 for (int i = 0; i < DOF_NUM; i++)
                 {
@@ -3814,6 +5209,25 @@ namespace brachIOplexus
                         {
                             // Use button press
                             case 0:
+                                // If motion sequencer prompted for a switching event and timer is up
+                                if (MovSeqSwitch && MovSeqPlay)
+                                {
+                                    if (switchingStopwatch.ElapsedMilliseconds >= switchingDelay)
+                                    {
+                                        // Stop current timer
+                                        switchingStopwatch.Stop();
+
+                                        // Set a switching signal above threshold
+                                        switchObj.signal = 500;
+                                        stateObj.switchState = 0;
+
+                                        // Count number of switches
+                                        numSwitches += 1;
+                                        // Restart the timer
+                                        switchingStopwatch.Restart();
+                                    }
+                                }
+
                                 if (switchObj.signal > switchObj.smin1 && stateObj.switchState == 0)
                                 {
                                     // Grab last position feedback and STOP! (added in to prevent state variable from staying high if active during a switching event)
@@ -3969,16 +5383,11 @@ namespace brachIOplexus
                     }
                     #endregion
 
-                    // Test output for co-contraction debugging
-                    timer1_label.Text = Convert.ToString(stateObj.timer1);
-                    flag1_label.Text = Convert.ToString(switchObj.flag1);
-                    flag2_label.Text = Convert.ToString(switchObj.flag2);
-                    switchState_label.Text = Convert.ToString(stateObj.switchState);
-
                     if (dofObj[i].Enabled)
                     {
+                        // This line of code is commented out for the VR Bento Arm, suspend functionality is disabled
                         if (bentoSuspend == false || biopatrecMode.SelectedIndex == 1)  // only connect inputs to outputs if Bento is in 'Run' mode
-                        //if (true)  // for testing with HANDi hand
+                        //if (true)
                         {
                             switch (dofObj[i].ChA.mapping)
                             {
@@ -4056,7 +5465,14 @@ namespace brachIOplexus
                                     robotObj.torque = toggle(dofObj[i].ChA, robotObj.torque, TorqueOn, TorqueOff);
                                     break;
                                 case -3:
-                                    robotObj.suspend = toggle(dofObj[i].ChA, robotObj.suspend, BentoRun, BentoSuspend);
+                                    if (bentoMode == 1)
+                                    {
+                                        robotObj.suspend = toggle(dofObj[i].ChA, robotObj.suspend, BentoRun, BentoSuspend);
+                                    }
+                                    else if (bentoMode == 2)
+                                    {
+                                        robotObj.suspend = toggle(dofObj[i].ChA, robotObj.suspend, VirtualBentoRun, VirtualBentoSuspend);
+                                    }
                                     break;
                             }
                         }
@@ -4068,14 +5484,22 @@ namespace brachIOplexus
                                     robotObj.torque = toggle(dofObj[i].ChB, robotObj.torque, TorqueOn, TorqueOff);
                                     break;
                                 case -3:
-                                    robotObj.suspend = toggle(dofObj[i].ChB, robotObj.suspend, BentoRun, BentoSuspend);
+                                    if (bentoMode == 1)
+                                    {
+                                        robotObj.suspend = toggle(dofObj[i].ChB, robotObj.suspend, BentoRun, BentoSuspend);
+                                    }
+                                    else if (bentoMode == 2)
+                                    {
+                                        robotObj.suspend = toggle(dofObj[i].ChB, robotObj.suspend, VirtualBentoRun, VirtualBentoSuspend);
+                                    }
                                     break;
                             }
                         }
                     }
                 }
 
-                if (BentoGroupBox.Enabled == true)
+                // Read feedback packets and send command packets to the physical Bento Arm
+                if (bentoMode == 1)
                 {
                     // Update feedback
                     readDyna();
@@ -4090,15 +5514,38 @@ namespace brachIOplexus
                     // Move dynamixel motors
                     if (TorqueOn.Enabled == false && biopatrecMode.SelectedIndex != 1)
                     {
+                        // Play motion sequence if the motion sequencer is enabled and a sequence is in progress.
+                        if (MovSeqEnabled && MovSeqPlay && bentoSuspend == false)
+                        {
+                            playMotionSequence();
+                        }
+
                         // Write goal position and moving speeds to each servo on bus using syncwrite command
                         writeDyna();
+
                     }
                 }
-                else if (BentoGroupBox.Enabled == false)
+                // Update feedback for the virtual Bento Arm
+                else if (bentoMode == 2)
                 {
-                    // Add delay on background thread so that timers work properly even if not sending out commands or reading from dynamixels
-                    // This is needed because without the delay the time reported by the stopwatch is 0 which means we can't update our timers properly
-                    System.Threading.Thread.Sleep(2);
+                    labelVRShoulderPosition.Text = Convert.ToString(VRShoulderPosition);
+                    labelVRShoulderVelocity.Text = Convert.ToString(VRShoulderVelocity);
+                    labelVRElbowPosition.Text = Convert.ToString(VRElbowPosition);
+                    labelVRElbowVelocity.Text = Convert.ToString(VRElbowVelocity);
+                    labelVRWristRotatePosition.Text = Convert.ToString(VRWristRotatePosition);
+                    labelVRWristRotateVelocity.Text = Convert.ToString(VRWristRotateVelocity);
+                    labelVRWristFlexPosition.Text = Convert.ToString(VRWristFlexPosition);
+                    labelVRWristFlexVelocity.Text = Convert.ToString(VRWristFlexVelocity);
+                    labelVRHandPosition.Text = Convert.ToString(VRHandPosition);
+                    labelVRHandVelocity.Text = Convert.ToString(VRHandVelocity);
+                    SelectedCameraView = listBoxSelectCameraView.SelectedIndex;
+
+                    // Play motion sequence if the motion sequencer is enabled and a sequence is in progress.
+                    if (MovSeqEnabled && MovSeqPlay && bentoSuspend == false)
+                    {
+                        playMotionSequence();
+                    }
+
                 }
 
                 if (HANDiGroupBox.Enabled == true)
@@ -4111,6 +5558,12 @@ namespace brachIOplexus
                     HANDi_pos[5] = robotObj.Motor[10].p;
                 }
 
+                if (bentoMode == 0 || bentoMode == 2)
+                {
+                    // Add a delay on the background thread so that the main loop uses less CPU resources compared to the stopwatch method.
+                    System.Threading.Thread.Sleep(1);
+                }
+
             }
             catch (Exception ex)
             {
@@ -4119,6 +5572,227 @@ namespace brachIOplexus
         }
 
         #region "Helper Functions"
+
+        #region "Convenience Functions for Motion Sequencer"
+
+        private void playMotionSequence()
+        {
+            // Get the target joint and its values
+            List<int> movement = currentMovSeq[currentMoveIndex];
+
+            int targetJoint = movement[0];
+            int motionType = movement[1];
+            int goalPos = movement[2];
+            int velocity = movement[3];
+            int tolerance = movement[4];
+            long postMotionDelay = movement[5];
+
+            // For motions of type automatic (motionType = 0) - don't do anything until we've switched to the correct joint and then automatically move the joint until it reaches the goal position
+            // For motions of type user (motionType = 1) - Make sure the joint is manually controllable by the user and wait for the user to move the joint until it reaches the goal position
+
+            int currentJoint = switchObj.List[stateObj.listPos].output - 1;
+            if (motionType == 0 && currentJoint != targetJoint)
+            {
+                MovSeqSwitch = true;
+            }
+            else if (motionType == 1 & currentJoint == targetJoint)
+            {
+                MovSeqSwitch = true;
+            }
+            else
+            {
+                MovSeqSwitch = false;
+                playMovement(targetJoint, motionType, goalPos, velocity, tolerance, postMotionDelay);
+            }
+
+        }
+
+        private void playMovement(int targetJoint, int motionType, int goalPos, int velocity, int tolerance, long postMotionDelay)
+        {
+            // Check minimum and maximum limits for current joint    
+            goalPos = checkPositionLimits(targetJoint, goalPos);
+            velocity = checkVelocityLimits(targetJoint, velocity);
+
+            // Only actually move the joint automatically if motionType is set to auto. Otherwise wait for the user to move the joint until the goal position is reached
+            if (motionType == 0 && reachGoalPositionFlag == false)
+            {
+                moveJointToPosition(targetJoint, goalPos, velocity, tolerance);
+            }
+
+            // Check if we reached goal position within some tolerance
+            if (reachGoalPosition(targetJoint, goalPos, tolerance) && reachGoalPositionFlag == false)
+            {
+                reachGoalPositionFlag = true;
+                postMotionStopwatch.Start();
+                stopJointMovement(targetJoint);
+            }
+
+            if (postMotionStopwatch.ElapsedMilliseconds >= postMotionDelay && reachGoalPositionFlag == true)
+            {
+                // Log data
+                if (MovSeqLogData)
+                {
+                    logData(targetJoint);
+                }
+
+                // Continue to next movement and reset switching counter
+                currentMoveIndex++;
+                numSwitches = 0;
+
+                if (currentMoveIndex == currentMovSeq.Count)
+                {
+                    // Reset to head of sequence if the entire movement sequence is finished
+                    currentMoveIndex = 0;
+
+                    // Repeat the sequence if repeat or repeat forever is enabled
+                    if (checkboxRepeat.Checked && (iterationCount < numIterations))
+                    {
+                        iterationCount++;
+                        labelCount.Text = Convert.ToString(iterationCount);
+                    }
+                    else if (checkBoxRepeatForever.Checked)
+                    {
+                        iterationCount++;
+                        labelCount.Text = Convert.ToString(iterationCount);
+                    }
+
+                    // Else stop playing
+                    else
+                    {
+                        stopMovementSequencer();
+                    }
+                }
+
+                // Reset the flag tracking whether the joint has reached the goal position and reset the timer
+                reachGoalPositionFlag = false;
+                postMotionStopwatch.Reset();
+            }
+        }
+
+        private int checkPositionLimits(int currentJoint, int goalPos)
+        {
+            if (goalPos > robotObj.Motor[currentJoint].pmax)
+            { goalPos = robotObj.Motor[currentJoint].pmax; }
+
+            if (goalPos < robotObj.Motor[currentJoint].pmin)
+            { goalPos = robotObj.Motor[currentJoint].pmin; }
+
+            return goalPos;
+        }
+
+        private int checkVelocityLimits(int currentJoint, int velocity)
+        {
+            if (velocity > robotObj.Motor[currentJoint].wmax)
+            { velocity = robotObj.Motor[currentJoint].wmax; }
+
+            if (velocity < robotObj.Motor[currentJoint].wmin)
+            { velocity = robotObj.Motor[currentJoint].wmin; }
+
+            return velocity;
+        }
+
+        private void moveJointToPosition(int currentJoint, int goalPos, int velocity, int tolerance)
+        {
+            int currentPos = BentoSense.ID[currentJoint].pos;
+
+            // Check direction of movement and set state of motor accordingly
+            // (i.e. 0 = off, 1 = moving cw, 2 = moving ccw, 3 = hanging)
+            // If shoulder motor (current joint = 0) direction needs to be treated differently because it is flipped upside down
+            if (currentJoint == 0 && stateObj.motorFlipped[currentJoint] == true)
+            {
+                if (currentPos < (goalPos - tolerance)) { stateObj.motorState[currentJoint] = 1; }
+                if (currentPos > (goalPos + tolerance)) { stateObj.motorState[currentJoint] = 2; }
+            }
+            else if (currentJoint == 0 && stateObj.motorFlipped[currentJoint] == false)
+            {
+                if (currentPos < (goalPos - tolerance)) { stateObj.motorState[currentJoint] = 2; }
+                if (currentPos > (goalPos + tolerance)) { stateObj.motorState[currentJoint] = 1; }
+            }
+            else
+            {
+                if (currentPos < (goalPos - tolerance)) { stateObj.motorState[currentJoint] = 1; }
+                if (currentPos > (goalPos + tolerance)) { stateObj.motorState[currentJoint] = 2; }
+            }
+
+            // Set the motor to move to goal position with given velocity
+            robotObj.Motor[currentJoint].p = goalPos;
+            //robotObj.Motor[currentJoint].w = velocity;
+
+            // Slow down the velocity as the joint approaches the target position in order to help prevent overshoot conditions.
+            int deltaPos = Math.Abs(currentPos - goalPos);          // The absolute difference between the current position and the target position
+            int slowDownThreshold = velocity * 20 / tolerance;      // Adjust the position threshold of when the slow down begins. A larger velocity and smaller tolerance will increase this threshold.
+            if (deltaPos < slowDownThreshold)
+            {
+                float velocityGain = velocity / (tolerance * 5);    // Adjust the gain of how fast the velocity decreases once the slowDownThreshold is achieved. A higher velocity and lower tolerance will cause the slow down to happen faster.
+                float velocityAdjusted = velocity * (1 - velocityGain * (float)tolerance / (float)deltaPos);
+                if (velocityAdjusted >= 20)
+                {
+                    robotObj.Motor[currentJoint].w = Convert.ToInt32(velocityAdjusted);
+                }
+                else
+                {
+                    robotObj.Motor[currentJoint].w = 20;
+                } 
+            }
+            else
+            {
+                // Set the target velocity to the desired velocity when outside of the slowDownThreshold
+                robotObj.Motor[currentJoint].w = velocity;
+            }
+        }
+
+        private bool reachGoalPosition(int currentJoint, int goalPos, int tolerance)
+        {
+            return (BentoSense.ID[currentJoint].pos >= (goalPos - tolerance)
+                && BentoSense.ID[currentJoint].pos <= (goalPos + tolerance));
+        }
+
+        private void stopJointMovement(int currentJoint)
+        {
+            stateObj.motorState[currentJoint] = 0;
+            StopVelocity(currentJoint);
+        }
+
+        private void logData(int currentJoint)
+        {
+            // Don't log anything if no switching event has occured at the timestep
+            if (numSwitches == 0) return;
+
+            string datetime = DateTime.Now.ToString("yyyy/M/d HH:mm:ss.ffff");
+
+            // Log the timestamp, target joint, and the number of switches required to reach the target joint
+            string data = string.Format("{0},{1},{2}", datetime, currentJoint.ToString(), numSwitches);
+            movSeqDataFile.WriteLine(data);
+            movSeqDataFile.Flush();
+        }
+
+        /*
+        private int getNextJoint(int currentJoint)
+        {
+            int nextJoint = currentJoint;
+            if (MovSeqEnabled && MovSeqPlay)
+            {
+                // get the next joint to be moved and print it
+                // also print the predicted next joint
+                int i = 1;
+                while (nextJoint == currentJoint)
+                {
+                    if ((currentMoveIndex + i) < currentMovSeq.Count())
+                    {
+                        nextJoint = currentMovSeq[currentMoveIndex + i][0];
+                        i++;
+                    }
+                    else if ((currentMoveIndex + i) == currentMovSeq.Count())
+                    {
+                        nextJoint = currentMovSeq[0][0];
+                        i = -currentMoveIndex + 1;
+                    }
+                }
+            }
+            return nextJoint;
+        }*/
+
+        #endregion
 
         // Updates a degree of freedom object with the latest info from the GUI and input devices
         private void UpdateDoF(DoF_ dofObj, DoF dofA, int[,] InputMap, int i)
@@ -4177,6 +5851,7 @@ namespace brachIOplexus
 
             // Check whether outputs have been reversed in output comboboxes or in sequential switching list 
             int global_flip = 1;
+            stateObj.motorFlipped[k] = false;
             //if ((switchObj.List[k].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flip != 0 && i != switchObj.DoF - 1))
             //{
             //    global_flip = -1;
@@ -4184,6 +5859,7 @@ namespace brachIOplexus
             if ((switchObj.List[stateObj.listPos].flip == 1 && i == switchObj.DoF - 1) || (dofObj.flipA != 0 && i != switchObj.DoF - 1))
             {
                 global_flip = -1;
+                stateObj.motorFlipped[k] = true;
             }
 
             // Apply the first past the post algorithm
@@ -5041,7 +6717,16 @@ namespace brachIOplexus
             item.Text = "Off";
             OutputComboBox.Items.Add(item);
 
-            comboBox_AddItems(0, OutputComboBox, BentoList);
+            // If connected to the virtual bento arm then use the output items selected from the virtual bento arm list 
+            // otherwise use the items from the physical bento arm
+            if (bentoMode == 2)
+            {
+                comboBox_AddItems(0, OutputComboBox, VirtualBentoList);
+            }
+            else
+            {
+                comboBox_AddItems(0, OutputComboBox, BentoList);
+            }
             comboBox_AddItems(1, OutputComboBox, HANDiList);
             OutputComboBox.SelectedIndex = OutputComboBox.FindStringExact(OutputBoxText); // Keep selected item persistant when the list changes 
 
@@ -5205,6 +6890,15 @@ namespace brachIOplexus
             if (changed.mappingBox.SelectedIndex == 4)
             {
                 InvokeOnClick(BentoSuspend, new EventArgs());
+            }
+
+            // Disable all mappings except for First to Smin, Differential, and Toggle 
+            if (bentoMode >= 0)
+            {
+                if (changed.mappingBox.SelectedIndex >= 2 && changed.mappingBox.SelectedIndex < 5)
+                {
+                    changed.mappingBox.SelectedIndex = 0;
+                }
             }
 
             int index = 0;
@@ -5403,9 +7097,22 @@ namespace brachIOplexus
             {
                 // Double check corresponding items on the bento arm checked list box. i.e. if you select hand open it will autoselect hand close
                 double_check(BentoList, 9, e);
+
+                //if (BentoList.SelectedIndex >= 0)
+                //{
+                //    checkedListBoxVRBentoSetup.SetItemChecked(BentoList.SelectedIndex, BentoList.GetItemChecked(BentoList.SelectedIndex));
+                //}
             });
         }
 
+        private void VirtualBentoList_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            this.BeginInvoke((MethodInvoker)delegate
+            {
+                // Double check corresponding items on the bento arm checked list box. i.e. if you select hand open it will autoselect hand close
+                double_check(VirtualBentoList, 9, e);
+            });
+        }
         private void XBoxList_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             this.BeginInvoke((MethodInvoker)delegate
@@ -5643,27 +7350,43 @@ namespace brachIOplexus
 
         private void switch1OutputBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkOutputBoxes();
             switchObj.List[0].output = switch1OutputBox.SelectedIndex;
         }
 
         private void switch2OutputBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkOutputBoxes();
             switchObj.List[1].output = switch2OutputBox.SelectedIndex;
         }
 
         private void switch3OutputBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkOutputBoxes();
             switchObj.List[2].output = switch3OutputBox.SelectedIndex;
         }
 
         private void switch4OutputBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkOutputBoxes();
             switchObj.List[3].output = switch4OutputBox.SelectedIndex;
         }
 
         private void switch5OutputBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            checkOutputBoxes();
             switchObj.List[4].output = switch5OutputBox.SelectedIndex;
+        }
+
+        // Helper function to ensure at least one output joint is selected in the sequential switching list
+        // This is necessary since if no joints are selected and you try and switch the main loop will lock up and freeze the program.
+        private void checkOutputBoxes()
+        {
+            // If all of the output boxes are set to 'Off' then set the 5th outputbox to 'Hand' to avoid the freezing issue
+            if ((switch1OutputBox.SelectedIndex + switch2OutputBox.SelectedIndex + switch3OutputBox.SelectedIndex + switch4OutputBox.SelectedIndex + switch5OutputBox.SelectedIndex) == 0)
+            {
+                switch5OutputBox.SelectedIndex = 5;
+            }
         }
 
         private void switch1MappingBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -5806,13 +7529,13 @@ namespace brachIOplexus
         // Any mouse click will make the group box visible and a right click will hide the group box
         private void switchSignalBar1_MouseClick(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right && groupBox16.Visible == true)
+            if (e.Button == System.Windows.Forms.MouseButtons.Right && SequentialSwitchGroupBox.Visible == true)
             {
-                groupBox16.Visible = false;
+                SequentialSwitchGroupBox.Visible = false;
             }
-            else if (groupBox16.Visible == false)
+            else if (SequentialSwitchGroupBox.Visible == false)
             {
-                groupBox16.Visible = true;
+                SequentialSwitchGroupBox.Visible = true;
             }
         }
 
@@ -6287,25 +8010,753 @@ namespace brachIOplexus
 
         #endregion
 
+        #region "Motion Sequencer"
+
+        // When the window is closed, cancel all validating events
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 0x10) // The upper right "X" was clicked
+            {
+                AutoValidate = AutoValidate.Disable; // Deactivate all validations
+            }
+            base.WndProc(ref m);
+        }
+
+        #region "Handle GUI elements"
+        private void buttonEnableSequencer_Click(object sender, EventArgs e)
+        {
+            // Enable the movement sequencer if it is disabled
+            if (MovSeqEnabled == false)
+            {
+                // On click, save previous settings in the sequential switching section of the GUI, so they can be re-loaded when the motion sequencer is stopped
+                switchDoFbox_temp = switchDoFbox.SelectedIndex;
+                switchModeBox_temp = switchModeBox.SelectedIndex;
+                switch1OutputBox_temp = switch1OutputBox.SelectedIndex;
+                switch2OutputBox_temp = switch2OutputBox.SelectedIndex;
+                switch3OutputBox_temp = switch3OutputBox.SelectedIndex;
+                switch4OutputBox_temp = switch4OutputBox.SelectedIndex;
+                switch5OutputBox_temp = switch5OutputBox.SelectedIndex;
+
+                MovSeqEnabled = true;
+                buttonEnableSequencer.Text = "Disable";
+
+                // Enable all controls in movement sequence groupbox
+                panelSequencerControls.Enabled = true;
+                buttonPlaySequencer.Enabled = true;
+                buttonStopSequencer.Enabled = true;
+                dataSequencer.ReadOnly = false;
+
+                if (checkboxRepeat.Checked)
+                {
+                    numericIterationsSequencer.Enabled = true;
+                }
+                else
+                {
+                    numericIterationsSequencer.Enabled = false;
+                }
+            }
+
+            // Disable the movement sequencer if it is enabled
+            else
+            {
+                // Stop movement sequencer
+                stopMovementSequencer();
+
+                MovSeqEnabled = false;
+                buttonEnableSequencer.Text = "Enable";
+                buttonPlaySequencer.Enabled = false;
+                buttonStopSequencer.Enabled = false;
+
+                // Disable all controls in movement sequence groupbox
+                panelSequencerControls.Enabled = false;
+                dataSequencer.ReadOnly = true;
+            }
+        }
+
+        private void buttonAddMovement_Click(object sender, EventArgs e)
+        {
+            // Add a movement to the sequence
+            int switchIndex = LastMovement.ID;
+            string jointText = "";
+            switch (switchIndex)
+            {
+                case 0:
+                    jointText = "Shoulder";
+                    break;
+                case 1:
+                    jointText = "Elbow";
+                    break;
+                case 2:
+                    jointText = "Wrist Rotate";
+                    break;
+                case 3:
+                    jointText = "Wrist Flex";
+                    break;
+                case 4:
+                    jointText = "Hand";
+                    break;
+            }
+
+            // Make the default behavior to add current position and maximum velocity of the last joint that was moved.
+            if (dataSequencer.Rows.Count == 0)
+            {
+                dataSequencer.Rows.Add(jointText, "Auto",
+                Convert.ToString(LastMovement.pos),
+                Convert.ToString(LastMovement.vel), "10", "0");
+            }
+            else
+            {
+                int currentIndex = dataSequencer.CurrentRow.Index;
+                dataSequencer.Rows.Insert(currentIndex + 1, jointText, "Auto",
+                Convert.ToString(LastMovement.pos),
+                Convert.ToString(LastMovement.vel), "10", "0");
+                selectRow(currentIndex + 1);
+            }
+
+            resetRowHeaders();
+        }
+
+        private void buttonDelMovement_Click(object sender, EventArgs e)
+        {
+            // Delete the selected row from the sequence
+            if (dataSequencer.SelectedRows.Count > 0)
+            {
+                dataSequencer.Rows.Remove(dataSequencer.CurrentRow);
+                resetRowHeaders();
+            }
+        }
+
+        private void buttonClearSequencer_Click(object sender, EventArgs e)
+        {
+            // Clear all of the movements from the sequence
+            dataSequencer.Rows.Clear();
+            dataSequencer.Refresh();
+        }
+
+        // Reposition the selected movement up one position in the sequence
+        private void buttonMoveUpSequencer_Click(object sender, EventArgs e)
+        {
+            // Don't do anything if movement sequence is empty
+            if (dataSequencer.Rows.Count == 0) return;
+
+            int currentIndex = dataSequencer.CurrentRow.Index;
+            // If current row is first row, do nothing
+            if (currentIndex == 0) return;
+
+            swapRows("Up");
+            resetRowHeaders();
+
+            // Select current row at its new index
+            selectRow(currentIndex - 1);
+        }
+
+        // Reposition the selected movement down one position in the sequence
+        private void buttonMoveDownSequencer_Click(object sender, EventArgs e)
+        {
+            // Don't do anything if movement sequence is empty
+            if (dataSequencer.Rows.Count == 0) return;
+
+            int currentIndex = dataSequencer.CurrentRow.Index;
+
+            // If current row is last row, do nothing
+            if (currentIndex == dataSequencer.Rows.Count - 1) return;
+
+            swapRows("Down");
+            resetRowHeaders();
+
+            // Select current row at its new index
+            selectRow(currentIndex + 1);
+        }
+
+        private void buttonLoadSeq_Click(object sender, EventArgs e)
+        {
+            // Load a saved sequence from a selected .csv file
+            OpenFileDialog dialogLoad = new OpenFileDialog();
+            dialogLoad.Filter = "CSV files (*.csv)|*.csv";
+            dialogLoad.Title = "Load Sequence";
+            dialogLoad.DefaultExt = "csv";
+            if (Directory.Exists(System.IO.Path.GetFullPath(SequencesPath)))
+            {
+                // Specify the default folder path
+                dialogLoad.InitialDirectory = System.IO.Path.GetFullPath(SequencesPath);
+            }
+            
+            if (dialogLoad.ShowDialog() == DialogResult.OK)
+            {
+                dataSequencer.Rows.Clear();
+                dataSequencer.Refresh();
+
+                // Read selected csv file
+                string filepath = dialogLoad.FileName;
+                using (StreamReader reader = new StreamReader(filepath))
+                {
+                    // Skip the header line when reading file
+                    reader.ReadLine();
+
+                    string currentline;
+                    // For each line write a new row to the sequencer panel
+                    while ((currentline = reader.ReadLine()) != null)
+                    {
+                        string[] values = currentline.Split(',');
+                        dataSequencer.Rows.Add(values);
+                    }
+                }
+                resetRowHeaders();
+
+                // Check that all movements in the file are valid
+                validateMovements();
+            }
+        }
+
+        private void buttonSaveSeq_Click(object sender, EventArgs e)
+        {
+            // Save the current sequence to a .csv file
+            SaveFileDialog dialogSave = new SaveFileDialog();
+            dialogSave.Filter = "CSV files (*.csv)|*.csv";
+            dialogSave.Title = "Save Sequence";
+            dialogSave.DefaultExt = "csv";
+            if (Directory.Exists(System.IO.Path.GetFullPath(SequencesPath)))
+            {
+                // Specify the default folder path
+                dialogSave.InitialDirectory = System.IO.Path.GetFullPath(SequencesPath);
+            }
+
+            if (dialogSave.ShowDialog() == DialogResult.OK)
+            {
+                string filepath = dialogSave.FileName;
+
+                using (StreamWriter writer = new StreamWriter(filepath))
+                {
+                    // Write header text to the file
+                    writer.WriteLine("Joint,Motion Type,Position,Velocity,Tolerance,Delay (ms)");
+
+                    foreach (DataGridViewRow row in dataSequencer.Rows)
+                    {
+                        string newvalues = "";
+                        foreach (DataGridViewCell cell in row.Cells)
+                        {
+                            newvalues += Convert.ToString(cell.Value) + ",";
+                        }
+                        writer.WriteLine(newvalues);
+                    }
+                }
+            }
+        }
+
+        // Play the current sequence 
+        private void buttonPlaySequencer_Click(object sender, EventArgs e)
+        {
+            // Check that Bento Arm is connected
+            if (bentoMode == 0)
+            {
+                MessageBox.Show("Unable to play: Please make sure that the physical or virtual Bento Arm are connected.");
+                return;
+            }
+
+            // Check that torque is on and bento arm is in run state
+            if (TorqueOn.Enabled || BentoRun.Enabled || VirtualBentoRun.Enabled)
+            {
+                MessageBox.Show("Unable to play: Please make sure torque is on and that the Bento Arm is in 'Run' mode.");
+                return;
+            }
+
+            // Check that movement sequence isn't empty
+            if (dataSequencer.Rows.Count == 0)
+            {
+                MessageBox.Show("Unable to play: Empty movement sequence!");
+                return;
+            }
+
+            if (!MovSeqPlay)
+            {
+                // On click, make sure sequencer is configured properly
+                configureMovementSequencer();
+
+                // If we are playing from the beginning, double check joint limits for all movements
+                // Initialize movement sequencer
+                if (MovSeqStop)
+                {
+                    //validateMovements();
+                    startMovementSequencer();
+                }
+
+                MovSeqPlay = true;
+                buttonPlaySequencer.Text = "Pause";
+
+                // Start switching timer
+                switchingStopwatch.Start();
+            }
+
+            else
+            {
+                MovSeqPlay = false;
+                buttonPlaySequencer.Text = "Play";
+
+                // Stop switching timer
+                switchingStopwatch.Stop();
+            }
+        }
+
+        // Stop the current sequence 
+        private void buttonStopSequencer_Click(object sender, EventArgs e)
+        {
+            if (!MovSeqStop)
+            {
+                stopMovementSequencer();
+            }
+        }
+
+        // Only one of repeat and repeat forever can be checked
+        private void checkBoxRepeatForever_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBoxRepeatForever.Checked)
+            {
+                checkboxRepeat.Checked = false;
+                numericIterationsSequencer.Enabled = false;
+            }
+        }
+
+        // Only one of repeat and repeat forever can be checked
+        private void checkboxRepeat_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkboxRepeat.Checked)
+            {
+                checkBoxRepeatForever.Checked = false;
+                numericIterationsSequencer.Enabled = true;
+                numIterations = Convert.ToInt32(numericIterationsSequencer.Value);
+            }
+            else
+            {
+                numericIterationsSequencer.Enabled = false;
+            }
+        }
+
+        // Enable data logging
+        private void checkBoxLogData_CheckedChanged(object sender, EventArgs e)
+        {
+            // Force user to select a path if they want to log data
+            // If filepath exists, default behaviour is to append to same file, not overwrite
+            if ((labelFilePath.Text == "No filepath selected") && checkBoxLogData.Checked)
+            {
+                SaveFileDialog dialogLogData = new SaveFileDialog();
+                dialogLogData.Filter = "CSV files (*.csv)|*.csv";
+                dialogLogData.FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_data.csv";
+                dialogLogData.Title = "Log data to file";
+                dialogLogData.DefaultExt = "csv";
+
+                if (dialogLogData.ShowDialog() == DialogResult.OK)
+                {
+                    logDataFilePath = dialogLogData.FileName;
+                    labelFilePath.Text = logDataFilePath;
+                }
+
+                else
+                {
+                    checkBoxLogData.Checked = false;
+                }
+            }
+
+            if (checkBoxLogData.Checked)
+            {
+                MovSeqLogData = true;
+            }
+
+            else
+            {
+                MovSeqLogData = false;
+            }
+        }
+
+        // Select a path for data logging
+        private void buttonSelectPathSequencer_Click(object sender, EventArgs e)
+        {
+            // If filepath exists, default behaviour is to append to same file, not overwrite
+            SaveFileDialog dialogLogData = new SaveFileDialog();
+            dialogLogData.Filter = "CSV files (*.csv)|*.csv";
+            dialogLogData.FileName = DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_data.csv";
+            dialogLogData.Title = "Log data to file";
+            dialogLogData.DefaultExt = "csv";
+
+            if (dialogLogData.ShowDialog() == DialogResult.OK)
+            {
+                logDataFilePath = dialogLogData.FileName;
+                labelFilePath.Text = logDataFilePath;
+            }
+        }
+
+        #endregion
+
+        #region "Handle and Validate User Inputs"
+        
+        // Record the number of iterations that the sequence has been performed
+        private void numericIterationsSequencer_ValueChanged(object sender, EventArgs e)
+        {
+            numIterations = Convert.ToInt32(numericIterationsSequencer.Value);
+        }
+
+        // Make sure the switching delay is a positive integer. 
+        // The switching delay is used to insert a delay between each switching event in the sequential switcher in order to simulate the delay that a human user might introduce to the system. 
+        // By default the switching delay is set to 0 ms
+        private void SwitchingDelaySequencer_Validating(object sender, CancelEventArgs e)
+        {
+            // Check if the value is a positive integer
+            int numericValue;
+            if (!int.TryParse(SwitchingDelaySequencer.Text, out numericValue) || numericValue < 0)
+            {
+                e.Cancel = true;
+                MessageBox.Show("Switching delay must be a positive integer!");
+            }
+        }
+
+        // If the switching delay is validated then assign the value to the variable that will be used in the main loop to create the delay
+        private void SwitchingDelaySequencer_Validated(object sender, EventArgs e)
+        {
+            switchingDelay = Convert.ToInt64(SwitchingDelaySequencer.Text);
+        }
+
+        // Ensure that the data entered into the sequencer is numerical except for the joint and motion type column
+        private void dataSequencer_CellValidating(object sender, DataGridViewCellValidatingEventArgs e)
+        {
+            string headerText = dataSequencer.Columns[e.ColumnIndex].HeaderText;
+            // Don't validate if we are in the joint  or motion typecolumn
+            if (headerText.Equals("Joint") || headerText.Equals("Motion Type")) return;
+
+            // Check if the value is a numeric value
+            int numericValue;
+            if (!int.TryParse(e.FormattedValue.ToString(), out numericValue))
+            {
+                e.Cancel = true;
+                MessageBox.Show("Movement entries must be numeric values!");
+            }
+        }
+
+        // Ensure that the numerical data entered into the sequencer is within the allowable ranges
+        private void dataSequencer_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Check all numeric values for current row 
+            if (dataSequencer.Rows.Count != 0)
+            {
+                validateRow(dataSequencer.CurrentRow);
+            }
+        }
+        #endregion
+
+        #region "Convenience Functions"
+
+        private void configureMovementSequencer()
+        {
+            // Configure the sequential switch settings to the values that work best with the motion sequencer
+            switchDoFbox.SelectedIndex = 6;
+            switchModeBox.SelectedItem = "Button Press";
+            switch1OutputBox.SelectedItem = "Shoulder";
+            switch2OutputBox.SelectedItem = "Elbow";
+            switch3OutputBox.SelectedItem = "Wrist Rotate";
+            switch4OutputBox.SelectedItem = "Wrist Flex";
+            switch5OutputBox.SelectedItem = "Hand";
+            SequentialSwitchGroupBox.Enabled = false;
+        }
+
+        // Validate all of the movements in the sequence
+        private void validateMovements()
+        {
+            foreach (DataGridViewRow row in dataSequencer.Rows)
+            {
+                validateRow(row);
+            }
+        }
+
+        // Validate a row in the sequence to ensure that the values are between the min max joint limits of a given joint
+        private void validateRow(DataGridViewRow row)
+        {
+            string joint = Convert.ToString(row.Cells["joint"].Value);
+            switch (joint)
+            {
+                case "Shoulder":
+                    checkMinMax(row, 0);
+                    break;
+                case "Elbow":
+                    checkMinMax(row, 1);
+                    break;
+                case "Wrist Rotate":
+                    checkMinMax(row, 2);
+                    break;
+                case "Wrist Flex":
+                    checkMinMax(row, 3);
+                    break;
+                case "Hand":
+                    checkMinMax(row, 4);
+                    break;
+            }
+        }
+
+        // Start the movement sequencer
+        private void startMovementSequencer()
+        {
+            MovSeqStop = false;
+
+            // Set new sequence to play
+            currentMovSeq = getSequence();
+            iterationCount = 1;
+            labelCount.Text = Convert.ToString(iterationCount);
+
+            if (MovSeqLogData)
+            {
+                string header = "Timestamp, Target joint, Number of switches required to reach target joint";
+                movSeqDataFile = new StreamWriter(logDataFilePath, true);
+                movSeqDataFile.WriteLine(header);
+                movSeqDataFile.Flush();
+            }
+
+            // Disable movement sequence editing
+            disableEditing();
+        }
+
+        // Stop the movement sequencer
+        private void stopMovementSequencer()
+        {
+            MovSeqStop = true;
+            MovSeqPlay = false;
+            buttonPlaySequencer.Text = "Play";
+
+            // Reset movement sequence
+            currentMoveIndex = 0;
+            iterationCount = 0;
+            labelCount.Text = Convert.ToString(iterationCount);
+
+            if (MovSeqLogData)
+            {
+                movSeqDataFile.Close();
+            }
+
+            // Stop and reset switching timer
+            switchingStopwatch.Stop();
+            switchingStopwatch.Reset();
+
+            // Enable movement sequence editing
+            enableEditing();
+
+            // Reset the settings to what they were before enabling the movement sequencer
+            SequentialSwitchGroupBox.Enabled = true;
+            switchDoFbox.SelectedIndex = switchDoFbox_temp;
+            switchModeBox.SelectedIndex = switchModeBox_temp;
+            switch1OutputBox.SelectedIndex = switch1OutputBox_temp;
+            switch2OutputBox.SelectedIndex = switch2OutputBox_temp;
+            switch3OutputBox.SelectedIndex = switch3OutputBox_temp;
+            switch4OutputBox.SelectedIndex = switch4OutputBox_temp;
+            switch5OutputBox.SelectedIndex = switch5OutputBox_temp;
+
+        }
+
+        // Redraw the rows after a change has been made to the sequence
+        private void resetRowHeaders()
+        {
+            // Label the row headers
+            int rowNumber = 1;
+            foreach (DataGridViewRow row in dataSequencer.Rows)
+            {
+                row.HeaderCell.Value = rowNumber.ToString();
+                rowNumber = rowNumber + 1;
+            }
+        }
+
+        // Select a row in the sequence
+        private void selectRow(int rowIndex)
+        {
+            dataSequencer.CurrentRow.Selected = false;
+            dataSequencer.Rows[rowIndex].Selected = true;
+            dataSequencer.CurrentCell = dataSequencer.Rows[rowIndex].Cells[0];
+        }
+
+        private DataGridViewRow cloneRow(int currentRowIndex)
+        {
+            // Returns a copy of the current row
+            DataGridViewRow newRow = (DataGridViewRow)dataSequencer.Rows[currentRowIndex].Clone();
+            for (int i = 0; i < newRow.Cells.Count; i++)
+            {
+                newRow.Cells[i].Value = dataSequencer.Rows[currentRowIndex].Cells[i].Value;
+            }
+
+            return newRow;
+        }
+
+        private void swapRows(string swapDirection)
+        {
+            int currentIndex = dataSequencer.CurrentRow.Index;
+            DataGridViewRow newRow = cloneRow(currentIndex);
+
+            if (swapDirection == "Up")
+            {
+                // Insert copy of current row before the previous row (one index up)
+                dataSequencer.Rows.Insert(currentIndex - 1, newRow);
+            }
+            if (swapDirection == "Down")
+            {
+                // Insert copy of current row after the next row (two indices down)
+                dataSequencer.Rows.Insert(currentIndex + 2, newRow);
+            }
+
+            // Delete current row
+            dataSequencer.Rows.Remove(dataSequencer.CurrentRow);
+        }
+
+        // Retrieve the current sequence
+        private List<List<int>> getSequence()
+        {
+            currentMovSeq = new List<List<int>>();
+
+            // Grab data from GUI
+            // Map joints to integers
+            // Joint ordering [0-4] shoulder, elbow, wrist rotate, wrist flex, hand
+
+            foreach (DataGridViewRow row in dataSequencer.Rows)
+            {
+                List<int> movement = new List<int>();
+                foreach (DataGridViewCell cell in row.Cells)
+                {
+                    switch (Convert.ToString(cell.Value))
+                    {
+                        case "Shoulder":
+                            movement.Add(0);
+                            break;
+                        case "Elbow":
+                            movement.Add(1);
+                            break;
+                        case "Wrist Rotate":
+                            movement.Add(2);
+                            break;
+                        case "Wrist Flex":
+                            movement.Add(3);
+                            break;
+                        case "Hand":
+                            movement.Add(4);
+                            break;
+                        case "Auto":
+                            movement.Add(0);
+                            break;
+                        case "User":
+                            movement.Add(1);
+                            break;
+                        // If we are dealing with a numerical entry and not a joint name
+                        default:
+                            movement.Add(Convert.ToInt32(cell.Value));
+                            break;
+                    }
+                }
+                currentMovSeq.Add(movement);
+            }
+
+            return currentMovSeq;
+        }
+
+        private void enableEditing()
+        {
+            // Enable these controls for editing when movement sequencer is not playing
+            checkBoxRepeatForever.Enabled = true;
+            checkboxRepeat.Enabled = true;
+            numericIterationsSequencer.Enabled = true;
+
+            checkBoxLogData.Enabled = true;
+            buttonSelectPathSequencer.Enabled = true;
+
+            buttonSaveSeq.Enabled = true;
+            buttonLoadSeq.Enabled = true;
+            buttonAddMovement.Enabled = true;
+            buttonDelMovement.Enabled = true;
+            buttonMoveUpSequencer.Enabled = true;
+            buttonMoveDownSequencer.Enabled = true;
+            buttonClearSequencer.Enabled = true;
+        }
+
+        private void disableEditing()
+        {
+            // Disable these controls from editing when movement sequencer is playing
+            checkBoxRepeatForever.Enabled = false;
+            checkboxRepeat.Enabled = false;
+            numericIterationsSequencer.Enabled = false;
+
+            checkBoxLogData.Enabled = false;
+            buttonSelectPathSequencer.Enabled = false;
+
+            buttonSaveSeq.Enabled = false;
+            buttonLoadSeq.Enabled = false;
+            buttonAddMovement.Enabled = false;
+            buttonDelMovement.Enabled = false;
+            buttonMoveUpSequencer.Enabled = false;
+            buttonMoveDownSequencer.Enabled = false;
+            buttonClearSequencer.Enabled = false;
+        }
+
+        private void checkMinMax(DataGridViewRow row, int joint)
+        {
+            // Check position limits
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["GoalPos"].Value) < robotObj.Motor[joint].pmin)
+            {
+                dataSequencer.CurrentRow.Cells["GoalPos"].Value = robotObj.Motor[joint].pmin;
+            }
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["GoalPos"].Value) > robotObj.Motor[joint].pmax)
+            {
+                dataSequencer.CurrentRow.Cells["GoalPos"].Value = robotObj.Motor[joint].pmax;
+            }
+
+            // Check velocity limits
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["Vel"].Value) < robotObj.Motor[joint].wmin)
+            {
+                dataSequencer.CurrentRow.Cells["Vel"].Value = robotObj.Motor[joint].wmin;
+            }
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["Vel"].Value) > robotObj.Motor[joint].wmax)
+            {
+                dataSequencer.CurrentRow.Cells["Vel"].Value = robotObj.Motor[joint].wmax;
+            }
+
+            // Check tolerance limits
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["Tol"].Value) < 5)
+            {
+                dataSequencer.CurrentRow.Cells["Tol"].Value = 5;
+            }
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["Tol"].Value) > 1000)
+            {
+                dataSequencer.CurrentRow.Cells["Tol"].Value = 1000;
+            }
+
+            // Check motion delay limits
+            if (Convert.ToInt32(dataSequencer.CurrentRow.Cells["motionDelay"].Value) < 0)
+            {
+                dataSequencer.CurrentRow.Cells["motionDelay"].Value = 0;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         #region "Quick Profiles"
+        private void demoVirtualBentoButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                InvokeOnClick(VirtualBentoConnect, new EventArgs());
+                InvokeOnClick(KBconnect, new EventArgs());
+                InvokeOnClick(VirtualBentoSelectAll, new EventArgs());
+                if (simulationRunning == true)
+                {
+                    LoadParameters(@"Resources\Profiles\kb_multi.dat");
+                    tabControl1.SelectedIndex = 3;
+                    comboBoxSelectTask.SelectedIndex = 1;   // Select the slam dunk task
+                    Thread.Sleep(2700);     // Wait till unity finishes loading
+                    InvokeOnClick(buttonStartTask, new EventArgs());    // Load the slam dunk task
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
         private void demoDelsysButton_Click(object sender, EventArgs e)
         {
             try
             {
-                if (dynaConnect.Enabled == true)
-                {
-                    InvokeOnClick(dynaConnect, new EventArgs());
-                    if (dynaConnect.Enabled == true)
-                    {
-                        MessageBox.Show("Could not connect to the Bento Arm. Please make sure the USB2dynamixel is plugged in and the correct comm port is selected and try again");
-                    }
-                    else
-                    {
-                        InvokeOnClick(TorqueOn, new EventArgs());
-                         
-                    }
-                }
-
                 InvokeOnClick(SLRTconnect, new EventArgs());
                 InvokeOnClick(XboxConnect, new EventArgs());
                 InvokeOnClick(BentoSuspend, new EventArgs());
@@ -6319,6 +8770,20 @@ namespace brachIOplexus
                     QuickProfileState = 0;
                     tabControl1.SelectedIndex = 1;
                 }
+
+                if (dynaConnect.Enabled == true)
+                {
+                    InvokeOnClick(dynaConnect, new EventArgs());
+                    if (dynaConnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to the Bento Arm. Please make sure the USB2dynamixel is plugged in and the correct comm port is selected and try again");
+                    }
+                    else
+                    {
+                        InvokeOnClick(TorqueOn, new EventArgs());
+
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -6329,6 +8794,18 @@ namespace brachIOplexus
         {
             try
             {
+                InvokeOnClick(XboxConnect, new EventArgs());
+                if (XboxConnect.Enabled == true)
+                {
+                    MessageBox.Show("Could not connect to Xbox Controller. Please make sure the controller is plugged in and try again");
+                }
+                else
+                {
+                    LoadParameters(@"Resources\Profiles\xbox_multi.dat");
+                    QuickProfileState = 0;
+                    tabControl1.SelectedIndex = 1;
+                }
+
                 if (dynaConnect.Enabled == true)
                 {
                     InvokeOnClick(dynaConnect, new EventArgs());
@@ -6341,18 +8818,6 @@ namespace brachIOplexus
                         InvokeOnClick(TorqueOn, new EventArgs());
                         InvokeOnClick(BentoRun, new EventArgs());
                     }
-                }
-
-                InvokeOnClick(XboxConnect, new EventArgs());
-                if (XboxConnect.Enabled == true)
-                {
-                    MessageBox.Show("Could not connect to Xbox Controller. Please make sure the controller is plugged in and try again");
-                }
-                else
-                {
-                    LoadParameters(@"Resources\Profiles\xbox_multi.dat");
-                    QuickProfileState = 0;
-                    tabControl1.SelectedIndex = 1;
                 }
             }
             catch (Exception ex)
@@ -6365,6 +8830,19 @@ namespace brachIOplexus
         {
             try
             {
+                if (MYOconnect.Enabled == true)
+                {
+                    InvokeOnClick(MYOconnect, new EventArgs());
+                    if (MYOconnect.Enabled == true)
+                    {
+                        MessageBox.Show("Could not connect to MYO armband. Please make sure that the wireless dongle is plugged in and that the MYO armband is turned on and connected in the MYO connect software.");
+                    }
+                }
+                LoadParameters(@"Resources\Profiles\MYO_sequential_left.dat");
+                QuickProfileState = 1;
+                tabControl1.SelectedIndex = 1;
+                InvokeOnClick(XboxConnect, new EventArgs());        // Connect to xbox, so that quick profile changing can be triggered with start button on xbox
+
                 if (dynaConnect.Enabled == true)
                 {
                     InvokeOnClick(dynaConnect, new EventArgs());
@@ -6378,18 +8856,6 @@ namespace brachIOplexus
                         InvokeOnClick(BentoRun, new EventArgs());
                     }
                 }
-                if (MYOconnect.Enabled == true)
-                {
-                    InvokeOnClick(MYOconnect, new EventArgs());
-                    if (MYOconnect.Enabled == true)
-                    {
-                        MessageBox.Show("Could not connect to MYO armband. Please make sure that the wireless dongle is plugged in and that the MYO armband is turned on and connected in the MYO connect software.");
-                    }
-                }
-                LoadParameters(@"Resources\Profiles\MYO_sequential_left.dat");
-                QuickProfileState = 1;
-                tabControl1.SelectedIndex = 1;
-                InvokeOnClick(XboxConnect, new EventArgs());        // Connect to xbox, so that quick profile changing can be triggered with start button on xbox
             }
             catch (Exception ex)
             {
@@ -6416,16 +8882,6 @@ namespace brachIOplexus
                 MessageBox.Show(ex.Message);
             }
         }
-
-
-
-
-
-
-
-
-
-
 
         #endregion
 

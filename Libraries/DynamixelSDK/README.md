@@ -1,1 +1,0 @@
-The [Dynamixel SDK](https://github.com/ROBOTIS-GIT/DynamixelSDK) is available for use under the BSD 3-Clause License.

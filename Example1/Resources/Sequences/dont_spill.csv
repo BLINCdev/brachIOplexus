@@ -1,0 +1,11 @@
+Joint,Motion Type,Position,Velocity,Tolerance,Delay (ms)
+Elbow,Auto,2100,45,10,0,
+Shoulder,Auto,2322,45,10,0,
+Hand,Auto,2800,90,10,0,
+Elbow,Auto,1900,45,10,0,
+Shoulder,Auto,2304,45,10,0,
+Hand,Auto,2459,90,10,0,
+Elbow,Auto,2100,45,10,0,
+Shoulder,Auto,2012,45,10,0,
+Wrist Rotate,Auto,1028,90,10,0,
+Elbow,Auto,2300,45,10,0,

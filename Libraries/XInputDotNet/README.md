@@ -1,1 +1,0 @@
-The [XInputDotNet](https://github.com/speps/XInputDotNet) C# wrapper is available for use under the MIT License.

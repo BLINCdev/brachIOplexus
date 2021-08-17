@@ -1,1 +1,0 @@
-The [Simple Moving Average Algorithm](https://www.codeproject.com/Articles/17860/A-Simple-Moving-Average-Algorithm) is available for use under the [CPOL license](https://www.codeproject.com/info/cpol10.aspx).

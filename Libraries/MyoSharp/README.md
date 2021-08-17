@@ -1,1 +1,0 @@
-The [MyoSharp](https://github.com/tayfuzun/MyoSharp) C# wrapper is available for use under the MIT License.
