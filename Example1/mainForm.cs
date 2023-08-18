@@ -7892,11 +7892,241 @@ namespace brachIOplexus
         //}
         #endregion
 
-        #region "Task Timer"
-        // Create a Task Timer for tracking how long it takes to do tasks with the Bento Arm
-        // The timer is triggered when the arm first detects movement and stops when it moves back to the reset position
-        // The rest of the code for this is in the main loop
-        private void TaskTimerEnable_Click(object sender, EventArgs e)
+        #region "IRL UDP"
+        UdpClient irlUdpClientRX;
+        UdpClient irlUdpClientTX;
+        IPEndPoint irlIpEndPointRX;
+        IPEndPoint irlIpEndPointTX;
+        static Int32 irlPortRX = 30007;
+        static Int32 irlPortTX = 30006;
+        static IPAddress irllocalAddr = IPAddress.Parse("127.0.0.1");
+        static System.Threading.Timer irlRxTimer;
+        static System.Threading.Timer irlTxTimer;
+        Int32 irl_rx_delay = 2;  // Want RX to be as fast as possible, ensure playback is at 5ms
+        Int32 irl_tx_delay = 5;  // Ensure recording happens at about 5 ms
+        bool irlUdpConnected = false;
+
+        private void irlUdpConnect_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                //  If not connected to any arm, don't continue
+                if (bentoMode == 0)
+                {
+                    return;
+                }
+
+                // Initialize the server object and wait for client to connect
+                irlPortRX = Convert.ToInt32(irlUdpRxPort.Text);
+                irlPortTX = Convert.ToInt32(irlUdpTxPort.Text);
+                irllocalAddr = IPAddress.Parse(irlUdpIp.Text);
+
+                if (irlRxEnable.Checked == true)
+                {
+                    irlUdpClientRX = new UdpClient(irlPortRX);
+                    irlIpEndPointRX = new IPEndPoint(irllocalAddr, irlPortRX);
+                    // Set timeout on RX sockets so it doesn't block the callback
+                    irlUdpClientRX.Client.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReceiveTimeout, 1000);
+                    // Start the timer that will recieve the serial packets from the python applications
+                    irlRxTimer = new System.Threading.Timer(new TimerCallback(doIrlRx), null, 0, irl_rx_delay);
+                }
+
+                if (irlTxEnable.Checked == true)
+                {
+                    irlUdpClientTX = new UdpClient();
+                    irlIpEndPointTX = new IPEndPoint(irllocalAddr, irlPortTX);
+                    // Start the timer that will send the serial packets to the python applications
+                    irlTxTimer = new System.Threading.Timer(new TimerCallback(doIrlTx), null, 0, irl_tx_delay);
+                }
+
+                // Re-configure the GUI when UDP is connected
+                irlUdpDisconnect.Enabled = true;
+                irlUdpConnect.Enabled = false;
+                irlTxEnable.Enabled = false;
+                irlRxEnable.Enabled = false;
+                irlUdpRxPort.Enabled = false;
+                irlUdpTxPort.Enabled = false;
+                irlUdpIp.Enabled = false;
+
+                // Set connected variable
+                irlUdpConnected = true;
+
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void irlUdpDisconnect_Click(object sender, EventArgs e)
+        {
+            // Clean up the UDP client objects
+            irlUdpConnected = false;  // Will cause doIrlTxRx to always return and not do anything
+
+            // Sleep to allow the RX to timeout
+            System.Threading.Thread.Sleep(500);
+
+            if (irlRxEnable.Checked == true)
+            {
+                irlRxTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                irlUdpClientRX.Close();     // Close the UDP client    
+            }
+
+            if (irlTxEnable.Checked == true)
+            {
+                irlTxTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                irlUdpClientTX.Close();     // Close the UDP client    
+            }
+
+            // Re-configure the GUI when UDP is disconnected
+            irlUdpDisconnect.Enabled = false;
+            irlUdpConnect.Enabled = true;
+            irlTxEnable.Enabled = true;
+            irlRxEnable.Enabled = true;
+            irlUdpRxPort.Enabled = true;
+            irlUdpTxPort.Enabled = true;
+            irlUdpIp.Enabled = true;
+        }
+
+        public void doIrlTx(object state)
+        {
+            try
+            {
+
+                // If not connected return
+                if (bentoMode == 0 || irlUdpConnected == false)
+                {
+                    return;
+                }
+
+                // Send the packet over the network to the connected program
+
+                // Create a byte array for holding the packet values
+                // Use a fixed message size of 50 values
+                int MSG_SIZE2 = 49;
+                byte[] packet = new byte[MSG_SIZE2];
+
+                // Construct the packet that will be transmitted to the external program
+                packet[0] = 255;    // First two bytes of the packet are the header section and set to 255
+                packet[1] = 255;
+                packet[2] = (byte)BENTO_NUM * 9;      // The length of the packet
+                packet[3] = 1;
+                packet[4] = low_byte(BentoSense.ID[0].posf);
+                packet[5] = high_byte(BentoSense.ID[0].posf);
+                packet[6] = low_byte(BentoSense.ID[0].vel);
+                packet[7] = high_byte(BentoSense.ID[0].vel);
+                packet[8] = low_byte(BentoSense.ID[0].loadf);
+                packet[9] = high_byte(BentoSense.ID[0].loadf);
+                packet[10] = (byte)BentoSense.ID[0].tempf;
+                packet[11] = (byte)stateObj.motorState[0];
+                packet[12] = 2;
+                packet[13] = low_byte(BentoSense.ID[1].posf);
+                packet[14] = high_byte(BentoSense.ID[1].posf);
+                packet[15] = low_byte(BentoSense.ID[1].vel);
+                packet[16] = high_byte(BentoSense.ID[1].vel);
+                packet[17] = low_byte(BentoSense.ID[1].loadf);
+                packet[18] = high_byte(BentoSense.ID[1].loadf);
+                packet[19] = (byte)BentoSense.ID[1].tempf;
+                packet[20] = (byte)stateObj.motorState[1];
+                packet[21] = 3;
+                packet[22] = low_byte(BentoSense.ID[2].posf);
+                packet[23] = high_byte(BentoSense.ID[2].posf);
+                packet[24] = low_byte(BentoSense.ID[2].vel);
+                packet[25] = high_byte(BentoSense.ID[2].vel);
+                packet[26] = low_byte(BentoSense.ID[2].loadf);
+                packet[27] = high_byte(BentoSense.ID[2].loadf);
+                packet[28] = (byte)BentoSense.ID[2].tempf;
+                packet[29] = (byte)stateObj.motorState[2];
+                packet[30] = 4;
+                packet[31] = low_byte(BentoSense.ID[3].posf);
+                packet[32] = high_byte(BentoSense.ID[3].posf);
+                packet[33] = low_byte(BentoSense.ID[3].vel);
+                packet[34] = high_byte(BentoSense.ID[3].vel);
+                packet[35] = low_byte(BentoSense.ID[3].loadf);
+                packet[36] = high_byte(BentoSense.ID[3].loadf);
+                packet[37] = (byte)BentoSense.ID[3].tempf;
+                packet[38] = (byte)stateObj.motorState[3];
+                packet[39] = 5;
+                packet[40] = low_byte(BentoSense.ID[4].posf);
+                packet[41] = high_byte(BentoSense.ID[4].posf);
+                packet[42] = low_byte(BentoSense.ID[4].vel);
+                packet[43] = high_byte(BentoSense.ID[4].vel);
+                packet[44] = low_byte(BentoSense.ID[4].loadf);
+                packet[45] = high_byte(BentoSense.ID[4].loadf);
+                packet[46] = (byte)BentoSense.ID[4].tempf;
+                packet[47] = (byte)stateObj.motorState[4];
+
+
+                // Calculate the checksum for the packet
+                int checksum = 0;
+                for (int p = 2; p < packet.Length - 1; p++)
+                {
+                    checksum = checksum + packet[p];     // Add up all the bytes in the DATA section of the packet. i.e. do not count the header bytes
+                }
+                checksum = (byte)~checksum;     // return the bitwise complement which is equivalent to the NOT operator
+                packet[packet.Length - 1] = (byte)checksum; // Tuck the checksum byte into the last slot in the byte array 
+                irlUdpClientTX.Send(packet, packet.Length, irlIpEndPointTX);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        public void doIrlRx(object state)
+        {
+        try { 
+            // If not connected return
+            if (bentoMode == 0 || irlUdpConnected == false)
+            {
+                return;
+            }
+
+
+            byte[] bytes = irlUdpClientRX.Receive(ref irlIpEndPointRX);  // Warning this blocks until received or times out
+
+
+            // Decode packets from the external program using packet structure from UDP_Comm_Protocol_ASD_python_to_brachIO_180619.xls
+            // Calculate the checksum for the packet
+            int checksumRX = 0;
+            for (int p = 2; p < bytes.Length - 1; p++)
+            {
+                checksumRX = checksumRX + bytes[p];     // Add up all the bytes in the LENGTH and DATA section of hte packet
+            }
+
+            checksumRX = (byte)~checksumRX;     // return the bitwise complement which is equivalent to the NOT operator
+
+            // Only update the input values if the packet is valid
+            if (checksumRX == bytes[bytes.Length - 1] && bytes[0] == 255 && bytes[1] == 255)
+            {
+                int idx = 0;
+                for (int m = 3; m < bytes.Length - 1; m = m + 4)
+                {
+                    int p = bytes[m] + (bytes[m + 1] << 8);
+                    int v = bytes[m + 2] + (bytes[m + 3] << 8);
+                    robotObj.Motor[idx].p = p;
+                    robotObj.Motor[idx].w = v;
+                    idx += 1;
+                }
+            }
+          
+
+        }
+        catch (Exception ex)
+        {
+            // Ignore timeout messages
+            //MessageBox.Show(ex.Message);  
+        }
+}
+#endregion
+
+#region "Task Timer"
+// Create a Task Timer for tracking how long it takes to do tasks with the Bento Arm
+// The timer is triggered when the arm first detects movement and stops when it moves back to the reset position
+// The rest of the code for this is in the main loop
+private void TaskTimerEnable_Click(object sender, EventArgs e)
         {
             if (TaskTimerEnable.Text == "Enable\r\nTimer")
             {
@@ -8884,6 +9114,5 @@ namespace brachIOplexus
         }
 
         #endregion
-
     }
 }

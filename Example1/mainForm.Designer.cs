@@ -317,6 +317,17 @@
             this.label125 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabIO = new System.Windows.Forms.TabPage();
+            this.irlUdpGroupBox = new System.Windows.Forms.GroupBox();
+            this.irlUdpIp = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.irlTxEnable = new System.Windows.Forms.CheckBox();
+            this.irlRxEnable = new System.Windows.Forms.CheckBox();
+            this.irlUdpDisconnect = new System.Windows.Forms.Button();
+            this.irlUdpConnect = new System.Windows.Forms.Button();
+            this.irlUdpTxPort = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.irlUdpRxPort = new System.Windows.Forms.TextBox();
             this.demoVirtualBentoButton = new System.Windows.Forms.Button();
             this.demoDelsysButton = new System.Windows.Forms.Button();
             this.label236 = new System.Windows.Forms.Label();
@@ -805,6 +816,7 @@
             this.KBgroupBox.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabIO.SuspendLayout();
+            this.irlUdpGroupBox.SuspendLayout();
             this.groupBox9.SuspendLayout();
             this.groupBoxVRBentoArmSetup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox14)).BeginInit();
@@ -4496,6 +4508,7 @@
             // 
             // tabIO
             // 
+            this.tabIO.Controls.Add(this.irlUdpGroupBox);
             this.tabIO.Controls.Add(this.demoVirtualBentoButton);
             this.tabIO.Controls.Add(this.demoDelsysButton);
             this.tabIO.Controls.Add(this.label236);
@@ -4528,6 +4541,124 @@
             this.tabIO.TabIndex = 0;
             this.tabIO.Text = "Input/Output";
             this.tabIO.UseVisualStyleBackColor = true;
+            // 
+            // irlUdpGroupBox
+            // 
+            this.irlUdpGroupBox.Controls.Add(this.irlUdpIp);
+            this.irlUdpGroupBox.Controls.Add(this.label3);
+            this.irlUdpGroupBox.Controls.Add(this.irlTxEnable);
+            this.irlUdpGroupBox.Controls.Add(this.irlRxEnable);
+            this.irlUdpGroupBox.Controls.Add(this.irlUdpDisconnect);
+            this.irlUdpGroupBox.Controls.Add(this.irlUdpConnect);
+            this.irlUdpGroupBox.Controls.Add(this.irlUdpTxPort);
+            this.irlUdpGroupBox.Controls.Add(this.label2);
+            this.irlUdpGroupBox.Controls.Add(this.label1);
+            this.irlUdpGroupBox.Controls.Add(this.irlUdpRxPort);
+            this.irlUdpGroupBox.Location = new System.Drawing.Point(308, 373);
+            this.irlUdpGroupBox.Name = "irlUdpGroupBox";
+            this.irlUdpGroupBox.Size = new System.Drawing.Size(349, 100);
+            this.irlUdpGroupBox.TabIndex = 232;
+            this.irlUdpGroupBox.TabStop = false;
+            this.irlUdpGroupBox.Text = "UDP - Communication";
+            // 
+            // irlUdpIp
+            // 
+            this.irlUdpIp.Location = new System.Drawing.Point(179, 42);
+            this.irlUdpIp.Name = "irlUdpIp";
+            this.irlUdpIp.Size = new System.Drawing.Size(79, 20);
+            this.irlUdpIp.TabIndex = 12;
+            this.irlUdpIp.Text = "127.0.0.1";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(176, 19);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(17, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "IP";
+            // 
+            // irlTxEnable
+            // 
+            this.irlTxEnable.AutoSize = true;
+            this.irlTxEnable.Checked = true;
+            this.irlTxEnable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.irlTxEnable.Location = new System.Drawing.Point(11, 69);
+            this.irlTxEnable.Name = "irlTxEnable";
+            this.irlTxEnable.Size = new System.Drawing.Size(40, 17);
+            this.irlTxEnable.TabIndex = 10;
+            this.irlTxEnable.Text = "TX";
+            this.irlTxEnable.UseVisualStyleBackColor = true;
+            // 
+            // irlRxEnable
+            // 
+            this.irlRxEnable.AutoSize = true;
+            this.irlRxEnable.Checked = true;
+            this.irlRxEnable.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.irlRxEnable.Location = new System.Drawing.Point(11, 43);
+            this.irlRxEnable.Name = "irlRxEnable";
+            this.irlRxEnable.Size = new System.Drawing.Size(41, 17);
+            this.irlRxEnable.TabIndex = 9;
+            this.irlRxEnable.Text = "RX";
+            this.irlRxEnable.UseVisualStyleBackColor = true;
+            // 
+            // irlUdpDisconnect
+            // 
+            this.irlUdpDisconnect.Enabled = false;
+            this.irlUdpDisconnect.Location = new System.Drawing.Point(260, 71);
+            this.irlUdpDisconnect.Name = "irlUdpDisconnect";
+            this.irlUdpDisconnect.Size = new System.Drawing.Size(75, 23);
+            this.irlUdpDisconnect.TabIndex = 8;
+            this.irlUdpDisconnect.Text = "Disconnect";
+            this.irlUdpDisconnect.UseVisualStyleBackColor = true;
+            this.irlUdpDisconnect.Click += new System.EventHandler(this.irlUdpDisconnect_Click);
+            // 
+            // irlUdpConnect
+            // 
+            this.irlUdpConnect.Location = new System.Drawing.Point(179, 71);
+            this.irlUdpConnect.Name = "irlUdpConnect";
+            this.irlUdpConnect.Size = new System.Drawing.Size(75, 23);
+            this.irlUdpConnect.TabIndex = 7;
+            this.irlUdpConnect.Text = "Connect";
+            this.irlUdpConnect.UseVisualStyleBackColor = true;
+            this.irlUdpConnect.Click += new System.EventHandler(this.irlUdpConnect_Click);
+            // 
+            // irlUdpTxPort
+            // 
+            this.irlUdpTxPort.Location = new System.Drawing.Point(73, 67);
+            this.irlUdpTxPort.Name = "irlUdpTxPort";
+            this.irlUdpTxPort.Size = new System.Drawing.Size(58, 20);
+            this.irlUdpTxPort.TabIndex = 6;
+            this.irlUdpTxPort.Text = "30007";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(70, 19);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(26, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "Port";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(8, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(46, 13);
+            this.label1.TabIndex = 3;
+            this.label1.Text = "Enabled";
+            // 
+            // irlUdpRxPort
+            // 
+            this.irlUdpRxPort.Location = new System.Drawing.Point(73, 41);
+            this.irlUdpRxPort.Name = "irlUdpRxPort";
+            this.irlUdpRxPort.Size = new System.Drawing.Size(58, 20);
+            this.irlUdpRxPort.TabIndex = 2;
+            this.irlUdpRxPort.Text = "30006";
             // 
             // demoVirtualBentoButton
             // 
@@ -10683,6 +10814,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabIO.ResumeLayout(false);
             this.tabIO.PerformLayout();
+            this.irlUdpGroupBox.ResumeLayout(false);
+            this.irlUdpGroupBox.PerformLayout();
             this.groupBox9.ResumeLayout(false);
             this.groupBoxVRBentoArmSetup.ResumeLayout(false);
             this.groupBoxVRBentoArmSetup.PerformLayout();
@@ -11532,6 +11665,17 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Vel;
         private System.Windows.Forms.DataGridViewTextBoxColumn Tol;
         private System.Windows.Forms.DataGridViewTextBoxColumn motionDelay;
+        private System.Windows.Forms.GroupBox irlUdpGroupBox;
+        private System.Windows.Forms.TextBox irlUdpRxPort;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox irlUdpTxPort;
+        private System.Windows.Forms.Button irlUdpDisconnect;
+        private System.Windows.Forms.Button irlUdpConnect;
+        private System.Windows.Forms.CheckBox irlTxEnable;
+        private System.Windows.Forms.CheckBox irlRxEnable;
+        private System.Windows.Forms.TextBox irlUdpIp;
+        private System.Windows.Forms.Label label3;
     }
 }
 
