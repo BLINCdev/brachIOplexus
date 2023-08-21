@@ -1,4 +1,5 @@
 from socket_handler import checksum_fcn
+from math import pi
 
 MIN_ANGLES = [1028, 1784, 1028, 790, 1928]
 MAX_ANGLES = [3073, 2570, 3073, 3328, 2800]
@@ -6,8 +7,11 @@ V_RANGE = [55, 45, 90, 67, 90]
 LOAD_RANGE = [225, 300, 250, 300, 400]
 MAX_TEMP = 80
 BUFFER = 10
+DYNA_MIN = 0
+DYNA_MAX = 4096
 
-
+def change_scale(old_min, old_max, new_min, new_max, old_value):
+    return (((old_value - old_min) * (new_max - new_min)) / (old_max - old_min)) + new_min
 class ServoInfo(object):
     # Abstract class to hold basic implementation for servo related information
     def __init__(self):
@@ -30,12 +34,16 @@ class MxSeries(ServoInfo):
         self.id = index + 1  # ID start at 1, index starts at 0
         self.pmin = MIN_ANGLES[index] - BUFFER
         self.pmax = MAX_ANGLES[index] + BUFFER
+        # [-pi, pi] range required by ikpy
+        self.radians_min = self.dyna_to_radians(self.pmin, zero_to_2pi=False)
+        self.radians_max = self.dyna_to_radians(self.pmax, zero_to_2pi=False)
         self.vmin = 1024 - V_RANGE[index] - BUFFER
         self.vmax = 1024 + V_RANGE[index] + BUFFER
         self.loadmin = 1024 - LOAD_RANGE[index] - BUFFER
         self.loadmax = 1024 + LOAD_RANGE[index] + BUFFER
         self.maxtemp = MAX_TEMP
         self.state = None
+
 
     def normalized_position(self):
         return max(0, min((self.position - self.pmin) / (self.pmax - self.pmin), 1))
@@ -44,11 +52,35 @@ class MxSeries(ServoInfo):
         return int(max(self.pmin, min(value * (self.pmax - self.pmin) + self.pmin, self.pmax)))
 
 
+
+    # TODO MAKE RANGE VALID ( THOUGH IKPY SHOULD HANDLE THIS )
+    def dyna_to_radians(self, value, zero_to_2pi=False):
+        if zero_to_2pi:
+            return change_scale(DYNA_MIN, DYNA_MAX,0, 2 * pi, value)
+        else:
+            return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
+
+    def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
+        if zero_to_2pi:
+            old_min = 0
+            old_max = 2*pi
+        else:
+            old_min = -pi
+            old_max = pi
+        if normalized:
+            return change_scale(old_min, old_max, 0,1, value)
+        else:
+            return change_scale(old_min, old_max, DYNA_MIN, DYNA_MAX, value)
+
+
 class Robot:
     def __init__(self):
         self.joints = [MxSeries(index=i) for i in range(5)]
-
+        # Hand states in -pi to pi range
+        self.hand_states = {"closed": -0.15, "mid": 0.24, "open": 1.1428}
+        # TODO a nice feature would to get the actual current movement speed from Dynamixel so we can do actions until velocity is near zero
     def update_joints_from_packet(self, packet):
+        self.total_velocity = 0
         for i in range(3, packet[2], 9):
             idx = packet[i] - 1  # Packet has ID (which starts at 1) need index
             self.joints[idx].position = int.from_bytes(packet[i + 1:i + 3], byteorder='little')

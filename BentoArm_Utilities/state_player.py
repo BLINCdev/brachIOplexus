@@ -29,7 +29,7 @@ try:
         for line in csv_file:
             packet = robot.build_joints_packet(positions=line, normalized=True)
             socket_handler.send_packet(packet)
-            time.sleep(0.005)  # Approx 5 ms
+            time.sleep(0.01)  # Approx 10 ms to allow time for some movements
 
 except Exception as e:
     print(e)
