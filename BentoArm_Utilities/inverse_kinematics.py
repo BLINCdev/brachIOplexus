@@ -1,6 +1,6 @@
 from ikpy.chain import Chain
 from ikpy.link import OriginLink, URDFLink
-from servo import Robot
+from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
@@ -100,8 +100,10 @@ class InverseKinematics:
 
     def plot_state(self, state=[0, 0, 0, 0]):
         """
-        :param state: 0 -> shoulder  1 -> elbow  2 -> forearm  3 -> wrist  (chopstick not part of
-        :return:
+        Plots the Bento Arm in the given state in 3D
+
+        :param state: 0 -> shoulder  1 -> elbow  2 -> forearm  3 -> wrist  (chopstick not part of state)
+        :return: None
         """
         self.bento_chain.plot(self.fill_state(state), self.ax)
         plt.show(block=False)

@@ -1,5 +1,6 @@
 from socket_handler import SocketHandler
-from servo import Robot, change_scale, DYNA_MIN, DYNA_MAX
+from robot import Robot, DYNA_MIN, DYNA_MAX
+from helper_functions import change_scale
 from threading import Thread
 from inverse_kinematics import InverseKinematics
 import time

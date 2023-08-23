@@ -1,6 +1,6 @@
 import csv
 from socket_handler import SocketHandler
-from servo import Robot
+from robot import Robot
 import sys
 import os.path
 import time

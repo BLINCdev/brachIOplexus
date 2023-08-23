@@ -1,6 +1,6 @@
 import csv
 from socket_handler import SocketHandler
-from servo import Robot
+from robot import Robot
 import signal
 import datetime
 
@@ -46,5 +46,5 @@ class StateRecorder:
 
 if __name__ == "__main__":
     # Printing is not recommended as it will eat up alot of the kernel given the rate you get data
-    state_record = StateRecorder(normalized=False, print_data=False)
+    state_record = StateRecorder(normalized=True, print_data=True)
     state_record.main()
