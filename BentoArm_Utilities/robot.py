@@ -100,6 +100,16 @@ class MxSeries(ServoInfo):
             return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
 
     def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
+        """
+        Converts a radians value in [-π,π] or [0,2π] to a dyna range in [0,4095]
+        Args:
+            value (float):
+            normalized (bool): If true returns value in [0,1] else [0,4095]
+            zero_to_2pi:
+
+        Returns:
+
+        """
         if zero_to_2pi:
             old_min = 0
             old_max = 2 * pi
