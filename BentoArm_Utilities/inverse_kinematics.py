@@ -87,6 +87,7 @@ class InverseKinematics:
 
     @staticmethod
     def fill_state(state):
+        """If a state of 4 values is passed, it will fill in all the fixed state values of 0"""
         # Default full state value
         if len(state) == 9:
             return state
@@ -119,18 +120,19 @@ class InverseKinematics:
         forward = self.forward_kinematics(joints)
         difference = []
         for i in range(3):
-            difference.append(abs(target[i]-forward[i]))
+            difference.append(abs(target[i] - forward[i]))
         if sum(difference) > self.max_error:
             input("WARNING STATE UNREACHABLE")
         if plot:
             self.plot_state(joints)
         return joints
 
+
 def test():
     # Basic test doing both forward and backwards kinematics assuring both give the same value
     ik = InverseKinematics()
-    ik.plot_state([0,0,0,0])
-    position = ik.forward_kinematics([0,0,0,0])
+    ik.plot_state([0, 0, 0, 0])
+    position = ik.forward_kinematics([0, 0, 0, 0])
     print(f'Forward Kinematics Position: {position}')
     print(f'Target: {position}')
     state = ik.inverse_kinematics(target=(position))
@@ -140,6 +142,6 @@ def test():
     ik.plot_state(state=state)
     plt.show()
 
+
 if __name__ == "__main__":
     test()
-

@@ -53,9 +53,9 @@ class Rl:
             return joints
 
         else:
-            return [change_scale(-pi, pi, 0, DYNA_MAX, i) for i in ik_radians]
+            return [change_scale(-pi, pi, DYNA_MIN, DYNA_MAX, i) for i in ik_radians]
 
-    def get_position(self):
+    def get_position_xyz(self):
         """I Think this might be broken"""
         if self.normalized:
             joints_to_ik = [change_scale(old_min=0,
@@ -94,14 +94,14 @@ class Rl:
                        (50, 0, 15))
 
         for goal in goal_states:
-            print(f"Previous State {self.get_position()}")
+            print(f"Previous State {self.get_position_xyz()}")
             print(f"Goal State: {goal}")
             action = self.get_position_action(goal)
             print(f"Action {action}")
             packet = self.robot.build_joints_packet(action, normalized=self.normalized)
             self.socket_handler.send_packet(packet)
             time.sleep(3)
-            print(f"New State {self.get_position()}")
+            print(f"New State {self.get_position_xyz()}")
             print("----------------------")
 
         plt.show()
