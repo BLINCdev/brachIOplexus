@@ -26,8 +26,7 @@
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">from socket_handler import checksum_fcn
-from helper_functions import clamp_range, change_scale
+<pre><code class="python">from helper_functions import clamp_range, change_scale, checksum_fcn
 from math import pi
 
 MIN_ANGLES = [1028, 1784, 1028, 790, 1928]
@@ -40,115 +39,60 @@ DYNA_MIN = 0
 DYNA_MAX = 4095
 
 
-class ServoInfo(object):
-    &#34;&#34;&#34;
-    Abstract class to hold basic implementation for any servo related information
-
-    Attributes:
-        id (int): ID Number representing motor in bento arm, ID&#39;s are in range [1, # Of Joints]
-        position (int): Position of joint in dynamixel range [0, 4095]
-        velocity (int): Velocity for joint in dynamix range 1024 +- x
-        load (int): Load / Torque of joint
-        temp (int): Temperature of joint
-    &#34;&#34;&#34;
-    def __init__(self):
-        self.id = None
-        self.position = None  # The current position value of the servo
-        self.velocity = None  # The current moving speed of the servo
-        self.load = None  # The current load applied to the servo
-        self.temp = None  # The internal temperature of the servo in deg
-
-
-class MxSeries(ServoInfo):
-    &#34;&#34;&#34;
-    Specific instance of all servos of the mx series type (i.e mx-28, mx-64, mx-106)
-    &#34;&#34;&#34;
-
-    def __init__(self, index):
-        &#34;&#34;&#34;
-        Args:
-            index: Index of motor in [0, # of Joints - 1]
-
-        Attributes:
-            pmin (int): Min position for joint in dynamixel range [0,4095]
-            pmax (int): Max position for joint in dynamixel range [0,4095]
-            radians_min (float): Min position for joint in radians by default in [-π, π]
-            radians_max (float): Max position for joint in radians by default in [-π, π]
-            vmin (int): Min velocity for joint in dynamix range 1024 - x
-            vmax (int): Min velocity for joint in dynamix range 1024 + x
-            loadmin (int): Min effort / load / torque
-            loadmax (int): Max effort / load / torque
-            maxtemp (int): Default (80)
-
-        &#34;&#34;&#34;
-        super().__init__()
-        self.id = index + 1
-        self.pmin = MIN_ANGLES[index] - BUFFER
-        self.pmax = MAX_ANGLES[index] + BUFFER
-        self.radians_min = self.dyna_to_radians(self.pmin, zero_to_2pi=False)
-        self.radians_max = self.dyna_to_radians(self.pmax, zero_to_2pi=False)
-        self.vmin = 1024 - V_RANGE[index] - BUFFER
-        self.vmax = 1024 + V_RANGE[index] + BUFFER
-        self.loadmin = 1024 - LOAD_RANGE[index] - BUFFER
-        self.loadmax = 1024 + LOAD_RANGE[index] + BUFFER
-        self.maxtemp = MAX_TEMP
-        self.state = None
-
-    def normalized_to_dyna_pos_range(self, value):
-        &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-        return change_scale(old_min=0, old_max=1, new_min=self.pmin, new_max=self.pmax, old_value=value)
-
-    def normalized_to_dyna_vel_range(self, value):
-        &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
-        return int(change_scale(old_min=0, old_max=1, new_min=self.vmin, new_max=self.vmax, value=value))
-
-    def get_normalized_joint_position(self):
-        &#34;&#34;&#34;Converts current dyna position values self.position to a value in [0,1]&#34;&#34;&#34;
-        normalized_position = change_scale(old_min=self.pmin, old_max=self.pmax, new_min=0, new_max=1,
-                                           value=self.position)
-        return normalized_position
-
-    def get_clamped_dyna_joint_position(self, position):
-        &#34;&#34;&#34;Clamps given value to within allowable range for the particular joint&#34;&#34;&#34;
-        return clamp_range(min_val=self.pmin, max_val=self.pmax, value=position)
-
-    def dyna_to_radians(self, value, zero_to_2pi=False):
-        &#34;&#34;&#34;
-        Converts a dyna value in range [0,4095] to radians range [-π,π] or [0,2π]
-        Args:
-            value (int): Dynamixel position value
-            zero_to_2pi (bool): If true will convert to range [0,2π] else [-π,π]
-
-        Returns:
-            Dynamixel position in radians range of choice
-        &#34;&#34;&#34;
-        if zero_to_2pi:
-            return change_scale(DYNA_MIN, DYNA_MAX, 0, 2 * pi, value)
-        else:
-            return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
-
-    def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
-        if zero_to_2pi:
-            old_min = 0
-            old_max = 2 * pi
-        else:
-            old_min = -pi
-            old_max = pi
-        if normalized:
-            return change_scale(old_min, old_max, 0, 1, value)
-        else:
-            return change_scale(old_min, old_max, DYNA_MIN, DYNA_MAX, value)
-
-
 class Robot:
-    def __init__(self):
+    def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of joints
+        Class for BentoArm which is just a collection of MxSeries joints.  There are two main ways we can represent a
+        joint state.
+
+        - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications
+        - dynamixel state: standard representation used by dynamixel [0,4095]
+
+        Since there are many ways to represent states the code avoids doing as many state conversions as possible
+        putting the onus on the user to change ranges as needed.  There are some functions that work in the range of
+        [-π,π] as this is the range used by the inverse kinematics library IKPy.
+
+        Args:
+            normalized:  If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]
 
         Attributes:
             joints (list): A list of MxSeries joints
-            hand_states (dict): Hand states in the range of [-pi, pi] mainly just used by IKPY
+            hand_states (dict): Hand states in the range of [-π,π] mainly just used by IKPY
+
+        Examples:
+        ```python
+        from robot import Robot
+        from helper_functions import change_scale
+        from math import radians, pi
+        from socket_handler import SocketHandler
+
+
+        sock = SocketHandler
+
+        robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
+
+        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
+        robot = Robot(normalized=True)
+        state = robot.get_joints(normalized = True)
+        state[0] += change_scale(old_min = 0,
+                                 old_max = 2*pi,
+                                 new_min = 0,
+                                 new_max = 1,
+                                 value = radians(45)
+        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
+
+        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
+        robot = Robot(normalized=False)
+        state = robot.get_joints(normalized = FALSE)
+        state[0] += change_scale(old_min = 0,
+                                 old_max = 360,
+                                 new_min = DYNA_MIN,
+                                 new_max = DYNA_MAX,
+                                 value = 45
+        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
+        ```
         &#34;&#34;&#34;
+        self.normalized = normalized
         self.joints = [MxSeries(index=i) for i in range(5)]
         self.hand_states = {&#34;closed&#34;: -0.15, &#34;mid&#34;: 0.24, &#34;open&#34;: 1.1428}
 
@@ -174,7 +118,7 @@ class Robot:
             self.joints[idx].temp = packet[i + 7]
             self.joints[idx].state = packet[i + 8]
 
-    def build_joints_packet(self, joint_positions, velocities=(1024,) * 5, normalized=True):
+    def build_joints_packet(self, joint_positions, velocities=(1024,) * 5):
         &#34;&#34;&#34;
         Builds a bytearray packet of velocities and positions for each motor to be sent/parsed by the BracIOplexus
         software to create motor commands. This packet structure was developed by us, not brachIOplexus.  It is a simple
@@ -184,36 +128,37 @@ class Robot:
 
         Args:
             joint_positions (list): A collection of 5 values of either [0,4096] or [0,1] representing position of each motor
-            velocities (tuple): Velocities, just use default of 1024 for now, TODO add velocity control
-            normalized (bool): If normalized joint_positions values should be [0,1] else [0,4096] (raw dynamixel values)
+            velocities (tuple): Velocities, just use default of 1024 for now
 
         Returns:
             bytearray: packet to be sent to BrachIOplexus via udp
+
+        Todo:
+            This yet supports velocity control, just using default values for now
         &#34;&#34;&#34;
 
-        # A bunch of safety checks since sending raw values to bento arm
+        # Safety checks since sending raw values to bento arm can be dangerous
         assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
         assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
 
-        if normalized:  # [0,1]
+        if self.normalized:  # [0,1]
             &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
             joint_positions = [float(i) for i in joint_positions]
             for i in range(len(self.joints)):
-                # Converting normalized to dyna range always ensures it&#39;s within allowable range
-                # If there are errors in the normalized range, this cannot be fixed here.
-                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[i]))
+                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+                    i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
             joint_positions = [int(i) for i in joint_positions]
         else:  # [0,4095]
             &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
             joint_positions = [int(i) for i in joint_positions]
             for i in range(len(self.joints)):
                 # Check positions
-                assert (self.joints[i].pmin &lt;= joint_positions[i] &lt;= self.joints[
-                    i].pmax), &#34;Make sure servo positions are within valid range&#34;
+                assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+                    i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
                 # Check velocities
-                assert (velocities[i] in range(self.joints[i].vmin, self.joints[
-                    i].vmax)), &#34;Make sure servo velocities are within valid range&#34;
+                assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+                    i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
         packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
         for i in range(len(self.joints)):
@@ -225,12 +170,9 @@ class Robot:
         packet.append(checksum_fcn(packet[2:]))  # Append checksum function to end
         return bytearray(packet)
 
-    def print_joints(self, normalized=False):
+    def print_joints(self):
         &#34;&#34;&#34;
         Prints the array of Robots current joint positions
-
-        Args:
-            normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
 
         Returns:
             None
@@ -238,25 +180,135 @@ class Robot:
         &#34;&#34;&#34;
 
         for joint in self.joints:
-            if normalized:
+            if self.normalized:
                 print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
             else:
                 print(f&#34;ID {joint.id}: {joint.position}  &#34;, end=&#34;&#34;)
         print(&#34;&#34;)
 
-    def get_joints(self, normalized=False):
+    def get_joints(self):
         &#34;&#34;&#34;
-        Args:
-            normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
-
         Returns:
             list: current joint positions for Robot
         &#34;&#34;&#34;
 
-        if normalized:
+        if self.normalized:
             return [joint.get_normalized_joint_position() for joint in self.joints]
         else:
-            return [joint.position for joint in self.joints]</code></pre>
+            return [joint.position for joint in self.joints]
+
+
+class ServoInfo(object):
+    &#34;&#34;&#34;
+    Abstract class to hold basic implementation for any servo related information
+
+    Attributes:
+        id (int): ID Number representing motor in bento arm, ID&#39;s are in range [1, # Of Joints]
+        position (int): Position of joint in dynamixel range [0, 4095]
+        velocity (int): Velocity for joint in dynamix range 1024 +- x
+        load (int): Load / Torque of joint
+        temp (int): Temperature of joint
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        self.id = None
+        self.position = None  # The current position value of the servo
+        self.velocity = None  # The current moving speed of the servo
+        self.load = None  # The current load applied to the servo
+        self.temp = None  # The internal temperature of the servo in deg
+
+
+class MxSeries(ServoInfo):
+    &#34;&#34;&#34;
+    Specific instance of all servos of the mx series type (i.e mx-28, mx-64, mx-106)
+    &#34;&#34;&#34;
+
+    def __init__(self, index):
+        &#34;&#34;&#34;
+        Args:
+            index: Index of motor in [0, # of Joints - 1]
+
+        Attributes:
+            position_min (int): Min position for joint in dynamixel range [0,4095]
+            position_max (int): Max position for joint in dynamixel range [0,4095]
+            radians_min (float): Min position for joint in radians by default in [-π, π]
+            radians_max (float): Max position for joint in radians by default in [-π, π]
+            velocity_min (int): Min velocity for joint in dynamix range 1024 - x
+            velocity_max (int): Min velocity for joint in dynamix range 1024 + x
+            load_min (int): Min effort / load / torque
+            load_max (int): Max effort / load / torque
+            max_temp (int): Default (80)
+
+        &#34;&#34;&#34;
+        super().__init__()
+        self.id = index + 1
+        self.position_min = MIN_ANGLES[index] - BUFFER
+        self.postion_max = MAX_ANGLES[index] + BUFFER
+        self.radians_min = self.dyna_to_radians(self.position_min, zero_to_2pi=False)
+        self.radians_max = self.dyna_to_radians(self.postion_max, zero_to_2pi=False)
+        self.velocity_min = 1024 - V_RANGE[index] - BUFFER
+        self.velocity_max = 1024 + V_RANGE[index] + BUFFER
+        self.load_min = 1024 - LOAD_RANGE[index] - BUFFER
+        self.load_max = 1024 + LOAD_RANGE[index] + BUFFER
+        self.max_temp = MAX_TEMP
+        self.state = None
+
+    def normalized_to_dyna_pos_range(self, value):
+        &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
+        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)
+
+    def normalized_to_dyna_vel_range(self, value):
+        &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
+        return int(
+            change_scale(old_min=0, old_max=1, new_min=self.velocity_min, new_max=self.velocity_max, value=value))
+
+    def get_normalized_joint_position(self):
+        &#34;&#34;&#34;Converts current dyna position values self.position to a value in [0,1]&#34;&#34;&#34;
+        normalized_position = change_scale(old_min=self.position_min, old_max=self.postion_max, new_min=0, new_max=1,
+                                           value=self.position)
+        return normalized_position
+
+    def get_clamped_dyna_joint_position(self, position):
+        &#34;&#34;&#34;Clamps given value to within allowable range for the particular joint&#34;&#34;&#34;
+        return clamp_range(min_val=self.position_min, max_val=self.postion_max, value=position)
+
+    def dyna_to_radians(self, value, zero_to_2pi=False):
+        &#34;&#34;&#34;
+        Converts a dyna value in range [0,4095] to radians range [-π,π] or [0,2π]
+        Args:
+            value (int): Dynamixel position value
+            zero_to_2pi (bool): If true will convert to range [0,2π] else [-π,π]
+
+        Returns:
+            Dynamixel position in radians range of choice
+        &#34;&#34;&#34;
+        if zero_to_2pi:
+            return change_scale(DYNA_MIN, DYNA_MAX, 0, 2 * pi, value)
+        else:
+            return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
+
+    def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
+        &#34;&#34;&#34;
+        Converts a radians value in [-π,π] or [0,2π] to a dyna range in [0,4095]
+
+        Args:
+            value (float): radians value to be converted either in [0,2π] else [-π,π]
+            normalized (bool): If true returns value in [0,1] else [0,4095]
+            zero_to_2pi (bool): If true will convert from range [0,2π] else [-π,π]
+
+        Returns:
+
+        &#34;&#34;&#34;
+        if zero_to_2pi:
+            old_min = 0
+            old_max = 2 * pi
+        else:
+            old_min = -pi
+            old_max = pi
+        if normalized:
+            return change_scale(old_min, old_max, 0, 1, value)
+        else:
+            return change_scale(old_min, old_max, DYNA_MIN, DYNA_MAX, value)</code></pre>
 </details>
 </section>
 <section>
@@ -281,23 +333,23 @@ class Robot:
 </dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>pmin</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>position_min</code></strong> :&ensp;<code>int</code></dt>
 <dd>Min position for joint in dynamixel range [0,4095]</dd>
-<dt><strong><code>pmax</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>position_max</code></strong> :&ensp;<code>int</code></dt>
 <dd>Max position for joint in dynamixel range [0,4095]</dd>
 <dt><strong><code>radians_min</code></strong> :&ensp;<code>float</code></dt>
 <dd>Min position for joint in radians by default in [-π, π]</dd>
 <dt><strong><code>radians_max</code></strong> :&ensp;<code>float</code></dt>
 <dd>Max position for joint in radians by default in [-π, π]</dd>
-<dt><strong><code>vmin</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>velocity_min</code></strong> :&ensp;<code>int</code></dt>
 <dd>Min velocity for joint in dynamix range 1024 - x</dd>
-<dt><strong><code>vmax</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>velocity_max</code></strong> :&ensp;<code>int</code></dt>
 <dd>Min velocity for joint in dynamix range 1024 + x</dd>
-<dt><strong><code>loadmin</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>load_min</code></strong> :&ensp;<code>int</code></dt>
 <dd>Min effort / load / torque</dd>
-<dt><strong><code>loadmax</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>load_max</code></strong> :&ensp;<code>int</code></dt>
 <dd>Max effort / load / torque</dd>
-<dt><strong><code>maxtemp</code></strong> :&ensp;<code>int</code></dt>
+<dt><strong><code>max_temp</code></strong> :&ensp;<code>int</code></dt>
 <dd>Default (80)</dd>
 </dl></div>
 <details class="source">
@@ -315,47 +367,48 @@ class Robot:
             index: Index of motor in [0, # of Joints - 1]
 
         Attributes:
-            pmin (int): Min position for joint in dynamixel range [0,4095]
-            pmax (int): Max position for joint in dynamixel range [0,4095]
+            position_min (int): Min position for joint in dynamixel range [0,4095]
+            position_max (int): Max position for joint in dynamixel range [0,4095]
             radians_min (float): Min position for joint in radians by default in [-π, π]
             radians_max (float): Max position for joint in radians by default in [-π, π]
-            vmin (int): Min velocity for joint in dynamix range 1024 - x
-            vmax (int): Min velocity for joint in dynamix range 1024 + x
-            loadmin (int): Min effort / load / torque
-            loadmax (int): Max effort / load / torque
-            maxtemp (int): Default (80)
+            velocity_min (int): Min velocity for joint in dynamix range 1024 - x
+            velocity_max (int): Min velocity for joint in dynamix range 1024 + x
+            load_min (int): Min effort / load / torque
+            load_max (int): Max effort / load / torque
+            max_temp (int): Default (80)
 
         &#34;&#34;&#34;
         super().__init__()
         self.id = index + 1
-        self.pmin = MIN_ANGLES[index] - BUFFER
-        self.pmax = MAX_ANGLES[index] + BUFFER
-        self.radians_min = self.dyna_to_radians(self.pmin, zero_to_2pi=False)
-        self.radians_max = self.dyna_to_radians(self.pmax, zero_to_2pi=False)
-        self.vmin = 1024 - V_RANGE[index] - BUFFER
-        self.vmax = 1024 + V_RANGE[index] + BUFFER
-        self.loadmin = 1024 - LOAD_RANGE[index] - BUFFER
-        self.loadmax = 1024 + LOAD_RANGE[index] + BUFFER
-        self.maxtemp = MAX_TEMP
+        self.position_min = MIN_ANGLES[index] - BUFFER
+        self.postion_max = MAX_ANGLES[index] + BUFFER
+        self.radians_min = self.dyna_to_radians(self.position_min, zero_to_2pi=False)
+        self.radians_max = self.dyna_to_radians(self.postion_max, zero_to_2pi=False)
+        self.velocity_min = 1024 - V_RANGE[index] - BUFFER
+        self.velocity_max = 1024 + V_RANGE[index] + BUFFER
+        self.load_min = 1024 - LOAD_RANGE[index] - BUFFER
+        self.load_max = 1024 + LOAD_RANGE[index] + BUFFER
+        self.max_temp = MAX_TEMP
         self.state = None
 
     def normalized_to_dyna_pos_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-        return change_scale(old_min=0, old_max=1, new_min=self.pmin, new_max=self.pmax, old_value=value)
+        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)
 
     def normalized_to_dyna_vel_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
-        return int(change_scale(old_min=0, old_max=1, new_min=self.vmin, new_max=self.vmax, value=value))
+        return int(
+            change_scale(old_min=0, old_max=1, new_min=self.velocity_min, new_max=self.velocity_max, value=value))
 
     def get_normalized_joint_position(self):
         &#34;&#34;&#34;Converts current dyna position values self.position to a value in [0,1]&#34;&#34;&#34;
-        normalized_position = change_scale(old_min=self.pmin, old_max=self.pmax, new_min=0, new_max=1,
+        normalized_position = change_scale(old_min=self.position_min, old_max=self.postion_max, new_min=0, new_max=1,
                                            value=self.position)
         return normalized_position
 
     def get_clamped_dyna_joint_position(self, position):
         &#34;&#34;&#34;Clamps given value to within allowable range for the particular joint&#34;&#34;&#34;
-        return clamp_range(min_val=self.pmin, max_val=self.pmax, value=position)
+        return clamp_range(min_val=self.position_min, max_val=self.postion_max, value=position)
 
     def dyna_to_radians(self, value, zero_to_2pi=False):
         &#34;&#34;&#34;
@@ -373,6 +426,17 @@ class Robot:
             return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
 
     def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
+        &#34;&#34;&#34;
+        Converts a radians value in [-π,π] or [0,2π] to a dyna range in [0,4095]
+
+        Args:
+            value (float): radians value to be converted either in [0,2π] else [-π,π]
+            normalized (bool): If true returns value in [0,1] else [0,4095]
+            zero_to_2pi (bool): If true will convert from range [0,2π] else [-π,π]
+
+        Returns:
+
+        &#34;&#34;&#34;
         if zero_to_2pi:
             old_min = 0
             old_max = 2 * pi
@@ -435,7 +499,7 @@ class Robot:
 </summary>
 <pre><code class="python">def get_clamped_dyna_joint_position(self, position):
     &#34;&#34;&#34;Clamps given value to within allowable range for the particular joint&#34;&#34;&#34;
-    return clamp_range(min_val=self.pmin, max_val=self.pmax, value=position)</code></pre>
+    return clamp_range(min_val=self.position_min, max_val=self.postion_max, value=position)</code></pre>
 </details>
 </dd>
 <dt id="robot.MxSeries.get_normalized_joint_position"><code class="name flex">
@@ -449,7 +513,7 @@ class Robot:
 </summary>
 <pre><code class="python">def get_normalized_joint_position(self):
     &#34;&#34;&#34;Converts current dyna position values self.position to a value in [0,1]&#34;&#34;&#34;
-    normalized_position = change_scale(old_min=self.pmin, old_max=self.pmax, new_min=0, new_max=1,
+    normalized_position = change_scale(old_min=self.position_min, old_max=self.postion_max, new_min=0, new_max=1,
                                        value=self.position)
     return normalized_position</code></pre>
 </details>
@@ -465,7 +529,7 @@ class Robot:
 </summary>
 <pre><code class="python">def normalized_to_dyna_pos_range(self, value):
     &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-    return change_scale(old_min=0, old_max=1, new_min=self.pmin, new_max=self.pmax, old_value=value)</code></pre>
+    return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)</code></pre>
 </details>
 </dd>
 <dt id="robot.MxSeries.normalized_to_dyna_vel_range"><code class="name flex">
@@ -479,19 +543,41 @@ class Robot:
 </summary>
 <pre><code class="python">def normalized_to_dyna_vel_range(self, value):
     &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
-    return int(change_scale(old_min=0, old_max=1, new_min=self.vmin, new_max=self.vmax, value=value))</code></pre>
+    return int(
+        change_scale(old_min=0, old_max=1, new_min=self.velocity_min, new_max=self.velocity_max, value=value))</code></pre>
 </details>
 </dd>
 <dt id="robot.MxSeries.radians_to_dyna"><code class="name flex">
 <span>def <span class="ident">radians_to_dyna</span></span>(<span>self, value, normalized=True, zero_to_2pi=False)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Converts a radians value in [-π,π] or [0,2π] to a dyna range in [0,4095]</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>float</code></dt>
+<dd>radians value to be converted either in [0,2π] else [-π,π]</dd>
+<dt><strong><code>normalized</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If true returns value in [0,1] else [0,4095]</dd>
+<dt><strong><code>zero_to_2pi</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If true will convert from range [0,2π] else [-π,π]</dd>
+</dl>
+<p>Returns:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
+    &#34;&#34;&#34;
+    Converts a radians value in [-π,π] or [0,2π] to a dyna range in [0,4095]
+
+    Args:
+        value (float): radians value to be converted either in [0,2π] else [-π,π]
+        normalized (bool): If true returns value in [0,1] else [0,4095]
+        zero_to_2pi (bool): If true will convert from range [0,2π] else [-π,π]
+
+    Returns:
+
+    &#34;&#34;&#34;
     if zero_to_2pi:
         old_min = 0
         old_max = 2 * pi
@@ -508,29 +594,121 @@ class Robot:
 </dd>
 <dt id="robot.Robot"><code class="flex name class">
 <span>class <span class="ident">Robot</span></span>
+<span>(</span><span>normalized=True)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for BentoArm which is just a collection of joints</p>
+<div class="desc"><p>Class for BentoArm which is just a collection of MxSeries joints.
+There are two main ways we can represent a
+joint state.</p>
+<ul>
+<li>normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications</li>
+<li>dynamixel state: standard representation used by dynamixel [0,4095]</li>
+</ul>
+<p>Since there are many ways to represent states the code avoids doing as many state conversions as possible
+putting the onus on the user to change ranges as needed.
+There are some functions that work in the range of
+[-π,π] as this is the range used by the inverse kinematics library IKPy.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>normalized</code></strong></dt>
+<dd>If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]</dd>
+</dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>joints</code></strong> :&ensp;<code>list</code></dt>
 <dd>A list of MxSeries joints</dd>
 <dt><strong><code>hand_states</code></strong> :&ensp;<code>dict</code></dt>
-<dd>Hand states in the range of [-pi, pi] mainly just used by IKPY</dd>
-</dl></div>
+<dd>Hand states in the range of [-π,π] mainly just used by IKPY</dd>
+</dl>
+<p>Examples:</p>
+<pre><code class="language-python">from robot import Robot
+from helper_functions import change_scale
+from math import radians, pi
+from socket_handler import SocketHandler
+
+
+sock = SocketHandler
+
+robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
+
+# Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
+robot = Robot(normalized=True)
+state = robot.get_joints(normalized = True)
+state[0] += change_scale(old_min = 0,
+                         old_max = 2*pi,
+                         new_min = 0,
+                         new_max = 1,
+                         value = radians(45)
+sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
+
+# Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
+robot = Robot(normalized=False)
+state = robot.get_joints(normalized = FALSE)
+state[0] += change_scale(old_min = 0,
+                         old_max = 360,
+                         new_min = DYNA_MIN,
+                         new_max = DYNA_MAX,
+                         value = 45
+sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
+</code></pre></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class Robot:
-    def __init__(self):
+    def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of joints
+        Class for BentoArm which is just a collection of MxSeries joints.  There are two main ways we can represent a
+        joint state.
+
+        - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications
+        - dynamixel state: standard representation used by dynamixel [0,4095]
+
+        Since there are many ways to represent states the code avoids doing as many state conversions as possible
+        putting the onus on the user to change ranges as needed.  There are some functions that work in the range of
+        [-π,π] as this is the range used by the inverse kinematics library IKPy.
+
+        Args:
+            normalized:  If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]
 
         Attributes:
             joints (list): A list of MxSeries joints
-            hand_states (dict): Hand states in the range of [-pi, pi] mainly just used by IKPY
+            hand_states (dict): Hand states in the range of [-π,π] mainly just used by IKPY
+
+        Examples:
+        ```python
+        from robot import Robot
+        from helper_functions import change_scale
+        from math import radians, pi
+        from socket_handler import SocketHandler
+
+
+        sock = SocketHandler
+
+        robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
+
+        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
+        robot = Robot(normalized=True)
+        state = robot.get_joints(normalized = True)
+        state[0] += change_scale(old_min = 0,
+                                 old_max = 2*pi,
+                                 new_min = 0,
+                                 new_max = 1,
+                                 value = radians(45)
+        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
+
+        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
+        robot = Robot(normalized=False)
+        state = robot.get_joints(normalized = FALSE)
+        state[0] += change_scale(old_min = 0,
+                                 old_max = 360,
+                                 new_min = DYNA_MIN,
+                                 new_max = DYNA_MAX,
+                                 value = 45
+        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
+        ```
         &#34;&#34;&#34;
+        self.normalized = normalized
         self.joints = [MxSeries(index=i) for i in range(5)]
         self.hand_states = {&#34;closed&#34;: -0.15, &#34;mid&#34;: 0.24, &#34;open&#34;: 1.1428}
 
@@ -556,7 +734,7 @@ class Robot:
             self.joints[idx].temp = packet[i + 7]
             self.joints[idx].state = packet[i + 8]
 
-    def build_joints_packet(self, joint_positions, velocities=(1024,) * 5, normalized=True):
+    def build_joints_packet(self, joint_positions, velocities=(1024,) * 5):
         &#34;&#34;&#34;
         Builds a bytearray packet of velocities and positions for each motor to be sent/parsed by the BracIOplexus
         software to create motor commands. This packet structure was developed by us, not brachIOplexus.  It is a simple
@@ -566,36 +744,37 @@ class Robot:
 
         Args:
             joint_positions (list): A collection of 5 values of either [0,4096] or [0,1] representing position of each motor
-            velocities (tuple): Velocities, just use default of 1024 for now, TODO add velocity control
-            normalized (bool): If normalized joint_positions values should be [0,1] else [0,4096] (raw dynamixel values)
+            velocities (tuple): Velocities, just use default of 1024 for now
 
         Returns:
             bytearray: packet to be sent to BrachIOplexus via udp
+
+        Todo:
+            This yet supports velocity control, just using default values for now
         &#34;&#34;&#34;
 
-        # A bunch of safety checks since sending raw values to bento arm
+        # Safety checks since sending raw values to bento arm can be dangerous
         assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
         assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
 
-        if normalized:  # [0,1]
+        if self.normalized:  # [0,1]
             &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
             joint_positions = [float(i) for i in joint_positions]
             for i in range(len(self.joints)):
-                # Converting normalized to dyna range always ensures it&#39;s within allowable range
-                # If there are errors in the normalized range, this cannot be fixed here.
-                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[i]))
+                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+                    i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
             joint_positions = [int(i) for i in joint_positions]
         else:  # [0,4095]
             &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
             joint_positions = [int(i) for i in joint_positions]
             for i in range(len(self.joints)):
                 # Check positions
-                assert (self.joints[i].pmin &lt;= joint_positions[i] &lt;= self.joints[
-                    i].pmax), &#34;Make sure servo positions are within valid range&#34;
+                assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+                    i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
                 # Check velocities
-                assert (velocities[i] in range(self.joints[i].vmin, self.joints[
-                    i].vmax)), &#34;Make sure servo velocities are within valid range&#34;
+                assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+                    i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
         packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
         for i in range(len(self.joints)):
@@ -607,12 +786,9 @@ class Robot:
         packet.append(checksum_fcn(packet[2:]))  # Append checksum function to end
         return bytearray(packet)
 
-    def print_joints(self, normalized=False):
+    def print_joints(self):
         &#34;&#34;&#34;
         Prints the array of Robots current joint positions
-
-        Args:
-            normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
 
         Returns:
             None
@@ -620,22 +796,19 @@ class Robot:
         &#34;&#34;&#34;
 
         for joint in self.joints:
-            if normalized:
+            if self.normalized:
                 print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
             else:
                 print(f&#34;ID {joint.id}: {joint.position}  &#34;, end=&#34;&#34;)
         print(&#34;&#34;)
 
-    def get_joints(self, normalized=False):
+    def get_joints(self):
         &#34;&#34;&#34;
-        Args:
-            normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
-
         Returns:
             list: current joint positions for Robot
         &#34;&#34;&#34;
 
-        if normalized:
+        if self.normalized:
             return [joint.get_normalized_joint_position() for joint in self.joints]
         else:
             return [joint.position for joint in self.joints]</code></pre>
@@ -643,7 +816,7 @@ class Robot:
 <h3>Methods</h3>
 <dl>
 <dt id="robot.Robot.build_joints_packet"><code class="name flex">
-<span>def <span class="ident">build_joints_packet</span></span>(<span>self, joint_positions, velocities=(1024, 1024, 1024, 1024, 1024), normalized=True)</span>
+<span>def <span class="ident">build_joints_packet</span></span>(<span>self, joint_positions, velocities=(1024, 1024, 1024, 1024, 1024))</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Builds a bytearray packet of velocities and positions for each motor to be sent/parsed by the BracIOplexus
@@ -659,20 +832,20 @@ are done to ensure the position and velocity commands are correct but will not f
 <dt><strong><code>joint_positions</code></strong> :&ensp;<code>list</code></dt>
 <dd>A collection of 5 values of either [0,4096] or [0,1] representing position of each motor</dd>
 <dt><strong><code>velocities</code></strong> :&ensp;<code>tuple</code></dt>
-<dd>Velocities, just use default of 1024 for now, TODO add velocity control</dd>
-<dt><strong><code>normalized</code></strong> :&ensp;<code>bool</code></dt>
-<dd>If normalized joint_positions values should be [0,1] else [0,4096] (raw dynamixel values)</dd>
+<dd>Velocities, just use default of 1024 for now</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>bytearray</code></dt>
 <dd>packet to be sent to BrachIOplexus via udp</dd>
-</dl></div>
+</dl>
+<h2 id="todo">Todo</h2>
+<p>This yet supports velocity control, just using default values for now</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def build_joints_packet(self, joint_positions, velocities=(1024,) * 5, normalized=True):
+<pre><code class="python">def build_joints_packet(self, joint_positions, velocities=(1024,) * 5):
     &#34;&#34;&#34;
     Builds a bytearray packet of velocities and positions for each motor to be sent/parsed by the BracIOplexus
     software to create motor commands. This packet structure was developed by us, not brachIOplexus.  It is a simple
@@ -682,36 +855,37 @@ are done to ensure the position and velocity commands are correct but will not f
 
     Args:
         joint_positions (list): A collection of 5 values of either [0,4096] or [0,1] representing position of each motor
-        velocities (tuple): Velocities, just use default of 1024 for now, TODO add velocity control
-        normalized (bool): If normalized joint_positions values should be [0,1] else [0,4096] (raw dynamixel values)
+        velocities (tuple): Velocities, just use default of 1024 for now
 
     Returns:
         bytearray: packet to be sent to BrachIOplexus via udp
+
+    Todo:
+        This yet supports velocity control, just using default values for now
     &#34;&#34;&#34;
 
-    # A bunch of safety checks since sending raw values to bento arm
+    # Safety checks since sending raw values to bento arm can be dangerous
     assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
     assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
 
-    if normalized:  # [0,1]
+    if self.normalized:  # [0,1]
         &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
         joint_positions = [float(i) for i in joint_positions]
         for i in range(len(self.joints)):
-            # Converting normalized to dyna range always ensures it&#39;s within allowable range
-            # If there are errors in the normalized range, this cannot be fixed here.
-            joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[i]))
+            joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+                i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
         joint_positions = [int(i) for i in joint_positions]
     else:  # [0,4095]
         &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
         joint_positions = [int(i) for i in joint_positions]
         for i in range(len(self.joints)):
             # Check positions
-            assert (self.joints[i].pmin &lt;= joint_positions[i] &lt;= self.joints[
-                i].pmax), &#34;Make sure servo positions are within valid range&#34;
+            assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+                i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
             # Check velocities
-            assert (velocities[i] in range(self.joints[i].vmin, self.joints[
-                i].vmax)), &#34;Make sure servo velocities are within valid range&#34;
+            assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+                i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
     packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
     for i in range(len(self.joints)):
@@ -725,15 +899,10 @@ are done to ensure the position and velocity commands are correct but will not f
 </details>
 </dd>
 <dt id="robot.Robot.get_joints"><code class="name flex">
-<span>def <span class="ident">get_joints</span></span>(<span>self, normalized=False)</span>
+<span>def <span class="ident">get_joints</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>normalized</code></strong> :&ensp;<code>bool</code></dt>
-<dd>If true returns joint values within [0,1] relative to their range, else [pmin, pmax]</dd>
-</dl>
-<h2 id="returns">Returns</h2>
+<div class="desc"><h2 id="returns">Returns</h2>
 <dl>
 <dt><code>list</code></dt>
 <dd>current joint positions for Robot</dd>
@@ -742,43 +911,32 @@ are done to ensure the position and velocity commands are correct but will not f
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_joints(self, normalized=False):
+<pre><code class="python">def get_joints(self):
     &#34;&#34;&#34;
-    Args:
-        normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
-
     Returns:
         list: current joint positions for Robot
     &#34;&#34;&#34;
 
-    if normalized:
+    if self.normalized:
         return [joint.get_normalized_joint_position() for joint in self.joints]
     else:
         return [joint.position for joint in self.joints]</code></pre>
 </details>
 </dd>
 <dt id="robot.Robot.print_joints"><code class="name flex">
-<span>def <span class="ident">print_joints</span></span>(<span>self, normalized=False)</span>
+<span>def <span class="ident">print_joints</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Prints the array of Robots current joint positions</p>
-<h2 id="args">Args</h2>
-<dl>
-<dt><strong><code>normalized</code></strong> :&ensp;<code>bool</code></dt>
-<dd>If true returns joint values within [0,1] relative to their range, else [pmin, pmax]</dd>
-</dl>
 <h2 id="returns">Returns</h2>
 <p>None</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def print_joints(self, normalized=False):
+<pre><code class="python">def print_joints(self):
     &#34;&#34;&#34;
     Prints the array of Robots current joint positions
-
-    Args:
-        normalized (bool): If true returns joint values within [0,1] relative to their range, else [pmin, pmax]
 
     Returns:
         None
@@ -786,7 +944,7 @@ are done to ensure the position and velocity commands are correct but will not f
     &#34;&#34;&#34;
 
     for joint in self.joints:
-        if normalized:
+        if self.normalized:
             print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
         else:
             print(f&#34;ID {joint.id}: {joint.position}  &#34;, end=&#34;&#34;)
@@ -868,6 +1026,7 @@ total velocity used for deciding if robot is moving or still</p>
         load (int): Load / Torque of joint
         temp (int): Temperature of joint
     &#34;&#34;&#34;
+
     def __init__(self):
         self.id = None
         self.position = None  # The current position value of the servo
