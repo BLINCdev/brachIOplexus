@@ -6,9 +6,8 @@ import os.path
 import time
 
 
-def main(file, normalized=True):
-    socket_handler = SocketHandler()  # Setup UDP socket communication
-    robot = Robot()  # Setup Robot
+def playback(file, normalized=True, socket_handler=None):
+    robot = Robot(normalized=normalized)  # Setup Robot
     input("Press enter to playback csv file, ensure you've enabled Torque On in BracIOplexus Bento Arm Menu")
 
     done_check = False  #
@@ -24,7 +23,7 @@ def main(file, normalized=True):
                     assert (int(float(
                         state[0])) > 1), "Value read not in dyna motor range, did you set normalized correctly?"
                 done_check = True
-            packet = robot.build_joints_packet(joint_positions=state, normalized=normalized)
+            packet = robot.build_joints_packet(joint_positions=state)
             socket_handler.send_packet(packet)
             time.sleep(0.01)  # Approx 10 ms to allow time for some movements
 
@@ -36,4 +35,4 @@ if __name__ == "__main__":
         exit()
 
     assert (os.path.isfile(sys.argv[1])), f"{sys.argv[1]} Does not exist"  # Check if file given actually exists
-    main(normalized=False, file=sys.argv[1])
+    playback(normalized=False, file=sys.argv[1], socket_handler=SocketHandler())
