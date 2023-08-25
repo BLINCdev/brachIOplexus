@@ -125,8 +125,7 @@ class InverseKinematics:
         Plots the Bento Arm in the given state in 3D
 
         Args:
-            state (list) : List of joint configurations in [-π,π]
-            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
 
         Returns:
             None
@@ -140,8 +139,7 @@ class InverseKinematics:
         Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
 
         Args:
-            state (list) : List of joint configurations in [-π,π]
-            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
             matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
         Returns:
@@ -374,8 +372,7 @@ using the solidworks model.</p>
         Plots the Bento Arm in the given state in 3D
 
         Args:
-            state (list) : List of joint configurations in [-π,π]
-            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
 
         Returns:
             None
@@ -389,8 +386,7 @@ using the solidworks model.</p>
         Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
 
         Args:
-            state (list) : List of joint configurations in [-π,π]
-            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
             matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
         Returns:
@@ -435,12 +431,8 @@ using the solidworks model.</p>
 <div class="desc"><p>Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space</p>
 <h2 id="args">Args</h2>
 <dl>
-<dt>state (list) : List of joint configurations in [-π,π]</dt>
-<dt>0 -&gt; shoulder
-1 -&gt; elbow
-2 -&gt; forearm
-3 -&gt; wrist
-(chopstick not part of state)</dt>
+<dt><strong><code>state</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]</dd>
 <dt><strong><code>matrix</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If true end effector position gets returned as a homogenous matrix, else a XYZ tuple</dd>
 </dl>
@@ -455,8 +447,7 @@ using the solidworks model.</p>
     Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
 
     Args:
-        state (list) : List of joint configurations in [-π,π]
-        0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
         matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
     Returns:
@@ -520,12 +511,10 @@ is greater than self.max_error if so will give an input warning.</p>
 <dd>
 <div class="desc"><p>Plots the Bento Arm in the given state in 3D</p>
 <h2 id="args">Args</h2>
-<p>state (list) : List of joint configurations in [-π,π]
-0 -&gt; shoulder
-1 -&gt; elbow
-2 -&gt; forearm
-3 -&gt; wrist
-(chopstick not part of state)</p>
+<dl>
+<dt><strong><code>state</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]</dd>
+</dl>
 <h2 id="returns">Returns</h2>
 <p>None</p></div>
 <details class="source">
@@ -537,8 +526,7 @@ is greater than self.max_error if so will give an input warning.</p>
     Plots the Bento Arm in the given state in 3D
 
     Args:
-        state (list) : List of joint configurations in [-π,π]
-        0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
 
     Returns:
         None
