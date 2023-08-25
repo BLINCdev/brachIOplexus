@@ -4,14 +4,21 @@ from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
+from helper_functions import fill_state
 
 
 class InverseKinematics:
 
     def __init__(self, robot=None):
-        """This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
+        """
+        This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
         being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
-        using the solidworks model"""
+        using the solidworks model.
+
+        Attributes:
+            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
+        """
 
         # If robot is not passed, create a default one
         if robot is None:
@@ -85,46 +92,60 @@ class InverseKinematics:
         # Safety params
         self.max_error = 0.1
 
-    @staticmethod
-    def fill_state(state):
-        """If a state of 4 values is passed, it will fill in all the fixed state values of 0"""
-        # Default full state value
-        if len(state) == 9:
-            return state
-        # Else append 4 joint state to nine joint state to account for fixed joints
-        for i in range(3):
-            state.insert(0, None)
-        for i in range(2):
-            state.append(None)
-        return state
 
     def plot_state(self, state=[0, 0, 0, 0]):
         """
         Plots the Bento Arm in the given state in 3D
 
-        :param state: 0 -> shoulder  1 -> elbow  2 -> forearm  3 -> wrist  (chopstick not part of state)
-        :return: None
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -> shoulder  1 -> elbow  2 -> forearm  3 -> wrist  (chopstick not part of state)
+
+        Returns:
+            None
+
         """
-        self.bento_chain.plot(self.fill_state(state), self.ax)
+        self.bento_chain.plot(fill_state(state), self.ax)
         plt.show(block=False)
 
     def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
-        position = self.bento_chain.forward_kinematics(self.fill_state(state))
-        if matrix:
-            # Return homogenous transform matrix
-            return position
-        else:
-            # Return X Y Z coordinates
-            return position[0][3], position[1][3], position[2][3]
+        """
+        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
 
-    def inverse_kinematics(self, target=(0, 0, 0), plot=True):
-        joints = self.bento_chain.inverse_kinematics(target)
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -> shoulder  1 -> elbow  2 -> forearm  3 -> wrist  (chopstick not part of state)
+            matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
+
+        Returns:
+            The end effectors position as homogenous matrix or XYZ tuple
+        """
+        position = self.bento_chain.forward_kinematics(fill_state(state))
+        if matrix:
+            return position  # Return homogenous transform matrix
+        else:
+            return position[0][3], position[1][3], position[2][3]  # Return X Y Z coordinates
+
+    def inverse_kinematics(self, target_position_xyz=(0, 0, 0), plot=True):
+        """
+        A crude inverse kinematics lookup which estimates the joint positions needed to have the end effector reach a
+        target position.  Will also check if the sum of the difference between goal and forward_kinematics calculation
+        is greater than self.max_error if so will give an input warning.
+
+        Args:
+            target_position_xyz (tuple): Target XYZ position in space for end effector to touch
+            plot (bool): If true will plot the joint configuration
+
+        Returns:
+
+        """
+        joints = self.bento_chain.inverse_kinematics(target_position_xyz)
         forward = self.forward_kinematics(joints)
         difference = []
         for i in range(3):
-            difference.append(abs(target[i] - forward[i]))
+            difference.append(abs(target_position_xyz[i] - forward[i]))
         if sum(difference) > self.max_error:
-            input("WARNING STATE UNREACHABLE")
+            input(f"WARNING POSITION {target_position_xyz} REDUCED TO {forward} PRESS ENTER IF YOUR SURE!!!")
         if plot:
             self.plot_state(joints)
         return joints
@@ -132,17 +153,20 @@ class InverseKinematics:
 
 def test():
     # Basic test doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
     ik = InverseKinematics()
-    ik.plot_state([0, 0, 0, 0])
-    position = ik.forward_kinematics([0, 0, 0, 0])
-    print(f'Forward Kinematics Position: {position}')
-    print(f'Target: {position}')
-    state = ik.inverse_kinematics(target=(position))
-    print(f'Required State Radians {state[3:7]}')
-    position = ik.forward_kinematics(state=state)
-    print(f'Forward Kinematics Position: {position}')
-    ik.plot_state(state=state)
-    plt.show()
+
+    for pos in positions:
+        ik.plot_state(pos)
+        position = ik.forward_kinematics(pos)
+        print(f'Forward Kinematics Position: {position}')
+        print(f'Target: {position}')
+        state = ik.inverse_kinematics(target_position_xyz=(position))
+        print(f'Required State Radians {state[3:7]}')
+        position = ik.forward_kinematics(state=state)
+        print(f'Forward Kinematics Position: {position}')
+        print('-------------------------------------------------------')
+        plt.show()
 
 
 if __name__ == "__main__":
