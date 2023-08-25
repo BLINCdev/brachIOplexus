@@ -42,7 +42,7 @@ DYNA_MAX = 4095
 class Robot:
     def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of MxSeries joints.  There are two main ways we can represent a
+        Class for BentoArm which is just a collection of MxSeries joints.  There are two playback ways we can represent a
         joint state.
 
         - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications
@@ -255,7 +255,7 @@ class MxSeries(ServoInfo):
 
     def normalized_to_dyna_pos_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)
+        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, value=value)
 
     def normalized_to_dyna_vel_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
@@ -393,7 +393,7 @@ class MxSeries(ServoInfo):
 
     def normalized_to_dyna_pos_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)
+        return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, value=value)
 
     def normalized_to_dyna_vel_range(self, value):
         &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna velocity value within that particular motors range&#34;&#34;&#34;
@@ -529,7 +529,7 @@ class MxSeries(ServoInfo):
 </summary>
 <pre><code class="python">def normalized_to_dyna_pos_range(self, value):
     &#34;&#34;&#34;Takes in a value in [0,1] and converts it to a dyna position value within that particular motors range&#34;&#34;&#34;
-    return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, old_value=value)</code></pre>
+    return change_scale(old_min=0, old_max=1, new_min=self.position_min, new_max=self.postion_max, value=value)</code></pre>
 </details>
 </dd>
 <dt id="robot.MxSeries.normalized_to_dyna_vel_range"><code class="name flex">
@@ -598,7 +598,7 @@ class MxSeries(ServoInfo):
 </code></dt>
 <dd>
 <div class="desc"><p>Class for BentoArm which is just a collection of MxSeries joints.
-There are two main ways we can represent a
+There are two playback ways we can represent a
 joint state.</p>
 <ul>
 <li>normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications</li>
@@ -658,7 +658,7 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
 <pre><code class="python">class Robot:
     def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of MxSeries joints.  There are two main ways we can represent a
+        Class for BentoArm which is just a collection of MxSeries joints.  There are two playback ways we can represent a
         joint state.
 
         - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications

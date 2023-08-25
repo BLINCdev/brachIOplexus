@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>inverse_kinematics API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>inverse_kinematics</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from ikpy.chain import Chain
+from ikpy.link import OriginLink, URDFLink
+from robot import Robot
+from mpl_toolkits.mplot3d import Axes3D
+from math import pi
+import matplotlib.pyplot as plt
+from helper_functions import fill_state
+
+
+class InverseKinematics:
+
+    def __init__(self, robot=None):
+        &#34;&#34;&#34;
+        This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
+        being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
+        using the solidworks model.
+
+        Attributes:
+            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
+        &#34;&#34;&#34;
+
+        # If robot is not passed, create a default one
+        if robot is None:
+            self.robot = Robot()
+
+        self.bento_chain = Chain(name=&#39;left_arm&#39;, links=[
+            OriginLink(),
+            URDFLink(
+                name=&#34;base_to_post&#34;,
+                origin_translation=[0, 0, 32],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;
+            ),
+            URDFLink(
+                name=&#34;extender&#34;,
+                origin_translation=[12, 0, 0],  # Careful this is set by the user
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ),
+            URDFLink(
+                name=&#34;shoulder&#34;,
+                origin_translation=[0, 0, -6.99],
+                origin_orientation=[pi, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 0, 1],
+                bounds=(self.robot.joints[0].radians_min, self.robot.joints[0].radians_max)
+            ),
+            URDFLink(
+                name=&#34;shoulder_to_elbow&#34;,
+                origin_translation=[2.9, 0, 12.503],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 1, 0],
+                bounds=(self.robot.joints[1].radians_min, self.robot.joints[1].radians_max)
+            ),
+            URDFLink(
+                name=&#34;elbow_to_forearm&#34;,
+                origin_translation=[15.123, 0, -0.225],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[1, 0, 0],
+                bounds=(self.robot.joints[2].radians_min, self.robot.joints[2].radians_max)
+            ),
+            URDFLink(
+                name=&#34;forearm_to_wrist&#34;,
+                origin_translation=[4.38, 0, 0.065],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 1, 0],
+                bounds=(self.robot.joints[3].radians_min, self.robot.joints[3].radians_max)
+            ),
+            URDFLink(
+                name=&#34;wrist_to_hand&#34;,
+                origin_translation=[8.43, 0, 0.073],
+                origin_orientation=[pi, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ),
+            URDFLink(
+                name=&#34;hand_to_finger&#34;,
+                origin_translation=[10.52, -0.092, 0],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ), ], active_links_mask=[False, False, False, True, True, True, True, False, False])
+
+        # Ax for plotting
+        self.ax = plt.figure().add_subplot(111, projection=&#39;3d&#39;)
+        self.ax.axes.set_xlim3d(left=0, right=55)
+        self.ax.axes.set_ylim3d(bottom=-22.5, top=22.5)
+        self.ax.axes.set_zlim3d(bottom=0, top=55)
+
+        # Safety params
+        self.max_error = 0.1
+
+
+    def plot_state(self, state=[0, 0, 0, 0]):
+        &#34;&#34;&#34;
+        Plots the Bento Arm in the given state in 3D
+
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.bento_chain.plot(fill_state(state), self.ax)
+        plt.show(block=False)
+
+    def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
+        &#34;&#34;&#34;
+        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
+
+        Returns:
+            The end effectors position as homogenous matrix or XYZ tuple
+        &#34;&#34;&#34;
+        position = self.bento_chain.forward_kinematics(fill_state(state))
+        if matrix:
+            return position  # Return homogenous transform matrix
+        else:
+            return position[0][3], position[1][3], position[2][3]  # Return X Y Z coordinates
+
+    def inverse_kinematics(self, target_position_xyz=(0, 0, 0), plot=True):
+        &#34;&#34;&#34;
+        A crude inverse kinematics lookup which estimates the joint positions needed to have the end effector reach a
+        target position.  Will also check if the sum of the difference between goal and forward_kinematics calculation
+        is greater than self.max_error if so will give an input warning.
+
+        Args:
+            target_position_xyz (tuple): Target XYZ position in space for end effector to touch
+            plot (bool): If true will plot the joint configuration
+
+        Returns:
+
+        &#34;&#34;&#34;
+        joints = self.bento_chain.inverse_kinematics(target_position_xyz)
+        forward = self.forward_kinematics(joints)
+        difference = []
+        for i in range(3):
+            difference.append(abs(target_position_xyz[i] - forward[i]))
+        if sum(difference) &gt; self.max_error:
+            input(f&#34;WARNING POSITION {target_position_xyz} REDUCED TO {forward} PRESS ENTER IF YOUR SURE!!!&#34;)
+        if plot:
+            self.plot_state(joints)
+        return joints
+
+
+def test():
+    # Basic test doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
+    ik = InverseKinematics()
+
+    for pos in positions:
+        ik.plot_state(pos)
+        position = ik.forward_kinematics(pos)
+        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        print(f&#39;Target: {position}&#39;)
+        state = ik.inverse_kinematics(target_position_xyz=(position))
+        print(f&#39;Required State Radians {state[3:7]}&#39;)
+        position = ik.forward_kinematics(state=state)
+        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        print(&#39;-------------------------------------------------------&#39;)
+        plt.show()
+
+
+if __name__ == &#34;__main__&#34;:
+    test()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="inverse_kinematics.test"><code class="name flex">
+<span>def <span class="ident">test</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test():
+    # Basic test doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
+    ik = InverseKinematics()
+
+    for pos in positions:
+        ik.plot_state(pos)
+        position = ik.forward_kinematics(pos)
+        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        print(f&#39;Target: {position}&#39;)
+        state = ik.inverse_kinematics(target_position_xyz=(position))
+        print(f&#39;Required State Radians {state[3:7]}&#39;)
+        position = ik.forward_kinematics(state=state)
+        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        print(&#39;-------------------------------------------------------&#39;)
+        plt.show()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="inverse_kinematics.InverseKinematics"><code class="flex name class">
+<span>class <span class="ident">InverseKinematics</span></span>
+<span>(</span><span>robot=None)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
+being the center of the end of the fixed chopstick.
+All measurements are in centimeters and have been measured
+using the solidworks model.</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>bento_chain</code></strong> :&ensp;<code>Chain</code></dt>
+<dd>IKPy Chain, a collection of links and joints representing the bento arm</dd>
+<dt><strong><code>max_error</code></strong> :&ensp;<code>float</code></dt>
+<dd>Total allowable IK lookup error ( goal_position - position calculated by IK )</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class InverseKinematics:
+
+    def __init__(self, robot=None):
+        &#34;&#34;&#34;
+        This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
+        being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
+        using the solidworks model.
+
+        Attributes:
+            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
+        &#34;&#34;&#34;
+
+        # If robot is not passed, create a default one
+        if robot is None:
+            self.robot = Robot()
+
+        self.bento_chain = Chain(name=&#39;left_arm&#39;, links=[
+            OriginLink(),
+            URDFLink(
+                name=&#34;base_to_post&#34;,
+                origin_translation=[0, 0, 32],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;
+            ),
+            URDFLink(
+                name=&#34;extender&#34;,
+                origin_translation=[12, 0, 0],  # Careful this is set by the user
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ),
+            URDFLink(
+                name=&#34;shoulder&#34;,
+                origin_translation=[0, 0, -6.99],
+                origin_orientation=[pi, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 0, 1],
+                bounds=(self.robot.joints[0].radians_min, self.robot.joints[0].radians_max)
+            ),
+            URDFLink(
+                name=&#34;shoulder_to_elbow&#34;,
+                origin_translation=[2.9, 0, 12.503],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 1, 0],
+                bounds=(self.robot.joints[1].radians_min, self.robot.joints[1].radians_max)
+            ),
+            URDFLink(
+                name=&#34;elbow_to_forearm&#34;,
+                origin_translation=[15.123, 0, -0.225],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[1, 0, 0],
+                bounds=(self.robot.joints[2].radians_min, self.robot.joints[2].radians_max)
+            ),
+            URDFLink(
+                name=&#34;forearm_to_wrist&#34;,
+                origin_translation=[4.38, 0, 0.065],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;revolute&#34;,
+                rotation=[0, 1, 0],
+                bounds=(self.robot.joints[3].radians_min, self.robot.joints[3].radians_max)
+            ),
+            URDFLink(
+                name=&#34;wrist_to_hand&#34;,
+                origin_translation=[8.43, 0, 0.073],
+                origin_orientation=[pi, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ),
+            URDFLink(
+                name=&#34;hand_to_finger&#34;,
+                origin_translation=[10.52, -0.092, 0],
+                origin_orientation=[0, 0, 0],
+                joint_type=&#34;fixed&#34;,
+            ), ], active_links_mask=[False, False, False, True, True, True, True, False, False])
+
+        # Ax for plotting
+        self.ax = plt.figure().add_subplot(111, projection=&#39;3d&#39;)
+        self.ax.axes.set_xlim3d(left=0, right=55)
+        self.ax.axes.set_ylim3d(bottom=-22.5, top=22.5)
+        self.ax.axes.set_zlim3d(bottom=0, top=55)
+
+        # Safety params
+        self.max_error = 0.1
+
+
+    def plot_state(self, state=[0, 0, 0, 0]):
+        &#34;&#34;&#34;
+        Plots the Bento Arm in the given state in 3D
+
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.bento_chain.plot(fill_state(state), self.ax)
+        plt.show(block=False)
+
+    def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
+        &#34;&#34;&#34;
+        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+
+        Args:
+            state (list) : List of joint configurations in [-π,π]
+            0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+            matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
+
+        Returns:
+            The end effectors position as homogenous matrix or XYZ tuple
+        &#34;&#34;&#34;
+        position = self.bento_chain.forward_kinematics(fill_state(state))
+        if matrix:
+            return position  # Return homogenous transform matrix
+        else:
+            return position[0][3], position[1][3], position[2][3]  # Return X Y Z coordinates
+
+    def inverse_kinematics(self, target_position_xyz=(0, 0, 0), plot=True):
+        &#34;&#34;&#34;
+        A crude inverse kinematics lookup which estimates the joint positions needed to have the end effector reach a
+        target position.  Will also check if the sum of the difference between goal and forward_kinematics calculation
+        is greater than self.max_error if so will give an input warning.
+
+        Args:
+            target_position_xyz (tuple): Target XYZ position in space for end effector to touch
+            plot (bool): If true will plot the joint configuration
+
+        Returns:
+
+        &#34;&#34;&#34;
+        joints = self.bento_chain.inverse_kinematics(target_position_xyz)
+        forward = self.forward_kinematics(joints)
+        difference = []
+        for i in range(3):
+            difference.append(abs(target_position_xyz[i] - forward[i]))
+        if sum(difference) &gt; self.max_error:
+            input(f&#34;WARNING POSITION {target_position_xyz} REDUCED TO {forward} PRESS ENTER IF YOUR SURE!!!&#34;)
+        if plot:
+            self.plot_state(joints)
+        return joints</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="inverse_kinematics.InverseKinematics.forward_kinematics"><code class="name flex">
+<span>def <span class="ident">forward_kinematics</span></span>(<span>self, state=[0, 0, 0, 0], matrix=False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt>state (list) : List of joint configurations in [-π,π]</dt>
+<dt>0 -&gt; shoulder
+1 -&gt; elbow
+2 -&gt; forearm
+3 -&gt; wrist
+(chopstick not part of state)</dt>
+<dt><strong><code>matrix</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If true end effector position gets returned as a homogenous matrix, else a XYZ tuple</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>The end effectors position as homogenous matrix or XYZ tuple</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
+    &#34;&#34;&#34;
+    Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+
+    Args:
+        state (list) : List of joint configurations in [-π,π]
+        0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+        matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
+
+    Returns:
+        The end effectors position as homogenous matrix or XYZ tuple
+    &#34;&#34;&#34;
+    position = self.bento_chain.forward_kinematics(fill_state(state))
+    if matrix:
+        return position  # Return homogenous transform matrix
+    else:
+        return position[0][3], position[1][3], position[2][3]  # Return X Y Z coordinates</code></pre>
+</details>
+</dd>
+<dt id="inverse_kinematics.InverseKinematics.inverse_kinematics"><code class="name flex">
+<span>def <span class="ident">inverse_kinematics</span></span>(<span>self, target_position_xyz=(0, 0, 0), plot=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>A crude inverse kinematics lookup which estimates the joint positions needed to have the end effector reach a
+target position.
+Will also check if the sum of the difference between goal and forward_kinematics calculation
+is greater than self.max_error if so will give an input warning.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>target_position_xyz</code></strong> :&ensp;<code>tuple</code></dt>
+<dd>Target XYZ position in space for end effector to touch</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If true will plot the joint configuration</dd>
+</dl>
+<p>Returns:</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def inverse_kinematics(self, target_position_xyz=(0, 0, 0), plot=True):
+    &#34;&#34;&#34;
+    A crude inverse kinematics lookup which estimates the joint positions needed to have the end effector reach a
+    target position.  Will also check if the sum of the difference between goal and forward_kinematics calculation
+    is greater than self.max_error if so will give an input warning.
+
+    Args:
+        target_position_xyz (tuple): Target XYZ position in space for end effector to touch
+        plot (bool): If true will plot the joint configuration
+
+    Returns:
+
+    &#34;&#34;&#34;
+    joints = self.bento_chain.inverse_kinematics(target_position_xyz)
+    forward = self.forward_kinematics(joints)
+    difference = []
+    for i in range(3):
+        difference.append(abs(target_position_xyz[i] - forward[i]))
+    if sum(difference) &gt; self.max_error:
+        input(f&#34;WARNING POSITION {target_position_xyz} REDUCED TO {forward} PRESS ENTER IF YOUR SURE!!!&#34;)
+    if plot:
+        self.plot_state(joints)
+    return joints</code></pre>
+</details>
+</dd>
+<dt id="inverse_kinematics.InverseKinematics.plot_state"><code class="name flex">
+<span>def <span class="ident">plot_state</span></span>(<span>self, state=[0, 0, 0, 0])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots the Bento Arm in the given state in 3D</p>
+<h2 id="args">Args</h2>
+<p>state (list) : List of joint configurations in [-π,π]
+0 -&gt; shoulder
+1 -&gt; elbow
+2 -&gt; forearm
+3 -&gt; wrist
+(chopstick not part of state)</p>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_state(self, state=[0, 0, 0, 0]):
+    &#34;&#34;&#34;
+    Plots the Bento Arm in the given state in 3D
+
+    Args:
+        state (list) : List of joint configurations in [-π,π]
+        0 -&gt; shoulder  1 -&gt; elbow  2 -&gt; forearm  3 -&gt; wrist  (chopstick not part of state)
+
+    Returns:
+        None
+
+    &#34;&#34;&#34;
+    self.bento_chain.plot(fill_state(state), self.ax)
+    plt.show(block=False)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="inverse_kinematics.test" href="#inverse_kinematics.test">test</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="inverse_kinematics.InverseKinematics" href="#inverse_kinematics.InverseKinematics">InverseKinematics</a></code></h4>
+<ul class="">
+<li><code><a title="inverse_kinematics.InverseKinematics.forward_kinematics" href="#inverse_kinematics.InverseKinematics.forward_kinematics">forward_kinematics</a></code></li>
+<li><code><a title="inverse_kinematics.InverseKinematics.inverse_kinematics" href="#inverse_kinematics.InverseKinematics.inverse_kinematics">inverse_kinematics</a></code></li>
+<li><code><a title="inverse_kinematics.InverseKinematics.plot_state" href="#inverse_kinematics.InverseKinematics.plot_state">plot_state</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

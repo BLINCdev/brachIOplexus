@@ -27,7 +27,7 @@ class SocketHandler:
 
                 time.sleep(0.001)
 
-            thread = Thread(target=get_state)
+            thread = Thread(target_position_xyz=get_state)
             thread.start()
 
             # Send loop

@@ -74,7 +74,7 @@ class Rl:
             return self.ik.forward_kinematics(joints_to_ik)
 
     def main(self):
-        """Basic example that sets a series of goal states, and prints out the target vs. actual position currently does
+        """Basic example that sets a series of goal states, and prints out the target_position_xyz vs. actual position currently does
         not work using normalized values"""
 
         while not self.state:  # Ensure we get a first state reading
