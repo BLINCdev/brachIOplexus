@@ -4,7 +4,7 @@ from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
-from helper_functions import fill_state
+from helper_functions import fill_state, get_diff_xyz
 
 
 class InverseKinematics:
@@ -92,7 +92,6 @@ class InverseKinematics:
         # Safety params
         self.max_error = 0.1
 
-
     def plot_state(self, state=[0, 0, 0, 0]):
         """
         Plots the Bento Arm in the given state in 3D
@@ -151,23 +150,34 @@ class InverseKinematics:
         return joints
 
 
-def test():
-    # Basic test doing both forward and backwards kinematics assuring both give the same value
-    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
+def test_ik():
+    """
+    Basic test_ik that does both forward and backwards kinematics for a collection of manually defined joint positions,
+    asserting that the forward and kinematics position for the joint positions are roughly the same
+
+    Returns:
+        None
+    """
+    # Basic test_ik doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0, 0, 0, 0], [pi / 2, 0, 0, pi / 2], [-pi / 2, 0, -pi / 2, -pi / 2]]
     ik = InverseKinematics()
 
     for pos in positions:
         ik.plot_state(pos)
-        position = ik.forward_kinematics(pos)
-        print(f'Forward Kinematics Position: {position}')
-        print(f'Target: {position}')
-        state = ik.inverse_kinematics(target_position_xyz=(position))
+        for_position = ik.forward_kinematics(pos)
+        print(f'Forward Kinematics Position: {for_position}')
+        print(f'Target: {pos}')
+        state = ik.inverse_kinematics(target_position_xyz=for_position)
         print(f'Required State Radians {state[3:7]}')
-        position = ik.forward_kinematics(state=state)
-        print(f'Forward Kinematics Position: {position}')
+        inv_position = ik.forward_kinematics(state=state)
+        print(f'Forward Kinematics Position: {inv_position}')
         print('-------------------------------------------------------')
-        plt.show()
+        diff = get_diff_xyz(for_position, inv_position)
+        assert (diff < 0.1), "INVERSE VS FORWARDS KINEMATICS DIFFERENT, POSSIBLE BUG"
+        print(f"Difference between forward and inverse: {diff}")
+
+    plt.show(block=True)
 
 
 if __name__ == "__main__":
-    test()
+    test_ik()

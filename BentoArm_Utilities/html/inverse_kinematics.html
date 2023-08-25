@@ -32,7 +32,7 @@ from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
-from helper_functions import fill_state
+from helper_functions import fill_state, get_diff_xyz
 
 
 class InverseKinematics:
@@ -120,7 +120,6 @@ class InverseKinematics:
         # Safety params
         self.max_error = 0.1
 
-
     def plot_state(self, state=[0, 0, 0, 0]):
         &#34;&#34;&#34;
         Plots the Bento Arm in the given state in 3D
@@ -179,26 +178,37 @@ class InverseKinematics:
         return joints
 
 
-def test():
-    # Basic test doing both forward and backwards kinematics assuring both give the same value
-    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
+def test_ik():
+    &#34;&#34;&#34;
+    Basic test_ik that does both forward and backwards kinematics for a collection of manually defined joint positions,
+    asserting that the forward and kinematics position for the joint positions are roughly the same
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    # Basic test_ik doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0, 0, 0, 0], [pi / 2, 0, 0, pi / 2], [-pi / 2, 0, -pi / 2, -pi / 2]]
     ik = InverseKinematics()
 
     for pos in positions:
         ik.plot_state(pos)
-        position = ik.forward_kinematics(pos)
-        print(f&#39;Forward Kinematics Position: {position}&#39;)
-        print(f&#39;Target: {position}&#39;)
-        state = ik.inverse_kinematics(target_position_xyz=(position))
+        for_position = ik.forward_kinematics(pos)
+        print(f&#39;Forward Kinematics Position: {for_position}&#39;)
+        print(f&#39;Target: {pos}&#39;)
+        state = ik.inverse_kinematics(target_position_xyz=for_position)
         print(f&#39;Required State Radians {state[3:7]}&#39;)
-        position = ik.forward_kinematics(state=state)
-        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        inv_position = ik.forward_kinematics(state=state)
+        print(f&#39;Forward Kinematics Position: {inv_position}&#39;)
         print(&#39;-------------------------------------------------------&#39;)
-        plt.show()
+        diff = get_diff_xyz(for_position, inv_position)
+        assert (diff &lt; 0.1), &#34;INVERSE VS FORWARDS KINEMATICS DIFFERENT, POSSIBLE BUG&#34;
+        print(f&#34;Difference between forward and inverse: {diff}&#34;)
+
+    plt.show(block=True)
 
 
 if __name__ == &#34;__main__&#34;:
-    test()</code></pre>
+    test_ik()</code></pre>
 </details>
 </section>
 <section>
@@ -208,31 +218,45 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="inverse_kinematics.test"><code class="name flex">
-<span>def <span class="ident">test</span></span>(<span>)</span>
+<dt id="inverse_kinematics.test_ik"><code class="name flex">
+<span>def <span class="ident">test_ik</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Basic test_ik that does both forward and backwards kinematics for a collection of manually defined joint positions,
+asserting that the forward and kinematics position for the joint positions are roughly the same</p>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def test():
-    # Basic test doing both forward and backwards kinematics assuring both give the same value
-    positions = [[0,0,0,0], [pi/2, 0, 0, pi/2], [-pi/2, 0, -pi/2, -pi/2]]
+<pre><code class="python">def test_ik():
+    &#34;&#34;&#34;
+    Basic test_ik that does both forward and backwards kinematics for a collection of manually defined joint positions,
+    asserting that the forward and kinematics position for the joint positions are roughly the same
+
+    Returns:
+        None
+    &#34;&#34;&#34;
+    # Basic test_ik doing both forward and backwards kinematics assuring both give the same value
+    positions = [[0, 0, 0, 0], [pi / 2, 0, 0, pi / 2], [-pi / 2, 0, -pi / 2, -pi / 2]]
     ik = InverseKinematics()
 
     for pos in positions:
         ik.plot_state(pos)
-        position = ik.forward_kinematics(pos)
-        print(f&#39;Forward Kinematics Position: {position}&#39;)
-        print(f&#39;Target: {position}&#39;)
-        state = ik.inverse_kinematics(target_position_xyz=(position))
+        for_position = ik.forward_kinematics(pos)
+        print(f&#39;Forward Kinematics Position: {for_position}&#39;)
+        print(f&#39;Target: {pos}&#39;)
+        state = ik.inverse_kinematics(target_position_xyz=for_position)
         print(f&#39;Required State Radians {state[3:7]}&#39;)
-        position = ik.forward_kinematics(state=state)
-        print(f&#39;Forward Kinematics Position: {position}&#39;)
+        inv_position = ik.forward_kinematics(state=state)
+        print(f&#39;Forward Kinematics Position: {inv_position}&#39;)
         print(&#39;-------------------------------------------------------&#39;)
-        plt.show()</code></pre>
+        diff = get_diff_xyz(for_position, inv_position)
+        assert (diff &lt; 0.1), &#34;INVERSE VS FORWARDS KINEMATICS DIFFERENT, POSSIBLE BUG&#34;
+        print(f&#34;Difference between forward and inverse: {diff}&#34;)
+
+    plt.show(block=True)</code></pre>
 </details>
 </dd>
 </dl>
@@ -344,7 +368,6 @@ using the solidworks model.</p>
 
         # Safety params
         self.max_error = 0.1
-
 
     def plot_state(self, state=[0, 0, 0, 0]):
         &#34;&#34;&#34;
@@ -538,7 +561,7 @@ is greater than self.max_error if so will give an input warning.</p>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="inverse_kinematics.test" href="#inverse_kinematics.test">test</a></code></li>
+<li><code><a title="inverse_kinematics.test_ik" href="#inverse_kinematics.test_ik">test_ik</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>

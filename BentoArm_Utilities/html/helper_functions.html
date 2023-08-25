@@ -61,7 +61,15 @@ def fill_state(state):
         state.insert(0, None)
     for i in range(2):
         state.append(None)
-    return state</code></pre>
+    return state
+
+
+def get_diff_xyz(first, second):
+    total_diff = 0
+    assert(len(first) == len(second))
+    for i in range(len(first)):
+        total_diff += abs(first[i]-second[i])
+    return total_diff</code></pre>
 </details>
 </section>
 <section>
@@ -145,6 +153,23 @@ used for the checksum</p></div>
     return state</code></pre>
 </details>
 </dd>
+<dt id="helper_functions.get_diff_xyz"><code class="name flex">
+<span>def <span class="ident">get_diff_xyz</span></span>(<span>first, second)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_diff_xyz(first, second):
+    total_diff = 0
+    assert(len(first) == len(second))
+    for i in range(len(first)):
+        total_diff += abs(first[i]-second[i])
+    return total_diff</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -162,6 +187,7 @@ used for the checksum</p></div>
 <li><code><a title="helper_functions.checksum_fcn" href="#helper_functions.checksum_fcn">checksum_fcn</a></code></li>
 <li><code><a title="helper_functions.clamp_range" href="#helper_functions.clamp_range">clamp_range</a></code></li>
 <li><code><a title="helper_functions.fill_state" href="#helper_functions.fill_state">fill_state</a></code></li>
+<li><code><a title="helper_functions.get_diff_xyz" href="#helper_functions.get_diff_xyz">get_diff_xyz</a></code></li>
 </ul>
 </li>
 </ul>

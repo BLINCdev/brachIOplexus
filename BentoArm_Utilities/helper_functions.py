@@ -34,3 +34,11 @@ def fill_state(state):
     for i in range(2):
         state.append(None)
     return state
+
+
+def get_diff_xyz(first, second):
+    total_diff = 0
+    assert(len(first) == len(second))
+    for i in range(len(first)):
+        total_diff += abs(first[i]-second[i])
+    return total_diff

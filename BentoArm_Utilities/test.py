@@ -1,12 +1,18 @@
 from state_player import playback
 from state_recorder import StateRecorder
 from socket_handler import SocketHandler
+from inverse_kinematics import test_ik
 import csv
 import os
+
+
 def main():
+    """Test inverse kinematics"""
+    test_ik()
+
     sock = SocketHandler()
 
-    # Test normalized
+    """Test normalized state recording and playback"""
     recorder = StateRecorder(normalized=True, print_data=True, socket_handler=sock)
     recorder.test()
 
@@ -17,7 +23,7 @@ def main():
     playback(file=recorder.filename, normalized=True, socket_handler=sock)
     os.remove(recorder.filename)
 
-    # Test dyna
+    """Test dyna values state recording and playback"""
     sock.sock.close()
     sock2 = SocketHandler()
 
