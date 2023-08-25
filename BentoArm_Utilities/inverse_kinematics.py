@@ -97,7 +97,7 @@ class InverseKinematics:
         Plots the Bento Arm in the given state in 3D
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
 
         Returns:
             None
@@ -111,7 +111,7 @@ class InverseKinematics:
         Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
             matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
         Returns:
