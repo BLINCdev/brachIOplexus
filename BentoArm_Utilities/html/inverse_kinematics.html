@@ -28,29 +28,33 @@
 </summary>
 <pre><code class="python">from ikpy.chain import Chain
 from ikpy.link import OriginLink, URDFLink
-from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
-from helper_functions import fill_state, get_diff_xyz
+from helper_functions import fill_state, get_diff_xyz, change_scale
 
 
 class InverseKinematics:
 
-    def __init__(self, robot=None):
+    def __init__(self, robot_obj=None):
         &#34;&#34;&#34;
         This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
         being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
         using the solidworks model.
 
+        Args:
+            robot_obj (Robot): Robot class which is needed for the joint min and max positions
+
         Attributes:
-            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            bento_chain (Chain): IKPy Chain, a collection of links and __joints representing the bento arm
             max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
         &#34;&#34;&#34;
 
-        # If robot is not passed, create a default one
-        if robot is None:
+        if robot_obj is None:
+            from robot import Robot
             self.robot = Robot()
+        else:
+            self.robot = robot_obj
 
         self.bento_chain = Chain(name=&#39;left_arm&#39;, links=[
             OriginLink(),
@@ -72,7 +76,7 @@ class InverseKinematics:
                 origin_orientation=[pi, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 0, 1],
-                bounds=(self.robot.joints[0].radians_min, self.robot.joints[0].radians_max)
+                bounds=(self.robot.get_joints()[0].radians_min, self.robot.get_joints()[0].radians_max)
             ),
             URDFLink(
                 name=&#34;shoulder_to_elbow&#34;,
@@ -80,7 +84,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[1].radians_min, self.robot.joints[1].radians_max)
+                bounds=(self.robot.get_joints()[1].radians_min, self.robot.get_joints()[1].radians_max)
             ),
             URDFLink(
                 name=&#34;elbow_to_forearm&#34;,
@@ -88,7 +92,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[1, 0, 0],
-                bounds=(self.robot.joints[2].radians_min, self.robot.joints[2].radians_max)
+                bounds=(self.robot.get_joints()[2].radians_min, self.robot.get_joints()[2].radians_max)
             ),
             URDFLink(
                 name=&#34;forearm_to_wrist&#34;,
@@ -96,7 +100,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[3].radians_min, self.robot.joints[3].radians_max)
+                bounds=(self.robot.get_joints()[3].radians_min, self.robot.get_joints()[3].radians_max)
             ),
             URDFLink(
                 name=&#34;wrist_to_hand&#34;,
@@ -122,10 +126,10 @@ class InverseKinematics:
 
     def plot_state(self, state=[0, 0, 0, 0]):
         &#34;&#34;&#34;
-        Plots the Bento Arm in the given state in 3D
+        Plots the Bento Arm in the given joint_positions in 3D
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
 
         Returns:
             None
@@ -136,10 +140,10 @@ class InverseKinematics:
 
     def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
         &#34;&#34;&#34;
-        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+        Does a forward kinematics lookup taking a joint_positions and calculating where the end of the fixed chopstick is in space
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
             matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
         Returns:
@@ -175,6 +179,54 @@ class InverseKinematics:
             self.plot_state(joints)
         return joints
 
+    def get_end_effector_position(self):
+        &#34;&#34;&#34;
+        Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
+        of the end effector in 3D space (cm)
+
+        Returns:
+            Tuple of position (cm) or Matrix
+
+        &#34;&#34;&#34;
+        if self.robot.normalized:
+            joints_to_ik = [change_scale(old_min=0,
+                                         old_max=1,
+                                         new_min=self.robot.get_joints()[i].radians_min,
+                                         new_max=self.robot.get_joints()[i].radians_max,
+                                         value=self.robot.get_joints()[i].get_normalized_joint_position()) for i in range(4)]
+        else:
+            joints_to_ik = [change_scale(old_min=self.robot.DYNA_MIN,
+                                         old_max=self.robot.DYNA_MAX,
+                                         new_min=-pi,
+                                         new_max=pi,
+                                         value=self.robot.get_joints()[i].position) for i in range(4)]
+        return self.forward_kinematics(joints_to_ik, matrix=False)
+
+    def get_joints_for_goal_xyz(self, goal_xyz, hand_state=&#34;mid&#34;):
+        &#34;&#34;&#34;
+        Builds an action using the desired goal_xyz and hand_state
+
+        Args:
+            goal_xyz: XYZ goal position for end effector in cm
+            hand_state: possible options include &#34;closed&#34;, &#34;mid&#34;, and &#34;open&#34;
+
+        Returns:
+            A collection of __joints required by the Robot class
+
+        &#34;&#34;&#34;
+        ik_radians = self.inverse_kinematics(goal_xyz)[3:8]
+        ik_radians[-1] = self.robot.hand_states[hand_state]
+        # IKPY returns in [-pi, pi], need in [0,4096] or [0,1]
+        if self.robot.normalized:
+            joints = [change_scale(old_min=self.robot.get_joints()[i].radians_min,
+                                   old_max=self.robot.get_joints()[i].radians_max,
+                                   new_min=0,
+                                   new_max=1,
+                                   value=ik_radians[i]) for i in range(5)]
+            return joints
+
+        else:
+            return [change_scale(-pi, pi, self.robot.DYNA_MIN, self.robot.DYNA_MAX, i) for i in ik_radians]
 
 def test_ik():
     &#34;&#34;&#34;
@@ -264,17 +316,22 @@ asserting that the forward and kinematics position for the joint positions are r
 <dl>
 <dt id="inverse_kinematics.InverseKinematics"><code class="flex name class">
 <span>class <span class="ident">InverseKinematics</span></span>
-<span>(</span><span>robot=None)</span>
+<span>(</span><span>robot_obj=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
 being the center of the end of the fixed chopstick.
 All measurements are in centimeters and have been measured
 using the solidworks model.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>robot_obj</code></strong> :&ensp;<code>Robot</code></dt>
+<dd>Robot class which is needed for the joint min and max positions</dd>
+</dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>bento_chain</code></strong> :&ensp;<code>Chain</code></dt>
-<dd>IKPy Chain, a collection of links and joints representing the bento arm</dd>
+<dd>IKPy Chain, a collection of links and __joints representing the bento arm</dd>
 <dt><strong><code>max_error</code></strong> :&ensp;<code>float</code></dt>
 <dd>Total allowable IK lookup error ( goal_position - position calculated by IK )</dd>
 </dl></div>
@@ -284,20 +341,25 @@ using the solidworks model.</p>
 </summary>
 <pre><code class="python">class InverseKinematics:
 
-    def __init__(self, robot=None):
+    def __init__(self, robot_obj=None):
         &#34;&#34;&#34;
         This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
         being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
         using the solidworks model.
 
+        Args:
+            robot_obj (Robot): Robot class which is needed for the joint min and max positions
+
         Attributes:
-            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            bento_chain (Chain): IKPy Chain, a collection of links and __joints representing the bento arm
             max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
         &#34;&#34;&#34;
 
-        # If robot is not passed, create a default one
-        if robot is None:
+        if robot_obj is None:
+            from robot import Robot
             self.robot = Robot()
+        else:
+            self.robot = robot_obj
 
         self.bento_chain = Chain(name=&#39;left_arm&#39;, links=[
             OriginLink(),
@@ -319,7 +381,7 @@ using the solidworks model.</p>
                 origin_orientation=[pi, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 0, 1],
-                bounds=(self.robot.joints[0].radians_min, self.robot.joints[0].radians_max)
+                bounds=(self.robot.get_joints()[0].radians_min, self.robot.get_joints()[0].radians_max)
             ),
             URDFLink(
                 name=&#34;shoulder_to_elbow&#34;,
@@ -327,7 +389,7 @@ using the solidworks model.</p>
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[1].radians_min, self.robot.joints[1].radians_max)
+                bounds=(self.robot.get_joints()[1].radians_min, self.robot.get_joints()[1].radians_max)
             ),
             URDFLink(
                 name=&#34;elbow_to_forearm&#34;,
@@ -335,7 +397,7 @@ using the solidworks model.</p>
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[1, 0, 0],
-                bounds=(self.robot.joints[2].radians_min, self.robot.joints[2].radians_max)
+                bounds=(self.robot.get_joints()[2].radians_min, self.robot.get_joints()[2].radians_max)
             ),
             URDFLink(
                 name=&#34;forearm_to_wrist&#34;,
@@ -343,7 +405,7 @@ using the solidworks model.</p>
                 origin_orientation=[0, 0, 0],
                 joint_type=&#34;revolute&#34;,
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[3].radians_min, self.robot.joints[3].radians_max)
+                bounds=(self.robot.get_joints()[3].radians_min, self.robot.get_joints()[3].radians_max)
             ),
             URDFLink(
                 name=&#34;wrist_to_hand&#34;,
@@ -369,10 +431,10 @@ using the solidworks model.</p>
 
     def plot_state(self, state=[0, 0, 0, 0]):
         &#34;&#34;&#34;
-        Plots the Bento Arm in the given state in 3D
+        Plots the Bento Arm in the given joint_positions in 3D
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
 
         Returns:
             None
@@ -383,10 +445,10 @@ using the solidworks model.</p>
 
     def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
         &#34;&#34;&#34;
-        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+        Does a forward kinematics lookup taking a joint_positions and calculating where the end of the fixed chopstick is in space
 
         Args:
-            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+            state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
             matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
         Returns:
@@ -420,7 +482,56 @@ using the solidworks model.</p>
             input(f&#34;WARNING POSITION {target_position_xyz} REDUCED TO {forward} PRESS ENTER IF YOUR SURE!!!&#34;)
         if plot:
             self.plot_state(joints)
-        return joints</code></pre>
+        return joints
+
+    def get_end_effector_position(self):
+        &#34;&#34;&#34;
+        Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
+        of the end effector in 3D space (cm)
+
+        Returns:
+            Tuple of position (cm) or Matrix
+
+        &#34;&#34;&#34;
+        if self.robot.normalized:
+            joints_to_ik = [change_scale(old_min=0,
+                                         old_max=1,
+                                         new_min=self.robot.get_joints()[i].radians_min,
+                                         new_max=self.robot.get_joints()[i].radians_max,
+                                         value=self.robot.get_joints()[i].get_normalized_joint_position()) for i in range(4)]
+        else:
+            joints_to_ik = [change_scale(old_min=self.robot.DYNA_MIN,
+                                         old_max=self.robot.DYNA_MAX,
+                                         new_min=-pi,
+                                         new_max=pi,
+                                         value=self.robot.get_joints()[i].position) for i in range(4)]
+        return self.forward_kinematics(joints_to_ik, matrix=False)
+
+    def get_joints_for_goal_xyz(self, goal_xyz, hand_state=&#34;mid&#34;):
+        &#34;&#34;&#34;
+        Builds an action using the desired goal_xyz and hand_state
+
+        Args:
+            goal_xyz: XYZ goal position for end effector in cm
+            hand_state: possible options include &#34;closed&#34;, &#34;mid&#34;, and &#34;open&#34;
+
+        Returns:
+            A collection of __joints required by the Robot class
+
+        &#34;&#34;&#34;
+        ik_radians = self.inverse_kinematics(goal_xyz)[3:8]
+        ik_radians[-1] = self.robot.hand_states[hand_state]
+        # IKPY returns in [-pi, pi], need in [0,4096] or [0,1]
+        if self.robot.normalized:
+            joints = [change_scale(old_min=self.robot.get_joints()[i].radians_min,
+                                   old_max=self.robot.get_joints()[i].radians_max,
+                                   new_min=0,
+                                   new_max=1,
+                                   value=ik_radians[i]) for i in range(5)]
+            return joints
+
+        else:
+            return [change_scale(-pi, pi, self.robot.DYNA_MIN, self.robot.DYNA_MAX, i) for i in ik_radians]</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -428,11 +539,11 @@ using the solidworks model.</p>
 <span>def <span class="ident">forward_kinematics</span></span>(<span>self, state=[0, 0, 0, 0], matrix=False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space</p>
+<div class="desc"><p>Does a forward kinematics lookup taking a joint_positions and calculating where the end of the fixed chopstick is in space</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>state</code></strong> :&ensp;<code>list</code></dt>
-<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]</dd>
+<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]</dd>
 <dt><strong><code>matrix</code></strong> :&ensp;<code>bool</code></dt>
 <dd>If true end effector position gets returned as a homogenous matrix, else a XYZ tuple</dd>
 </dl>
@@ -444,10 +555,10 @@ using the solidworks model.</p>
 </summary>
 <pre><code class="python">def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
     &#34;&#34;&#34;
-    Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+    Does a forward kinematics lookup taking a joint_positions and calculating where the end of the fixed chopstick is in space
 
     Args:
-        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
         matrix (bool): If true end effector position gets returned as a homogenous matrix, else a XYZ tuple
 
     Returns:
@@ -458,6 +569,87 @@ using the solidworks model.</p>
         return position  # Return homogenous transform matrix
     else:
         return position[0][3], position[1][3], position[2][3]  # Return X Y Z coordinates</code></pre>
+</details>
+</dd>
+<dt id="inverse_kinematics.InverseKinematics.get_end_effector_position"><code class="name flex">
+<span>def <span class="ident">get_end_effector_position</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
+of the end effector in 3D space (cm)</p>
+<h2 id="returns">Returns</h2>
+<p>Tuple of position (cm) or Matrix</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_end_effector_position(self):
+    &#34;&#34;&#34;
+    Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
+    of the end effector in 3D space (cm)
+
+    Returns:
+        Tuple of position (cm) or Matrix
+
+    &#34;&#34;&#34;
+    if self.robot.normalized:
+        joints_to_ik = [change_scale(old_min=0,
+                                     old_max=1,
+                                     new_min=self.robot.get_joints()[i].radians_min,
+                                     new_max=self.robot.get_joints()[i].radians_max,
+                                     value=self.robot.get_joints()[i].get_normalized_joint_position()) for i in range(4)]
+    else:
+        joints_to_ik = [change_scale(old_min=self.robot.DYNA_MIN,
+                                     old_max=self.robot.DYNA_MAX,
+                                     new_min=-pi,
+                                     new_max=pi,
+                                     value=self.robot.get_joints()[i].position) for i in range(4)]
+    return self.forward_kinematics(joints_to_ik, matrix=False)</code></pre>
+</details>
+</dd>
+<dt id="inverse_kinematics.InverseKinematics.get_joints_for_goal_xyz"><code class="name flex">
+<span>def <span class="ident">get_joints_for_goal_xyz</span></span>(<span>self, goal_xyz, hand_state='mid')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds an action using the desired goal_xyz and hand_state</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>goal_xyz</code></strong></dt>
+<dd>XYZ goal position for end effector in cm</dd>
+<dt><strong><code>hand_state</code></strong></dt>
+<dd>possible options include "closed", "mid", and "open"</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A collection of __joints required by the Robot class</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_joints_for_goal_xyz(self, goal_xyz, hand_state=&#34;mid&#34;):
+    &#34;&#34;&#34;
+    Builds an action using the desired goal_xyz and hand_state
+
+    Args:
+        goal_xyz: XYZ goal position for end effector in cm
+        hand_state: possible options include &#34;closed&#34;, &#34;mid&#34;, and &#34;open&#34;
+
+    Returns:
+        A collection of __joints required by the Robot class
+
+    &#34;&#34;&#34;
+    ik_radians = self.inverse_kinematics(goal_xyz)[3:8]
+    ik_radians[-1] = self.robot.hand_states[hand_state]
+    # IKPY returns in [-pi, pi], need in [0,4096] or [0,1]
+    if self.robot.normalized:
+        joints = [change_scale(old_min=self.robot.get_joints()[i].radians_min,
+                               old_max=self.robot.get_joints()[i].radians_max,
+                               new_min=0,
+                               new_max=1,
+                               value=ik_radians[i]) for i in range(5)]
+        return joints
+
+    else:
+        return [change_scale(-pi, pi, self.robot.DYNA_MIN, self.robot.DYNA_MAX, i) for i in ik_radians]</code></pre>
 </details>
 </dd>
 <dt id="inverse_kinematics.InverseKinematics.inverse_kinematics"><code class="name flex">
@@ -509,11 +701,11 @@ is greater than self.max_error if so will give an input warning.</p>
 <span>def <span class="ident">plot_state</span></span>(<span>self, state=[0, 0, 0, 0])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Plots the Bento Arm in the given state in 3D</p>
+<div class="desc"><p>Plots the Bento Arm in the given joint_positions in 3D</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>state</code></strong> :&ensp;<code>list</code></dt>
-<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]</dd>
+<dd>List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>None</p></div>
@@ -523,10 +715,10 @@ is greater than self.max_error if so will give an input warning.</p>
 </summary>
 <pre><code class="python">def plot_state(self, state=[0, 0, 0, 0]):
     &#34;&#34;&#34;
-    Plots the Bento Arm in the given state in 3D
+    Plots the Bento Arm in the given joint_positions in 3D
 
     Args:
-        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm wrist]
+        state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
 
     Returns:
         None
@@ -558,6 +750,8 @@ is greater than self.max_error if so will give an input warning.</p>
 <h4><code><a title="inverse_kinematics.InverseKinematics" href="#inverse_kinematics.InverseKinematics">InverseKinematics</a></code></h4>
 <ul class="">
 <li><code><a title="inverse_kinematics.InverseKinematics.forward_kinematics" href="#inverse_kinematics.InverseKinematics.forward_kinematics">forward_kinematics</a></code></li>
+<li><code><a title="inverse_kinematics.InverseKinematics.get_end_effector_position" href="#inverse_kinematics.InverseKinematics.get_end_effector_position">get_end_effector_position</a></code></li>
+<li><code><a title="inverse_kinematics.InverseKinematics.get_joints_for_goal_xyz" href="#inverse_kinematics.InverseKinematics.get_joints_for_goal_xyz">get_joints_for_goal_xyz</a></code></li>
 <li><code><a title="inverse_kinematics.InverseKinematics.inverse_kinematics" href="#inverse_kinematics.InverseKinematics.inverse_kinematics">inverse_kinematics</a></code></li>
 <li><code><a title="inverse_kinematics.InverseKinematics.plot_state" href="#inverse_kinematics.InverseKinematics.plot_state">plot_state</a></code></li>
 </ul>

@@ -30,40 +30,13 @@
 import socket
 import select
 
+
 class SocketHandler:
     def __init__(self):
         &#34;&#34;&#34;
         Socket handler used for UDP communication with BrachIOPlexus uses one port for sending and another for
         receiving.  Due to the dual port nature of this setup it is best to have one thread constantly looking for
         packets and another sending when needed.
-
-        Example:
-            ```python
-            from threading import thread
-            from socket_handler import SocketHandler()
-
-            socket = SocketHandler()
-
-            # Receive Loop
-            def get_state(self):
-                while True:
-                packet = self.socket_handler.read_packet()
-                if not packet:
-                    continue
-
-                data = do_something(&#34;With Packet&#34;)
-
-                time.sleep(0.001)
-
-            thread = Thread(target_position_xyz=get_state)
-            thread.start()
-
-            # Send loop
-            while True:
-                packet = &#34;BUILD PACKET HERE&#34;
-                socket.send_packet(packet)
-            ```
-
 
         Attributes:
             port_tx (int): The port that this script will send data to.  Default (30006)
@@ -84,8 +57,8 @@ class SocketHandler:
 
     def read_packet(self):
         &#34;&#34;&#34;
-        Receives a BentoArm state packet (more about packet structure in README.md) , checks the checksum, and returns
-        the state message which contains all the information saved in a robot.py ServoInfo class
+        Receives a BentoArm joint_positions packet (more about packet structure in README.md) , checks the checksum, and returns
+        the joint_positions message which contains all the information saved in a robot_obj.py ServoInfo class
         &#34;&#34;&#34;
         result = select.select([self.sock], [], [], 0.0)
         if len(result[0]) == 0:
@@ -121,31 +94,6 @@ class SocketHandler:
 receiving.
 Due to the dual port nature of this setup it is best to have one thread constantly looking for
 packets and another sending when needed.</p>
-<h2 id="example">Example</h2>
-<pre><code class="language-python">from threading import thread
-from socket_handler import SocketHandler()
-
-socket = SocketHandler()
-
-# Receive Loop
-def get_state(self):
-    while True:
-    packet = self.socket_handler.read_packet()
-    if not packet:
-        continue
-
-    data = do_something(&quot;With Packet&quot;)
-
-    time.sleep(0.001)
-
-thread = Thread(target_position_xyz=get_state)
-thread.start()
-
-# Send loop
-while True:
-    packet = &quot;BUILD PACKET HERE&quot;
-    socket.send_packet(packet)
-</code></pre>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>port_tx</code></strong> :&ensp;<code>int</code></dt>
@@ -172,34 +120,6 @@ Default (1024)</dd>
         receiving.  Due to the dual port nature of this setup it is best to have one thread constantly looking for
         packets and another sending when needed.
 
-        Example:
-            ```python
-            from threading import thread
-            from socket_handler import SocketHandler()
-
-            socket = SocketHandler()
-
-            # Receive Loop
-            def get_state(self):
-                while True:
-                packet = self.socket_handler.read_packet()
-                if not packet:
-                    continue
-
-                data = do_something(&#34;With Packet&#34;)
-
-                time.sleep(0.001)
-
-            thread = Thread(target_position_xyz=get_state)
-            thread.start()
-
-            # Send loop
-            while True:
-                packet = &#34;BUILD PACKET HERE&#34;
-                socket.send_packet(packet)
-            ```
-
-
         Attributes:
             port_tx (int): The port that this script will send data to.  Default (30006)
             port_rx (int): The port that this script will receive data from. Default (30007)
@@ -219,8 +139,8 @@ Default (1024)</dd>
 
     def read_packet(self):
         &#34;&#34;&#34;
-        Receives a BentoArm state packet (more about packet structure in README.md) , checks the checksum, and returns
-        the state message which contains all the information saved in a robot.py ServoInfo class
+        Receives a BentoArm joint_positions packet (more about packet structure in README.md) , checks the checksum, and returns
+        the joint_positions message which contains all the information saved in a robot_obj.py ServoInfo class
         &#34;&#34;&#34;
         result = select.select([self.sock], [], [], 0.0)
         if len(result[0]) == 0:
@@ -244,16 +164,16 @@ Default (1024)</dd>
 <span>def <span class="ident">read_packet</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Receives a BentoArm state packet (more about packet structure in README.md) , checks the checksum, and returns
-the state message which contains all the information saved in a robot.py ServoInfo class</p></div>
+<div class="desc"><p>Receives a BentoArm joint_positions packet (more about packet structure in README.md) , checks the checksum, and returns
+the joint_positions message which contains all the information saved in a robot_obj.py ServoInfo class</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def read_packet(self):
     &#34;&#34;&#34;
-    Receives a BentoArm state packet (more about packet structure in README.md) , checks the checksum, and returns
-    the state message which contains all the information saved in a robot.py ServoInfo class
+    Receives a BentoArm joint_positions packet (more about packet structure in README.md) , checks the checksum, and returns
+    the joint_positions message which contains all the information saved in a robot_obj.py ServoInfo class
     &#34;&#34;&#34;
     result = select.select([self.sock], [], [], 0.0)
     if len(result[0]) == 0:

@@ -27,7 +27,11 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from helper_functions import clamp_range, change_scale, checksum_fcn
+from socket_handler import SocketHandler
+from inverse_kinematics import InverseKinematics
 from math import pi
+from threading import Thread
+import time
 
 MIN_ANGLES = [1028, 1784, 1028, 790, 1928]
 MAX_ANGLES = [3073, 2570, 3073, 3328, 2800]
@@ -42,64 +46,35 @@ DYNA_MAX = 4095
 class Robot:
     def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of MxSeries joints.  There are two playback ways we can represent a
-        joint state.
+        Class for BentoArm which is just a collection of MxSeries __joints.  There are two playback ways we can represent a
+        joint joint_positions.
 
-        - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications
-        - dynamixel state: standard representation used by dynamixel [0,4095]
+        - normalized joint_positions: position is in range [0,1], useful as it derives nicely for deep learning applications
+        - dynamixel joint_positions: standard representation used by dynamixel [0,4095]
 
-        Since there are many ways to represent states the code avoids doing as many state conversions as possible
+        Since there are many ways to represent states the code avoids doing as many joint_positions conversions as possible
         putting the onus on the user to change ranges as needed.  There are some functions that work in the range of
         [-π,π] as this is the range used by the inverse kinematics library IKPy.
 
         Args:
-            normalized:  If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]
+            normalized:  If true joint joint_positions is represented via a [0, 1] range else the dynamixel range [0,4095]
 
         Attributes:
-            joints (list): A list of MxSeries joints
+            __joints (list): A list of MxSeries __joints
             hand_states (dict): Hand states in the range of [-π,π] mainly just used by IKPY
-
-        Examples:
-        ```python
-        from robot import Robot
-        from helper_functions import change_scale
-        from math import radians, pi
-        from socket_handler import SocketHandler
-
-
-        sock = SocketHandler
-
-        robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
-
-        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
-        robot = Robot(normalized=True)
-        state = robot.get_joints(normalized = True)
-        state[0] += change_scale(old_min = 0,
-                                 old_max = 2*pi,
-                                 new_min = 0,
-                                 new_max = 1,
-                                 value = radians(45)
-        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
-
-        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
-        robot = Robot(normalized=False)
-        state = robot.get_joints(normalized = FALSE)
-        state[0] += change_scale(old_min = 0,
-                                 old_max = 360,
-                                 new_min = DYNA_MIN,
-                                 new_max = DYNA_MAX,
-                                 value = 45
-        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
-        ```
         &#34;&#34;&#34;
         self.normalized = normalized
-        self.joints = [MxSeries(index=i) for i in range(5)]
+        self.__joints = [MxSeries(index=i) for i in range(5)]
         self.hand_states = {&#34;closed&#34;: -0.15, &#34;mid&#34;: 0.24, &#34;open&#34;: 1.1428}
+        self.__socket_handler = None
+        self.first_packet_read = False
+        self.thread_running = False
+        self.thread = Thread(target=self.update_joints_from_udp)
 
     def update_joints_from_packet(self, packet):
         &#34;&#34;&#34;
-        Parses a packet and updates each joints status (Position, Velocity, Load, Temperature also updates Robots
-        total velocity used for deciding if robot is moving or still
+        Parses a packet and updates each __joints status (Position, Velocity, Load, Temperature also updates Robots
+        total velocity used for deciding if robot_obj is moving or still
 
         Args:
             packet (bytearray): UDP packet received from brachIOplexus
@@ -111,12 +86,12 @@ class Robot:
         for i in range(3, packet[2], 9):
             idx = packet[i] - 1  # Packet has ID (which starts at 1) need index
             # Since you can read values outside allowable range when torque is not enabled, best always clamp the value
-            self.joints[idx].position = self.joints[idx].get_clamped_dyna_joint_position(
+            self.__joints[idx].position = self.__joints[idx].get_clamped_dyna_joint_position(
                 position=int.from_bytes(packet[i + 1:i + 3], byteorder=&#39;little&#39;))
-            self.joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
-            self.joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
-            self.joints[idx].temp = packet[i + 7]
-            self.joints[idx].state = packet[i + 8]
+            self.__joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
+            self.__joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
+            self.__joints[idx].temp = packet[i + 7]
+            self.__joints[idx].state = packet[i + 8]
 
     def build_joints_packet(self, joint_positions, velocities=(1024,) * 5):
         &#34;&#34;&#34;
@@ -138,30 +113,30 @@ class Robot:
         &#34;&#34;&#34;
 
         # Safety checks since sending raw values to bento arm can be dangerous
-        assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
-        assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
+        assert (len(joint_positions) == len(self.__joints)), &#34;Invalid positions length, pass for all 5 __joints&#34;
+        assert (len(velocities) == len(self.__joints)), &#34;Invalid velocities length, pass for all 5 __joints&#34;
 
         if self.normalized:  # [0,1]
             &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
             joint_positions = [float(i) for i in joint_positions]
-            for i in range(len(self.joints)):
-                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+            for i in range(len(self.__joints)):
+                joint_positions[i] = self.__joints[i].normalized_to_dyna_pos_range((joint_positions[
                     i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
             joint_positions = [int(i) for i in joint_positions]
         else:  # [0,4095]
             &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
             joint_positions = [int(i) for i in joint_positions]
-            for i in range(len(self.joints)):
+            for i in range(len(self.__joints)):
                 # Check positions
-                assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+                assert (self.__joints[i].position_min &lt;= joint_positions[i] &lt;= self.__joints[
                     i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
                 # Check velocities
-                assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+                assert (velocities[i] in range(self.__joints[i].velocity_min, self.__joints[
                     i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
-        packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
-        for i in range(len(self.joints)):
+        packet = [0xFF, 0xFF, 4 * len(self.__joints)]  # Length = 4 bytes (pos + vel) per joint
+        for i in range(len(self.__joints)):
             # Convert data into little endian bytes
             packet.append(joint_positions[i] &amp; 0xFF)
             packet.append((joint_positions[i] &gt;&gt; 8) &amp; 0xFF)
@@ -169,6 +144,10 @@ class Robot:
             packet.append((velocities[i] &gt;&gt; 8) &amp; 0xFF)
         packet.append(checksum_fcn(packet[2:]))  # Append checksum function to end
         return bytearray(packet)
+
+    def get_joints(self):
+        &#34;&#34;&#34;Getter for joints object so they remain private&#34;&#34;&#34;
+        return self.__joints
 
     def print_joints(self):
         &#34;&#34;&#34;
@@ -178,24 +157,83 @@ class Robot:
             None
 
         &#34;&#34;&#34;
-
-        for joint in self.joints:
+        for joint in self.__joints:
+            if joint.position is None:
+                print(f&#34;ID {joint.id}: {None}  &#34;, end=&#34;&#34;)
+                continue
             if self.normalized:
                 print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
             else:
                 print(f&#34;ID {joint.id}: {joint.position}  &#34;, end=&#34;&#34;)
         print(&#34;&#34;)
 
-    def get_joints(self):
+    def get_joint_positions(self, normalized=None):
         &#34;&#34;&#34;
+        Args:
+            normalized (bool): If not passed will use whatever robot was initialized with
+
         Returns:
             list: current joint positions for Robot
-        &#34;&#34;&#34;
 
-        if self.normalized:
-            return [joint.get_normalized_joint_position() for joint in self.joints]
+        &#34;&#34;&#34;
+        if self.__joints[0].position is None:  # Check if first position packet has been received
+            return [None] * 5
+
+        if normalized is None:
+            normalized = self.normalized
+
+        if normalized:
+            return [joint.get_normalized_joint_position() for joint in self.__joints]
         else:
-            return [joint.position for joint in self.joints]
+            return [joint.position for joint in self.__joints]
+
+    def start_reading_thread(self, socket_handler):
+        &#34;&#34;&#34;
+        Starts the thread that receives packets from brachIOPlexus and updates the robots state
+
+        Args:
+            socket_handler: A socket handler required for reading state
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.__socket_handler = socket_handler
+        self.thread.start()
+
+        # Make sure nothing else starts until a first packet is read
+        while self.first_packet_read is False:
+            time.sleep(0.1)
+
+    def stop_reading_thread(self):
+        self.thread_running = False
+        self.thread.join()
+
+    def update_joints_from_udp(self):
+        &#34;&#34;&#34;
+        While loop that constantly checks for UDP packets from brachIOplexus and updates robot_obj state when received
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.thread_running = True
+
+        while self.thread_running:
+            # Check if packet is available with current joint_positions
+            packet = self.__socket_handler.read_packet()
+
+            if not packet:
+                continue
+
+            # First packet read
+            if self.first_packet_read is False:
+                self.first_packet_read = True
+
+            # Update known robot_obj joint_positions using the packet
+            self.update_joints_from_packet(packet)  # Read current joint positions
+
+            time.sleep(0.001)
 
 
 class ServoInfo(object):
@@ -597,60 +635,29 @@ class MxSeries(ServoInfo):
 <span>(</span><span>normalized=True)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Class for BentoArm which is just a collection of MxSeries joints.
+<div class="desc"><p>Class for BentoArm which is just a collection of MxSeries __joints.
 There are two playback ways we can represent a
-joint state.</p>
+joint joint_positions.</p>
 <ul>
-<li>normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications</li>
-<li>dynamixel state: standard representation used by dynamixel [0,4095]</li>
+<li>normalized joint_positions: position is in range [0,1], useful as it derives nicely for deep learning applications</li>
+<li>dynamixel joint_positions: standard representation used by dynamixel [0,4095]</li>
 </ul>
-<p>Since there are many ways to represent states the code avoids doing as many state conversions as possible
+<p>Since there are many ways to represent states the code avoids doing as many joint_positions conversions as possible
 putting the onus on the user to change ranges as needed.
 There are some functions that work in the range of
 [-π,π] as this is the range used by the inverse kinematics library IKPy.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>normalized</code></strong></dt>
-<dd>If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]</dd>
+<dd>If true joint joint_positions is represented via a [0, 1] range else the dynamixel range [0,4095]</dd>
 </dl>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>joints</code></strong> :&ensp;<code>list</code></dt>
-<dd>A list of MxSeries joints</dd>
+<dt><strong><code>__joints</code></strong> :&ensp;<code>list</code></dt>
+<dd>A list of MxSeries __joints</dd>
 <dt><strong><code>hand_states</code></strong> :&ensp;<code>dict</code></dt>
 <dd>Hand states in the range of [-π,π] mainly just used by IKPY</dd>
-</dl>
-<p>Examples:</p>
-<pre><code class="language-python">from robot import Robot
-from helper_functions import change_scale
-from math import radians, pi
-from socket_handler import SocketHandler
-
-
-sock = SocketHandler
-
-robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
-
-# Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
-robot = Robot(normalized=True)
-state = robot.get_joints(normalized = True)
-state[0] += change_scale(old_min = 0,
-                         old_max = 2*pi,
-                         new_min = 0,
-                         new_max = 1,
-                         value = radians(45)
-sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
-
-# Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
-robot = Robot(normalized=False)
-state = robot.get_joints(normalized = FALSE)
-state[0] += change_scale(old_min = 0,
-                         old_max = 360,
-                         new_min = DYNA_MIN,
-                         new_max = DYNA_MAX,
-                         value = 45
-sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
-</code></pre></div>
+</dl></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -658,64 +665,35 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
 <pre><code class="python">class Robot:
     def __init__(self, normalized=True):
         &#34;&#34;&#34;
-        Class for BentoArm which is just a collection of MxSeries joints.  There are two playback ways we can represent a
-        joint state.
+        Class for BentoArm which is just a collection of MxSeries __joints.  There are two playback ways we can represent a
+        joint joint_positions.
 
-        - normalized state: position is in range [0,1], useful as it derives nicely for deep learning applications
-        - dynamixel state: standard representation used by dynamixel [0,4095]
+        - normalized joint_positions: position is in range [0,1], useful as it derives nicely for deep learning applications
+        - dynamixel joint_positions: standard representation used by dynamixel [0,4095]
 
-        Since there are many ways to represent states the code avoids doing as many state conversions as possible
+        Since there are many ways to represent states the code avoids doing as many joint_positions conversions as possible
         putting the onus on the user to change ranges as needed.  There are some functions that work in the range of
         [-π,π] as this is the range used by the inverse kinematics library IKPy.
 
         Args:
-            normalized:  If true joint state is represented via a [0, 1] range else the dynamixel range [0,4095]
+            normalized:  If true joint joint_positions is represented via a [0, 1] range else the dynamixel range [0,4095]
 
         Attributes:
-            joints (list): A list of MxSeries joints
+            __joints (list): A list of MxSeries __joints
             hand_states (dict): Hand states in the range of [-π,π] mainly just used by IKPY
-
-        Examples:
-        ```python
-        from robot import Robot
-        from helper_functions import change_scale
-        from math import radians, pi
-        from socket_handler import SocketHandler
-
-
-        sock = SocketHandler
-
-        robot.update_joints_from_packet(sock.read_packet())  # Typically done in a thread
-
-        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [NORMALIZED]
-        robot = Robot(normalized=True)
-        state = robot.get_joints(normalized = True)
-        state[0] += change_scale(old_min = 0,
-                                 old_max = 2*pi,
-                                 new_min = 0,
-                                 new_max = 1,
-                                 value = radians(45)
-        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=True)
-
-        # Get State, Build &amp; Send Action (Rotate Shoulder by 45 Deg.) [DYNA]
-        robot = Robot(normalized=False)
-        state = robot.get_joints(normalized = FALSE)
-        state[0] += change_scale(old_min = 0,
-                                 old_max = 360,
-                                 new_min = DYNA_MIN,
-                                 new_max = DYNA_MAX,
-                                 value = 45
-        sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=False)
-        ```
         &#34;&#34;&#34;
         self.normalized = normalized
-        self.joints = [MxSeries(index=i) for i in range(5)]
+        self.__joints = [MxSeries(index=i) for i in range(5)]
         self.hand_states = {&#34;closed&#34;: -0.15, &#34;mid&#34;: 0.24, &#34;open&#34;: 1.1428}
+        self.__socket_handler = None
+        self.first_packet_read = False
+        self.thread_running = False
+        self.thread = Thread(target=self.update_joints_from_udp)
 
     def update_joints_from_packet(self, packet):
         &#34;&#34;&#34;
-        Parses a packet and updates each joints status (Position, Velocity, Load, Temperature also updates Robots
-        total velocity used for deciding if robot is moving or still
+        Parses a packet and updates each __joints status (Position, Velocity, Load, Temperature also updates Robots
+        total velocity used for deciding if robot_obj is moving or still
 
         Args:
             packet (bytearray): UDP packet received from brachIOplexus
@@ -727,12 +705,12 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
         for i in range(3, packet[2], 9):
             idx = packet[i] - 1  # Packet has ID (which starts at 1) need index
             # Since you can read values outside allowable range when torque is not enabled, best always clamp the value
-            self.joints[idx].position = self.joints[idx].get_clamped_dyna_joint_position(
+            self.__joints[idx].position = self.__joints[idx].get_clamped_dyna_joint_position(
                 position=int.from_bytes(packet[i + 1:i + 3], byteorder=&#39;little&#39;))
-            self.joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
-            self.joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
-            self.joints[idx].temp = packet[i + 7]
-            self.joints[idx].state = packet[i + 8]
+            self.__joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
+            self.__joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
+            self.__joints[idx].temp = packet[i + 7]
+            self.__joints[idx].state = packet[i + 8]
 
     def build_joints_packet(self, joint_positions, velocities=(1024,) * 5):
         &#34;&#34;&#34;
@@ -754,30 +732,30 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
         &#34;&#34;&#34;
 
         # Safety checks since sending raw values to bento arm can be dangerous
-        assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
-        assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
+        assert (len(joint_positions) == len(self.__joints)), &#34;Invalid positions length, pass for all 5 __joints&#34;
+        assert (len(velocities) == len(self.__joints)), &#34;Invalid velocities length, pass for all 5 __joints&#34;
 
         if self.normalized:  # [0,1]
             &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
             joint_positions = [float(i) for i in joint_positions]
-            for i in range(len(self.joints)):
-                joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+            for i in range(len(self.__joints)):
+                joint_positions[i] = self.__joints[i].normalized_to_dyna_pos_range((joint_positions[
                     i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
             joint_positions = [int(i) for i in joint_positions]
         else:  # [0,4095]
             &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
             joint_positions = [int(i) for i in joint_positions]
-            for i in range(len(self.joints)):
+            for i in range(len(self.__joints)):
                 # Check positions
-                assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+                assert (self.__joints[i].position_min &lt;= joint_positions[i] &lt;= self.__joints[
                     i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
                 # Check velocities
-                assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+                assert (velocities[i] in range(self.__joints[i].velocity_min, self.__joints[
                     i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
-        packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
-        for i in range(len(self.joints)):
+        packet = [0xFF, 0xFF, 4 * len(self.__joints)]  # Length = 4 bytes (pos + vel) per joint
+        for i in range(len(self.__joints)):
             # Convert data into little endian bytes
             packet.append(joint_positions[i] &amp; 0xFF)
             packet.append((joint_positions[i] &gt;&gt; 8) &amp; 0xFF)
@@ -785,6 +763,10 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
             packet.append((velocities[i] &gt;&gt; 8) &amp; 0xFF)
         packet.append(checksum_fcn(packet[2:]))  # Append checksum function to end
         return bytearray(packet)
+
+    def get_joints(self):
+        &#34;&#34;&#34;Getter for joints object so they remain private&#34;&#34;&#34;
+        return self.__joints
 
     def print_joints(self):
         &#34;&#34;&#34;
@@ -794,24 +776,83 @@ sock.send_packet(robot.build_joints_packet(joint_positions=state, normalized=Fal
             None
 
         &#34;&#34;&#34;
-
-        for joint in self.joints:
+        for joint in self.__joints:
+            if joint.position is None:
+                print(f&#34;ID {joint.id}: {None}  &#34;, end=&#34;&#34;)
+                continue
             if self.normalized:
                 print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
             else:
                 print(f&#34;ID {joint.id}: {joint.position}  &#34;, end=&#34;&#34;)
         print(&#34;&#34;)
 
-    def get_joints(self):
+    def get_joint_positions(self, normalized=None):
         &#34;&#34;&#34;
+        Args:
+            normalized (bool): If not passed will use whatever robot was initialized with
+
         Returns:
             list: current joint positions for Robot
-        &#34;&#34;&#34;
 
-        if self.normalized:
-            return [joint.get_normalized_joint_position() for joint in self.joints]
+        &#34;&#34;&#34;
+        if self.__joints[0].position is None:  # Check if first position packet has been received
+            return [None] * 5
+
+        if normalized is None:
+            normalized = self.normalized
+
+        if normalized:
+            return [joint.get_normalized_joint_position() for joint in self.__joints]
         else:
-            return [joint.position for joint in self.joints]</code></pre>
+            return [joint.position for joint in self.__joints]
+
+    def start_reading_thread(self, socket_handler):
+        &#34;&#34;&#34;
+        Starts the thread that receives packets from brachIOPlexus and updates the robots state
+
+        Args:
+            socket_handler: A socket handler required for reading state
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.__socket_handler = socket_handler
+        self.thread.start()
+
+        # Make sure nothing else starts until a first packet is read
+        while self.first_packet_read is False:
+            time.sleep(0.1)
+
+    def stop_reading_thread(self):
+        self.thread_running = False
+        self.thread.join()
+
+    def update_joints_from_udp(self):
+        &#34;&#34;&#34;
+        While loop that constantly checks for UDP packets from brachIOplexus and updates robot_obj state when received
+
+        Returns:
+            None
+
+        &#34;&#34;&#34;
+        self.thread_running = True
+
+        while self.thread_running:
+            # Check if packet is available with current joint_positions
+            packet = self.__socket_handler.read_packet()
+
+            if not packet:
+                continue
+
+            # First packet read
+            if self.first_packet_read is False:
+                self.first_packet_read = True
+
+            # Update known robot_obj joint_positions using the packet
+            self.update_joints_from_packet(packet)  # Read current joint positions
+
+            time.sleep(0.001)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
@@ -865,30 +906,30 @@ are done to ensure the position and velocity commands are correct but will not f
     &#34;&#34;&#34;
 
     # Safety checks since sending raw values to bento arm can be dangerous
-    assert (len(joint_positions) == len(self.joints)), &#34;Invalid positions length, pass for all 5 joints&#34;
-    assert (len(velocities) == len(self.joints)), &#34;Invalid velocities length, pass for all 5 joints&#34;
+    assert (len(joint_positions) == len(self.__joints)), &#34;Invalid positions length, pass for all 5 __joints&#34;
+    assert (len(velocities) == len(self.__joints)), &#34;Invalid velocities length, pass for all 5 __joints&#34;
 
     if self.normalized:  # [0,1]
         &#34;&#34;&#34;If normalized, convert to individual motors dyna range&#34;&#34;&#34;
         joint_positions = [float(i) for i in joint_positions]
-        for i in range(len(self.joints)):
-            joint_positions[i] = self.joints[i].normalized_to_dyna_pos_range((joint_positions[
+        for i in range(len(self.__joints)):
+            joint_positions[i] = self.__joints[i].normalized_to_dyna_pos_range((joint_positions[
                 i]))  # Converting normalized to dyna range always ensures it&#39;s within allowable range
         joint_positions = [int(i) for i in joint_positions]
     else:  # [0,4095]
         &#34;&#34;&#34;If raw values, assert if in range&#34;&#34;&#34;
         joint_positions = [int(i) for i in joint_positions]
-        for i in range(len(self.joints)):
+        for i in range(len(self.__joints)):
             # Check positions
-            assert (self.joints[i].position_min &lt;= joint_positions[i] &lt;= self.joints[
+            assert (self.__joints[i].position_min &lt;= joint_positions[i] &lt;= self.__joints[
                 i].postion_max), &#34;Make sure servo positions are within valid range&#34;
 
             # Check velocities
-            assert (velocities[i] in range(self.joints[i].velocity_min, self.joints[
+            assert (velocities[i] in range(self.__joints[i].velocity_min, self.__joints[
                 i].velocity_max)), &#34;Make sure servo velocities are within valid range&#34;
 
-    packet = [0xFF, 0xFF, 4 * len(self.joints)]  # Length = 4 bytes (pos + vel) per joint
-    for i in range(len(self.joints)):
+    packet = [0xFF, 0xFF, 4 * len(self.__joints)]  # Length = 4 bytes (pos + vel) per joint
+    for i in range(len(self.__joints)):
         # Convert data into little endian bytes
         packet.append(joint_positions[i] &amp; 0xFF)
         packet.append((joint_positions[i] &gt;&gt; 8) &amp; 0xFF)
@@ -898,11 +939,16 @@ are done to ensure the position and velocity commands are correct but will not f
     return bytearray(packet)</code></pre>
 </details>
 </dd>
-<dt id="robot.Robot.get_joints"><code class="name flex">
-<span>def <span class="ident">get_joints</span></span>(<span>self)</span>
+<dt id="robot.Robot.get_joint_positions"><code class="name flex">
+<span>def <span class="ident">get_joint_positions</span></span>(<span>self, normalized=None)</span>
 </code></dt>
 <dd>
-<div class="desc"><h2 id="returns">Returns</h2>
+<div class="desc"><h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>normalized</code></strong> :&ensp;<code>bool</code></dt>
+<dd>If not passed will use whatever robot was initialized with</dd>
+</dl>
+<h2 id="returns">Returns</h2>
 <dl>
 <dt><code>list</code></dt>
 <dd>current joint positions for Robot</dd>
@@ -911,16 +957,39 @@ are done to ensure the position and velocity commands are correct but will not f
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_joints(self):
+<pre><code class="python">def get_joint_positions(self, normalized=None):
     &#34;&#34;&#34;
+    Args:
+        normalized (bool): If not passed will use whatever robot was initialized with
+
     Returns:
         list: current joint positions for Robot
-    &#34;&#34;&#34;
 
-    if self.normalized:
-        return [joint.get_normalized_joint_position() for joint in self.joints]
+    &#34;&#34;&#34;
+    if self.__joints[0].position is None:  # Check if first position packet has been received
+        return [None] * 5
+
+    if normalized is None:
+        normalized = self.normalized
+
+    if normalized:
+        return [joint.get_normalized_joint_position() for joint in self.__joints]
     else:
-        return [joint.position for joint in self.joints]</code></pre>
+        return [joint.position for joint in self.__joints]</code></pre>
+</details>
+</dd>
+<dt id="robot.Robot.get_joints"><code class="name flex">
+<span>def <span class="ident">get_joints</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Getter for joints object so they remain private</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_joints(self):
+    &#34;&#34;&#34;Getter for joints object so they remain private&#34;&#34;&#34;
+    return self.__joints</code></pre>
 </details>
 </dd>
 <dt id="robot.Robot.print_joints"><code class="name flex">
@@ -942,8 +1011,10 @@ are done to ensure the position and velocity commands are correct but will not f
         None
 
     &#34;&#34;&#34;
-
-    for joint in self.joints:
+    for joint in self.__joints:
+        if joint.position is None:
+            print(f&#34;ID {joint.id}: {None}  &#34;, end=&#34;&#34;)
+            continue
         if self.normalized:
             print(f&#34;ID {joint.id}: {joint.get_normalized_joint_position():.2f}  &#34;, end=&#34;&#34;)
         else:
@@ -951,12 +1022,61 @@ are done to ensure the position and velocity commands are correct but will not f
     print(&#34;&#34;)</code></pre>
 </details>
 </dd>
+<dt id="robot.Robot.start_reading_thread"><code class="name flex">
+<span>def <span class="ident">start_reading_thread</span></span>(<span>self, socket_handler)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Starts the thread that receives packets from brachIOPlexus and updates the robots state</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>socket_handler</code></strong></dt>
+<dd>A socket handler required for reading state</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def start_reading_thread(self, socket_handler):
+    &#34;&#34;&#34;
+    Starts the thread that receives packets from brachIOPlexus and updates the robots state
+
+    Args:
+        socket_handler: A socket handler required for reading state
+
+    Returns:
+        None
+
+    &#34;&#34;&#34;
+    self.__socket_handler = socket_handler
+    self.thread.start()
+
+    # Make sure nothing else starts until a first packet is read
+    while self.first_packet_read is False:
+        time.sleep(0.1)</code></pre>
+</details>
+</dd>
+<dt id="robot.Robot.stop_reading_thread"><code class="name flex">
+<span>def <span class="ident">stop_reading_thread</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stop_reading_thread(self):
+    self.thread_running = False
+    self.thread.join()</code></pre>
+</details>
+</dd>
 <dt id="robot.Robot.update_joints_from_packet"><code class="name flex">
 <span>def <span class="ident">update_joints_from_packet</span></span>(<span>self, packet)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Parses a packet and updates each joints status (Position, Velocity, Load, Temperature also updates Robots
-total velocity used for deciding if robot is moving or still</p>
+<div class="desc"><p>Parses a packet and updates each __joints status (Position, Velocity, Load, Temperature also updates Robots
+total velocity used for deciding if robot_obj is moving or still</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>packet</code></strong> :&ensp;<code>bytearray</code></dt>
@@ -970,8 +1090,8 @@ total velocity used for deciding if robot is moving or still</p>
 </summary>
 <pre><code class="python">def update_joints_from_packet(self, packet):
     &#34;&#34;&#34;
-    Parses a packet and updates each joints status (Position, Velocity, Load, Temperature also updates Robots
-    total velocity used for deciding if robot is moving or still
+    Parses a packet and updates each __joints status (Position, Velocity, Load, Temperature also updates Robots
+    total velocity used for deciding if robot_obj is moving or still
 
     Args:
         packet (bytearray): UDP packet received from brachIOplexus
@@ -983,12 +1103,50 @@ total velocity used for deciding if robot is moving or still</p>
     for i in range(3, packet[2], 9):
         idx = packet[i] - 1  # Packet has ID (which starts at 1) need index
         # Since you can read values outside allowable range when torque is not enabled, best always clamp the value
-        self.joints[idx].position = self.joints[idx].get_clamped_dyna_joint_position(
+        self.__joints[idx].position = self.__joints[idx].get_clamped_dyna_joint_position(
             position=int.from_bytes(packet[i + 1:i + 3], byteorder=&#39;little&#39;))
-        self.joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
-        self.joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
-        self.joints[idx].temp = packet[i + 7]
-        self.joints[idx].state = packet[i + 8]</code></pre>
+        self.__joints[idx].velocity = int.from_bytes(packet[i + 3:i + 5], byteorder=&#39;little&#39;)
+        self.__joints[idx].load = int.from_bytes(packet[i + 5:i + 7], byteorder=&#39;little&#39;)
+        self.__joints[idx].temp = packet[i + 7]
+        self.__joints[idx].state = packet[i + 8]</code></pre>
+</details>
+</dd>
+<dt id="robot.Robot.update_joints_from_udp"><code class="name flex">
+<span>def <span class="ident">update_joints_from_udp</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>While loop that constantly checks for UDP packets from brachIOplexus and updates robot_obj state when received</p>
+<h2 id="returns">Returns</h2>
+<p>None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_joints_from_udp(self):
+    &#34;&#34;&#34;
+    While loop that constantly checks for UDP packets from brachIOplexus and updates robot_obj state when received
+
+    Returns:
+        None
+
+    &#34;&#34;&#34;
+    self.thread_running = True
+
+    while self.thread_running:
+        # Check if packet is available with current joint_positions
+        packet = self.__socket_handler.read_packet()
+
+        if not packet:
+            continue
+
+        # First packet read
+        if self.first_packet_read is False:
+            self.first_packet_read = True
+
+        # Update known robot_obj joint_positions using the packet
+        self.update_joints_from_packet(packet)  # Read current joint positions
+
+        time.sleep(0.001)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1065,9 +1223,13 @@ total velocity used for deciding if robot is moving or still</p>
 <h4><code><a title="robot.Robot" href="#robot.Robot">Robot</a></code></h4>
 <ul class="">
 <li><code><a title="robot.Robot.build_joints_packet" href="#robot.Robot.build_joints_packet">build_joints_packet</a></code></li>
+<li><code><a title="robot.Robot.get_joint_positions" href="#robot.Robot.get_joint_positions">get_joint_positions</a></code></li>
 <li><code><a title="robot.Robot.get_joints" href="#robot.Robot.get_joints">get_joints</a></code></li>
 <li><code><a title="robot.Robot.print_joints" href="#robot.Robot.print_joints">print_joints</a></code></li>
+<li><code><a title="robot.Robot.start_reading_thread" href="#robot.Robot.start_reading_thread">start_reading_thread</a></code></li>
+<li><code><a title="robot.Robot.stop_reading_thread" href="#robot.Robot.stop_reading_thread">stop_reading_thread</a></code></li>
 <li><code><a title="robot.Robot.update_joints_from_packet" href="#robot.Robot.update_joints_from_packet">update_joints_from_packet</a></code></li>
+<li><code><a title="robot.Robot.update_joints_from_udp" href="#robot.Robot.update_joints_from_udp">update_joints_from_udp</a></code></li>
 </ul>
 </li>
 <li>
