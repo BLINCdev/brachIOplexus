@@ -24,11 +24,11 @@ def checksum_fcn(packet):
 
 
 def fill_state(state):
-    """If a state of 4 values is passed, it will fill in all the fixed state values of 0"""
-    # Default full state value
+    """If a joint_positions of 4 values is passed, it will fill in all the fixed joint_positions values of 0"""
+    # Default full joint_positions value
     if len(state) == 9:
         return state
-    # Else append 4 joint state to nine joint state to account for fixed joints
+    # Else append 4 joint joint_positions to nine joint joint_positions to account for fixed __joints
     for i in range(3):
         state.insert(0, None)
     for i in range(2):

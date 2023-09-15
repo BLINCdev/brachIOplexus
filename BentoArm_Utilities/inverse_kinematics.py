@@ -1,28 +1,32 @@
 from ikpy.chain import Chain
 from ikpy.link import OriginLink, URDFLink
-from robot import Robot
 from mpl_toolkits.mplot3d import Axes3D
 from math import pi
 import matplotlib.pyplot as plt
-from helper_functions import fill_state, get_diff_xyz
+from helper_functions import fill_state, get_diff_xyz, change_scale
 
 
 class InverseKinematics:
 
-    def __init__(self, robot=None):
+    def __init__(self, robot_obj=None):
         """
         This is the chain/urdf of the arm used for forward and inverse kinematics with the final end effector
         being the center of the end of the fixed chopstick.  All measurements are in centimeters and have been measured
         using the solidworks model.
 
+        Args:
+            robot_obj (Robot): Robot class which is needed for the joint min and max positions
+
         Attributes:
-            bento_chain (Chain): IKPy Chain, a collection of links and joints representing the bento arm
+            bento_chain (Chain): IKPy Chain, a collection of links and __joints representing the bento arm
             max_error (float): Total allowable IK lookup error ( goal_position - position calculated by IK )
         """
 
-        # If robot is not passed, create a default one
-        if robot is None:
+        if robot_obj is None:
+            from robot import Robot
             self.robot = Robot()
+        else:
+            self.robot = robot_obj
 
         self.bento_chain = Chain(name='left_arm', links=[
             OriginLink(),
@@ -44,7 +48,7 @@ class InverseKinematics:
                 origin_orientation=[pi, 0, 0],
                 joint_type="revolute",
                 rotation=[0, 0, 1],
-                bounds=(self.robot.joints[0].radians_min, self.robot.joints[0].radians_max)
+                bounds=(self.robot.get_joints()[0].radians_min, self.robot.get_joints()[0].radians_max)
             ),
             URDFLink(
                 name="shoulder_to_elbow",
@@ -52,7 +56,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type="revolute",
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[1].radians_min, self.robot.joints[1].radians_max)
+                bounds=(self.robot.get_joints()[1].radians_min, self.robot.get_joints()[1].radians_max)
             ),
             URDFLink(
                 name="elbow_to_forearm",
@@ -60,7 +64,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type="revolute",
                 rotation=[1, 0, 0],
-                bounds=(self.robot.joints[2].radians_min, self.robot.joints[2].radians_max)
+                bounds=(self.robot.get_joints()[2].radians_min, self.robot.get_joints()[2].radians_max)
             ),
             URDFLink(
                 name="forearm_to_wrist",
@@ -68,7 +72,7 @@ class InverseKinematics:
                 origin_orientation=[0, 0, 0],
                 joint_type="revolute",
                 rotation=[0, 1, 0],
-                bounds=(self.robot.joints[3].radians_min, self.robot.joints[3].radians_max)
+                bounds=(self.robot.get_joints()[3].radians_min, self.robot.get_joints()[3].radians_max)
             ),
             URDFLink(
                 name="wrist_to_hand",
@@ -94,7 +98,7 @@ class InverseKinematics:
 
     def plot_state(self, state=[0, 0, 0, 0]):
         """
-        Plots the Bento Arm in the given state in 3D
+        Plots the Bento Arm in the given joint_positions in 3D
 
         Args:
             state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
@@ -108,7 +112,7 @@ class InverseKinematics:
 
     def forward_kinematics(self, state=[0, 0, 0, 0], matrix=False):
         """
-        Does a forward kinematics lookup taking a state and calculating where the end of the fixed chopstick is in space
+        Does a forward kinematics lookup taking a joint_positions and calculating where the end of the fixed chopstick is in space
 
         Args:
             state (list): List of joint configurations in [-π,π]: [shoulder, elbow, forearm, wrist]
@@ -147,6 +151,54 @@ class InverseKinematics:
             self.plot_state(joints)
         return joints
 
+    def get_end_effector_position(self):
+        """
+        Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
+        of the end effector in 3D space (cm)
+
+        Returns:
+            Tuple of position (cm) or Matrix
+
+        """
+        if self.robot.normalized:
+            joints_to_ik = [change_scale(old_min=0,
+                                         old_max=1,
+                                         new_min=self.robot.get_joints()[i].radians_min,
+                                         new_max=self.robot.get_joints()[i].radians_max,
+                                         value=self.robot.get_joints()[i].get_normalized_joint_position()) for i in range(4)]
+        else:
+            joints_to_ik = [change_scale(old_min=self.robot.DYNA_MIN,
+                                         old_max=self.robot.DYNA_MAX,
+                                         new_min=-pi,
+                                         new_max=pi,
+                                         value=self.robot.get_joints()[i].position) for i in range(4)]
+        return self.forward_kinematics(joints_to_ik, matrix=False)
+
+    def get_joints_for_goal_xyz(self, goal_xyz, hand_state="mid"):
+        """
+        Builds an action using the desired goal_xyz and hand_state
+
+        Args:
+            goal_xyz: XYZ goal position for end effector in cm
+            hand_state: possible options include "closed", "mid", and "open"
+
+        Returns:
+            A collection of __joints required by the Robot class
+
+        """
+        ik_radians = self.inverse_kinematics(goal_xyz)[3:8]
+        ik_radians[-1] = self.robot.hand_states[hand_state]
+        # IKPY returns in [-pi, pi], need in [0,4096] or [0,1]
+        if self.robot.normalized:
+            joints = [change_scale(old_min=self.robot.get_joints()[i].radians_min,
+                                   old_max=self.robot.get_joints()[i].radians_max,
+                                   new_min=0,
+                                   new_max=1,
+                                   value=ik_radians[i]) for i in range(5)]
+            return joints
+
+        else:
+            return [change_scale(-pi, pi, self.robot.DYNA_MIN, self.robot.DYNA_MAX, i) for i in ik_radians]
 
 def test_ik():
     """

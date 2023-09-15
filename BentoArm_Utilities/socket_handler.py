@@ -2,40 +2,13 @@ from helper_functions import checksum_fcn
 import socket
 import select
 
+
 class SocketHandler:
     def __init__(self):
         """
         Socket handler used for UDP communication with BrachIOPlexus uses one port for sending and another for
         receiving.  Due to the dual port nature of this setup it is best to have one thread constantly looking for
         packets and another sending when needed.
-
-        Example:
-            ```python
-            from threading import thread
-            from socket_handler import SocketHandler()
-
-            socket = SocketHandler()
-
-            # Receive Loop
-            def get_state(self):
-                while True:
-                packet = self.socket_handler.read_packet()
-                if not packet:
-                    continue
-
-                data = do_something("With Packet")
-
-                time.sleep(0.001)
-
-            thread = Thread(target_position_xyz=get_state)
-            thread.start()
-
-            # Send loop
-            while True:
-                packet = "BUILD PACKET HERE"
-                socket.send_packet(packet)
-            ```
-
 
         Attributes:
             port_tx (int): The port that this script will send data to.  Default (30006)
@@ -56,8 +29,8 @@ class SocketHandler:
 
     def read_packet(self):
         """
-        Receives a BentoArm state packet (more about packet structure in README.md) , checks the checksum, and returns
-        the state message which contains all the information saved in a robot.py ServoInfo class
+        Receives a BentoArm joint_positions packet (more about packet structure in README.md) , checks the checksum, and returns
+        the joint_positions message which contains all the information saved in a robot_obj.py ServoInfo class
         """
         result = select.select([self.sock], [], [], 0.0)
         if len(result[0]) == 0:

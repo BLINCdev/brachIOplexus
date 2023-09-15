@@ -5,6 +5,8 @@ import signal
 import datetime
 import time
 
+RATE = 0.01
+
 
 class StateRecorder:
 
@@ -12,7 +14,7 @@ class StateRecorder:
         self.data = []
         self.socket_handler = socket_handler
         self.robot = Robot(normalized=normalized)  # Create Robot object
-        self.normalized = normalized
+        self.robot.start_reading_thread(socket_handler=socket_handler)  # Start getting readings
         self.print_data = print_data
         if normalized:
             self.filename = datetime.datetime.now().strftime('%Y_%m_%d_%H%M%S_normalized.csv')
@@ -24,39 +26,30 @@ class StateRecorder:
     def exit_gracefully(self, signum, frame):
         """Since the program runs continuously in a while True loop you need a signal to handle writing the data to a csv
         and exiting the program once a signal (Ctrl-c) / (Stop Button IDE) is detected"""
+        print("Signal Detected. Stopping joint read thread and exiting...")
+        self.robot.stop_reading_thread()
         with open(self.filename, 'w', newline='') as fp:
             w = csv.writer(fp)
             w.writerows(self.data)
         exit(0)
 
     def main(self):
-
-        input("Press enter to record robot state, press ctrl-c to finish")
+        input("Press enter to record robot_obj joint_positions, press ctrl-c to finish")
         while True:
-            packet = self.socket_handler.read_packet()
-
-            if not packet:
-                continue  # If no data received restart the while loop
-
-            self.robot.update_joints_from_packet(packet)  # Read current joint positions
             if self.print_data:
                 self.robot.print_joints()
-            self.data.append(self.robot.get_joints())
+            self.data.append(self.robot.get_joint_positions())
+            time.sleep(RATE)
 
     def test(self):
-        """Records state for 10 seconds"""
-        input("Press enter to record robot state, press ctrl-c to finish")
+        """Records joint_positions for 10 seconds"""
+        input(f"Press enter to record robot_obj joint_positions: Normalized={self.robot.normalized}")
         current_time = time.time()
         while time.time() - current_time < 10:
-            packet = self.socket_handler.read_packet()
-
-            if not packet:
-                continue  # If no data received restart the while loop
-
-            self.robot.update_joints_from_packet(packet)  # Read current joint positions
             if self.print_data:
                 self.robot.print_joints()
-            self.data.append(self.robot.get_joints())
+            self.data.append(self.robot.get_joint_positions())
+            time.sleep(RATE)
 
 
 if __name__ == "__main__":
