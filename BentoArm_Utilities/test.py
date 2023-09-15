@@ -12,9 +12,10 @@ def main():
 
     sock = SocketHandler()
 
-    """Test normalized state recording and playback"""
+    """Test normalized joint_positions recording and playback"""
     recorder = StateRecorder(normalized=True, print_data=True, socket_handler=sock)
     recorder.test()
+    recorder.robot.stop_reading_thread()
 
     with open(recorder.filename, 'w', newline='') as fp:
         w = csv.writer(fp)
@@ -23,12 +24,13 @@ def main():
     playback(file=recorder.filename, normalized=True, socket_handler=sock)
     os.remove(recorder.filename)
 
-    """Test dyna values state recording and playback"""
+    """Test dyna values joint_positions recording and playback"""
     sock.sock.close()
     sock2 = SocketHandler()
 
     recorder2 = StateRecorder(normalized=False, print_data=True, socket_handler=sock2)
     recorder2.test()
+    recorder2.robot.stop_reading_thread()
 
     with open(recorder2.filename, 'w', newline='') as fp:
         w = csv.writer(fp)
