@@ -4,6 +4,7 @@ from socket_handler import SocketHandler
 from inverse_kinematics import test_ik
 import csv
 import os
+import time
 
 
 def main():
@@ -21,6 +22,7 @@ def main():
         w = csv.writer(fp)
         w.writerows(recorder.data)
 
+    start = time.time()
     playback(file=recorder.filename, normalized=True, socket_handler=sock)
     os.remove(recorder.filename)
 

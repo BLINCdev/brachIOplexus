@@ -5,18 +5,19 @@ import sys
 import os.path
 import time
 
-RATE = 1 / 100  # RATE = 1 / hz
+RATE = 1 / 140  # RATE = 1 / hz
 
 
 def playback(file, normalized=True, socket_handler=None):
     robot = Robot(normalized=normalized)  # Setup Robot
     input("Press enter to playback csv file, ensure you've enabled Torque On in BracIOplexus Bento Arm Menu")
 
-    done_check = False  #
+    done_check = False
     with open(file, mode='r') as fp:
         csv_file = csv.reader(fp)  # Read CSV File
-
+        start_time = time.time()
         for state in csv_file:
+            # Initial check to make sure in proper range
             if not done_check:
                 if normalized:
                     assert (0 <= float(
@@ -28,6 +29,7 @@ def playback(file, normalized=True, socket_handler=None):
             packet = robot.build_joints_packet(joint_positions=state)
             socket_handler.send_packet(packet)
             time.sleep(RATE)  # Approx 10 ms to allow time for some movements
+        print(f"Playback Time: {time.time() - start_time}")
 
 
 if __name__ == "__main__":

@@ -49,6 +49,7 @@ class StateRecorder:
                 self.robot.print_joints()
             self.data.append(self.robot.get_joint_positions())
             time.sleep(RATE)
+        print(f"Recording Time: {time.time()-current_time}")
 
 
 if __name__ == "__main__":

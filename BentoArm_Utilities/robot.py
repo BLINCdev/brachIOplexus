@@ -13,6 +13,7 @@ MAX_TEMP = 80
 BUFFER = 10
 DYNA_MIN = 0
 DYNA_MAX = 4095
+UPDATE_RATE = 1 / 1000  # RATE = 1 / hz
 
 
 class Robot:
@@ -205,7 +206,7 @@ class Robot:
             # Update known robot_obj joint_positions using the packet
             self.update_joints_from_packet(packet)  # Read current joint positions
 
-            time.sleep(0.001)
+            time.sleep(UPDATE_RATE)
 
 
 class ServoInfo(object):
