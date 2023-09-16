@@ -13,7 +13,7 @@ def main():
     sock = SocketHandler()
 
     """Test normalized joint_positions recording and playback"""
-    recorder = StateRecorder(normalized=True, print_data=True, socket_handler=sock)
+    recorder = StateRecorder(normalized=True, print_data=False, socket_handler=sock)
     recorder.test()
     recorder.robot.stop_reading_thread()
 
@@ -28,7 +28,7 @@ def main():
     sock.sock.close()
     sock2 = SocketHandler()
 
-    recorder2 = StateRecorder(normalized=False, print_data=True, socket_handler=sock2)
+    recorder2 = StateRecorder(normalized=False, print_data=False, socket_handler=sock2)
     recorder2.test()
     recorder2.robot.stop_reading_thread()
 

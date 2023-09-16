@@ -5,7 +5,7 @@ import signal
 import datetime
 import time
 
-RATE = 1 / 100  # rate = 1 / hz
+RATE = 1 / 300  # rate = 1 / hz
 
 class StateRecorder:
 
