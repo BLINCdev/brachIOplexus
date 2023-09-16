@@ -5,8 +5,7 @@ import signal
 import datetime
 import time
 
-RATE = 0.01
-
+RATE = 1 / 100  # rate = 1 / hz
 
 class StateRecorder:
 
@@ -54,5 +53,5 @@ class StateRecorder:
 
 if __name__ == "__main__":
     # Printing is not recommended as it will eat up alot of the kernel given the rate you get data
-    state_record = StateRecorder(normalized=False, print_data=False, socket_handler=SocketHandler())
+    state_record = StateRecorder(normalized=True, print_data=False, socket_handler=SocketHandler())
     state_record.main()

@@ -151,7 +151,7 @@ class InverseKinematics:
             self.plot_state(joints)
         return joints
 
-    def get_end_effector_position(self):
+    def get_end_effector_position_xyz(self):
         """
         Converts the current joint positions read by the brachIOplexus packet / Robot class and calculates the position
         of the end effector in 3D space (cm)
@@ -183,7 +183,7 @@ class InverseKinematics:
             hand_state: possible options include "closed", "mid", and "open"
 
         Returns:
-            A collection of __joints required by the Robot class
+            A collection of joint positions required by the Robot class
 
         """
         ik_radians = self.inverse_kinematics(goal_xyz)[3:8]

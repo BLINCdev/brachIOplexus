@@ -32,7 +32,7 @@ class Robot:
             normalized:  If true joint joint_positions is represented via a [0, 1] range else the dynamixel range [0,4095]
 
         Attributes:
-            __joints (list): A list of MxSeries __joints
+            __joints (list): A list of MxSeries joints
             hand_states (dict): Hand states in the range of [-π,π] mainly just used by IKPY
         """
         self.normalized = normalized

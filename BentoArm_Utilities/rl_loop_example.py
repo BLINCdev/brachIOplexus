@@ -30,7 +30,7 @@ class Rl:
 
         dyna_state = self.robot.get_joint_positions(normalized=False)
         normalized_state = self.robot.get_joint_positions(normalized=True)
-        end_effector_pos = self.ik.get_end_effector_position()
+        end_effector_pos = self.ik.get_end_effector_position_xyz()
 
         return dyna_state, normalized_state, end_effector_pos
 
@@ -80,7 +80,7 @@ class Rl:
             time.sleep(2)
 
             # NEW STATE
-            print(f"New State {self.ik.get_end_effector_position()}")
+            print(f"New State {self.ik.get_end_effector_position_xyz()}")
             print("----------------------")
 
         self.robot.stop_reading_thread()

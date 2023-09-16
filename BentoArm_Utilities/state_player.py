@@ -5,7 +5,7 @@ import sys
 import os.path
 import time
 
-RATE = 0.01
+RATE = 1 / 100  # RATE = 1 / hz
 
 
 def playback(file, normalized=True, socket_handler=None):
@@ -37,7 +37,7 @@ if __name__ == "__main__":
         exit()
 
     assert (os.path.isfile(sys.argv[1])), f"{sys.argv[1]} Does not exist"  # Check if file given actually exists
-    if sys.argv[1].split('_')[-1] == 'normalized.csv':
-        playback(normalized=True, file=sys.argv[1], socket_handler=SocketHandler())
-    else:
+    if sys.argv[1].split('_')[-1] == 'dynavalues.csv':
         playback(normalized=False, file=sys.argv[1], socket_handler=SocketHandler())
+    else:
+        playback(normalized=True, file=sys.argv[1], socket_handler=SocketHandler())

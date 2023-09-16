@@ -9,9 +9,10 @@ ik = InverseKinematics(robot_obj=robot)
 robot.start_reading_thread(socket_handler=socket)
 
 while True:
-    joints = robot.get_joint_positions()
-    if None not in joints:
-        for joint in joints:
-            print(f"{joint:.3f} ", end='')
-        print(f"\n {ik.get_end_effector_position()} \n")
+    joint_positions = robot.get_joint_positions()
+    for joint_pos in joint_positions:
+        print(f"{joint_pos:.3f} ", end='')
+    print(f"\n {ik.get_end_effector_position_xyz()} \n")
     time.sleep(0.2)
+
+robot.stop_reading_thread()
