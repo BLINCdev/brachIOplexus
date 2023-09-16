@@ -19,7 +19,7 @@ class SocketHandler:
         """
         self.port_tx = 30006
         self.port_rx = 30007
-        self.udp_ip = "192.168.1.2"
+        self.udp_ip = "127.0.0.1"
         self.buffer_size = 1024
         self.failed_packets = 0
 
