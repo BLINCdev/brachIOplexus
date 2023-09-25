@@ -4,10 +4,11 @@ from robot import Robot
 import time
 
 socket = SocketHandler()
-robot = Robot(normalized=True)
+robot = Robot(normalized=False)
 ik = InverseKinematics(robot_obj=robot)
 
-positions = [0.5, 0.5, 0.5, 0.5, 0.5]
+
+positions = [2048,2500,2048,2048,2048]
 socket.send_packet(robot.build_joints_packet(joint_positions=positions))
 
 time.sleep(5)

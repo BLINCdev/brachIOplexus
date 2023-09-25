@@ -5,18 +5,12 @@ from math import pi
 from threading import Thread
 import time
 
-MIN_ANGLES = [1028, 1784, 1028, 790, 1928]
-MAX_ANGLES = [3073, 2570, 3073, 3328, 2800]
-V_RANGE = [55, 45, 90, 67, 90]
-LOAD_RANGE = [225, 300, 250, 300, 400]
-MAX_TEMP = 80
-BUFFER = 10
-DYNA_MIN = 0
-DYNA_MAX = 4095
-UPDATE_RATE = 1 / 1000  # RATE = 1 / hz
-
 
 class Robot:
+    UPDATE_RATE = 1 / 1000  # RATE = 1 / hz
+    DYNA_MIN = 0
+    DYNA_MAX = 4095
+
     def __init__(self, normalized=True):
         """
         Class for BentoArm which is just a collection of MxSeries __joints.  There are two playback ways we can represent a
@@ -206,7 +200,7 @@ class Robot:
             # Update known robot_obj joint_positions using the packet
             self.update_joints_from_packet(packet)  # Read current joint positions
 
-            time.sleep(UPDATE_RATE)
+            time.sleep(self.UPDATE_RATE)
 
 
 class ServoInfo(object):
@@ -230,6 +224,15 @@ class ServoInfo(object):
 
 
 class MxSeries(ServoInfo):
+    MIN_ANGLES = [1028, 1784, 1028, 790, 1928]
+    MAX_ANGLES = [3073, 2570, 3073, 3328, 2800]
+    V_RANGE = [55, 45, 90, 67, 90]
+    LOAD_RANGE = [225, 300, 250, 300, 400]
+    MAX_TEMP = 80
+    BUFFER = 10
+    DYNA_MIN = 0
+    DYNA_MAX = 4095
+
     """
     Specific instance of all servos of the mx series type (i.e mx-28, mx-64, mx-106) containing properties for that
     individual servo and functions for getting/converting these properties to other ranges.
@@ -254,15 +257,15 @@ class MxSeries(ServoInfo):
         """
         super().__init__()
         self.id = index + 1
-        self.position_min = MIN_ANGLES[index] - BUFFER
-        self.postion_max = MAX_ANGLES[index] + BUFFER
+        self.position_min = self.MIN_ANGLES[index] - self.BUFFER
+        self.postion_max = self.MAX_ANGLES[index] + self.BUFFER
         self.radians_min = self.dyna_to_radians(self.position_min, zero_to_2pi=False)
         self.radians_max = self.dyna_to_radians(self.postion_max, zero_to_2pi=False)
-        self.velocity_min = 1024 - V_RANGE[index] - BUFFER
-        self.velocity_max = 1024 + V_RANGE[index] + BUFFER
-        self.load_min = 1024 - LOAD_RANGE[index] - BUFFER
-        self.load_max = 1024 + LOAD_RANGE[index] + BUFFER
-        self.max_temp = MAX_TEMP
+        self.velocity_min = 1024 - self.V_RANGE[index] - self.BUFFER
+        self.velocity_max = 1024 + self.V_RANGE[index] + self.BUFFER
+        self.load_min = 1024 - self.LOAD_RANGE[index] - self.BUFFER
+        self.load_max = 1024 + self.LOAD_RANGE[index] + self.BUFFER
+        self.max_temp = self.MAX_TEMP
         self.state = None
 
     def normalized_to_dyna_pos_range(self, value):
@@ -295,9 +298,9 @@ class MxSeries(ServoInfo):
             Dynamixel position in radians range of choice
         """
         if zero_to_2pi:
-            return change_scale(DYNA_MIN, DYNA_MAX, 0, 2 * pi, value)
+            return change_scale(self.DYNA_MIN, self.DYNA_MAX, 0, 2 * pi, value)
         else:
-            return change_scale(DYNA_MIN, DYNA_MAX, -pi, pi, value)
+            return change_scale(self.DYNA_MIN, self.DYNA_MAX, -pi, pi, value)
 
     def radians_to_dyna(self, value, normalized=True, zero_to_2pi=False):
         """
@@ -320,4 +323,4 @@ class MxSeries(ServoInfo):
         if normalized:
             return change_scale(old_min, old_max, 0, 1, value)
         else:
-            return change_scale(old_min, old_max, DYNA_MIN, DYNA_MAX, value)
+            return change_scale(old_min, old_max, self.DYNA_MIN, self.DYNA_MAX, value)

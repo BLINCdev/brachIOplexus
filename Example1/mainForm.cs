@@ -8007,55 +8007,110 @@ namespace brachIOplexus
                 int MSG_SIZE2 = 49;
                 byte[] packet = new byte[MSG_SIZE2];
 
-                // Construct the packet that will be transmitted to the external program
-                packet[0] = 255;    // First two bytes of the packet are the header section and set to 255
-                packet[1] = 255;
-                packet[2] = (byte)BENTO_NUM * 9;      // The length of the packet
-                packet[3] = 1;
-                packet[4] = low_byte(BentoSense.ID[0].posf);
-                packet[5] = high_byte(BentoSense.ID[0].posf);
-                packet[6] = low_byte(BentoSense.ID[0].vel);
-                packet[7] = high_byte(BentoSense.ID[0].vel);
-                packet[8] = low_byte(BentoSense.ID[0].loadf);
-                packet[9] = high_byte(BentoSense.ID[0].loadf);
-                packet[10] = (byte)BentoSense.ID[0].tempf;
-                packet[11] = (byte)stateObj.motorState[0];
-                packet[12] = 2;
-                packet[13] = low_byte(BentoSense.ID[1].posf);
-                packet[14] = high_byte(BentoSense.ID[1].posf);
-                packet[15] = low_byte(BentoSense.ID[1].vel);
-                packet[16] = high_byte(BentoSense.ID[1].vel);
-                packet[17] = low_byte(BentoSense.ID[1].loadf);
-                packet[18] = high_byte(BentoSense.ID[1].loadf);
-                packet[19] = (byte)BentoSense.ID[1].tempf;
-                packet[20] = (byte)stateObj.motorState[1];
-                packet[21] = 3;
-                packet[22] = low_byte(BentoSense.ID[2].posf);
-                packet[23] = high_byte(BentoSense.ID[2].posf);
-                packet[24] = low_byte(BentoSense.ID[2].vel);
-                packet[25] = high_byte(BentoSense.ID[2].vel);
-                packet[26] = low_byte(BentoSense.ID[2].loadf);
-                packet[27] = high_byte(BentoSense.ID[2].loadf);
-                packet[28] = (byte)BentoSense.ID[2].tempf;
-                packet[29] = (byte)stateObj.motorState[2];
-                packet[30] = 4;
-                packet[31] = low_byte(BentoSense.ID[3].posf);
-                packet[32] = high_byte(BentoSense.ID[3].posf);
-                packet[33] = low_byte(BentoSense.ID[3].vel);
-                packet[34] = high_byte(BentoSense.ID[3].vel);
-                packet[35] = low_byte(BentoSense.ID[3].loadf);
-                packet[36] = high_byte(BentoSense.ID[3].loadf);
-                packet[37] = (byte)BentoSense.ID[3].tempf;
-                packet[38] = (byte)stateObj.motorState[3];
-                packet[39] = 5;
-                packet[40] = low_byte(BentoSense.ID[4].posf);
-                packet[41] = high_byte(BentoSense.ID[4].posf);
-                packet[42] = low_byte(BentoSense.ID[4].vel);
-                packet[43] = high_byte(BentoSense.ID[4].vel);
-                packet[44] = low_byte(BentoSense.ID[4].loadf);
-                packet[45] = high_byte(BentoSense.ID[4].loadf);
-                packet[46] = (byte)BentoSense.ID[4].tempf;
-                packet[47] = (byte)stateObj.motorState[4];
+                if (bentoMode == 1)  // Real life Bento Arm
+                {
+                    // Construct the packet that will be transmitted to the external program
+                    packet[0] = 255;    // First two bytes of the packet are the header section and set to 255
+                    packet[1] = 255;
+                    packet[2] = (byte)BENTO_NUM * 9;      // The length of the packet
+                    packet[3] = 1;
+                    packet[4] = low_byte(BentoSense.ID[0].posf);
+                    packet[5] = high_byte(BentoSense.ID[0].posf);
+                    packet[6] = low_byte(BentoSense.ID[0].vel);
+                    packet[7] = high_byte(BentoSense.ID[0].vel);
+                    packet[8] = low_byte(BentoSense.ID[0].loadf);
+                    packet[9] = high_byte(BentoSense.ID[0].loadf);
+                    packet[10] = (byte)BentoSense.ID[0].tempf;
+                    packet[11] = (byte)stateObj.motorState[0];
+                    packet[12] = 2;
+                    packet[13] = low_byte(BentoSense.ID[1].posf);
+                    packet[14] = high_byte(BentoSense.ID[1].posf);
+                    packet[15] = low_byte(BentoSense.ID[1].vel);
+                    packet[16] = high_byte(BentoSense.ID[1].vel);
+                    packet[17] = low_byte(BentoSense.ID[1].loadf);
+                    packet[18] = high_byte(BentoSense.ID[1].loadf);
+                    packet[19] = (byte)BentoSense.ID[1].tempf;
+                    packet[20] = (byte)stateObj.motorState[1];
+                    packet[21] = 3;
+                    packet[22] = low_byte(BentoSense.ID[2].posf);
+                    packet[23] = high_byte(BentoSense.ID[2].posf);
+                    packet[24] = low_byte(BentoSense.ID[2].vel);
+                    packet[25] = high_byte(BentoSense.ID[2].vel);
+                    packet[26] = low_byte(BentoSense.ID[2].loadf);
+                    packet[27] = high_byte(BentoSense.ID[2].loadf);
+                    packet[28] = (byte)BentoSense.ID[2].tempf;
+                    packet[29] = (byte)stateObj.motorState[2];
+                    packet[30] = 4;
+                    packet[31] = low_byte(BentoSense.ID[3].posf);
+                    packet[32] = high_byte(BentoSense.ID[3].posf);
+                    packet[33] = low_byte(BentoSense.ID[3].vel);
+                    packet[34] = high_byte(BentoSense.ID[3].vel);
+                    packet[35] = low_byte(BentoSense.ID[3].loadf);
+                    packet[36] = high_byte(BentoSense.ID[3].loadf);
+                    packet[37] = (byte)BentoSense.ID[3].tempf;
+                    packet[38] = (byte)stateObj.motorState[3];
+                    packet[39] = 5;
+                    packet[40] = low_byte(BentoSense.ID[4].posf);
+                    packet[41] = high_byte(BentoSense.ID[4].posf);
+                    packet[42] = low_byte(BentoSense.ID[4].vel);
+                    packet[43] = high_byte(BentoSense.ID[4].vel);
+                    packet[44] = low_byte(BentoSense.ID[4].loadf);
+                    packet[45] = high_byte(BentoSense.ID[4].loadf);
+                    packet[46] = (byte)BentoSense.ID[4].tempf;
+                    packet[47] = (byte)stateObj.motorState[4];
+                } else if (bentoMode == 2)  // Simulator
+                {
+                    packet[0] = 255;    // First two bytes of the packet are the header section and set to 255
+                    packet[1] = 255;
+                    packet[2] = (byte)BENTO_NUM * 9;      // The length of the packet
+                    packet[3] = 1;
+                    packet[4] = low_byte(BentoSense.ID[0].pos);
+                    packet[5] = high_byte(BentoSense.ID[0].pos);
+                    packet[6] = low_byte(BentoSense.ID[0].vel);
+                    packet[7] = high_byte(BentoSense.ID[0].vel);
+                    packet[8] = 0;
+                    packet[9] = 0;
+                    packet[10] = 0;
+                    packet[11] = 0;
+                    packet[12] = 2;
+                    packet[13] = low_byte(BentoSense.ID[1].pos);
+                    packet[14] = high_byte(BentoSense.ID[1].pos);
+                    packet[15] = low_byte(BentoSense.ID[1].vel);
+                    packet[16] = high_byte(BentoSense.ID[1].vel);
+                    packet[17] = 0;
+                    packet[18] = 0;
+                    packet[19] = 0;
+                    packet[20] = 0;
+                    packet[21] = 3;
+                    packet[22] = low_byte(BentoSense.ID[2].pos);
+                    packet[23] = high_byte(BentoSense.ID[2].pos);
+                    packet[24] = low_byte(BentoSense.ID[2].vel);
+                    packet[25] = high_byte(BentoSense.ID[2].vel);
+                    packet[26] = 0;
+                    packet[27] = 0;
+                    packet[28] = 0;
+                    packet[29] = 0;
+                    packet[30] = 4;
+                    packet[31] = low_byte(BentoSense.ID[3].pos);
+                    packet[32] = high_byte(BentoSense.ID[3].pos);
+                    packet[33] = low_byte(BentoSense.ID[3].vel);
+                    packet[34] = high_byte(BentoSense.ID[3].vel);
+                    packet[35] = 0;
+                    packet[36] = 0;
+                    packet[37] = 0;
+                    packet[38] = 0;
+                    packet[39] = 5;
+                    packet[40] = low_byte(BentoSense.ID[4].pos);
+                    packet[41] = high_byte(BentoSense.ID[4].pos);
+                    packet[42] = low_byte(BentoSense.ID[4].vel);
+                    packet[43] = high_byte(BentoSense.ID[4].vel);
+                    packet[44] = 0;
+                    packet[45] = 0;
+                    packet[46] = 0;
+                    packet[47] = 0;
+                }
+
+
 
 
                 // Calculate the checksum for the packet
@@ -8106,8 +8161,37 @@ namespace brachIOplexus
                 {
                     int p = bytes[m] + (bytes[m + 1] << 8);
                     int v = bytes[m + 2] + (bytes[m + 3] << 8);
+
                     robotObj.Motor[idx].p = p;
                     robotObj.Motor[idx].w = v;
+
+                    if (bentoMode == 2)  // Simulation
+                    {
+                        switch (idx)
+                        {
+                            case (0):
+                                VRShoulderPosition = p;
+                                VRShoulderVelocity = v;
+                                break;
+                            case (2):
+                                VRElbowPosition = p;
+                                VRElbowVelocity = v;
+                                break;
+                            case (3):
+                                VRWristRotatePosition = p;
+                                VRWristRotateVelocity = v;
+                                break;
+                            case (4):
+                                VRWristFlexPosition = p;
+                                VRWristFlexVelocity = v;
+                                break;
+                            case (5):
+                                VRHandPosition = p;
+                                VRHandVelocity = v;
+                                break;
+                        }
+                    }
+
                     idx += 1;
                 }
             }
